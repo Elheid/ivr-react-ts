@@ -64,6 +64,10 @@ button{
 }
 
 
+video.gif {
+  width: 100%;
+}
+
 
 
 /*Index/Main Page*/
@@ -78,7 +82,7 @@ button{
 
 /*Breadcrumps*/
 
-
+/*
 button.return-button {
   display: flex;
   align-items: center;    
@@ -92,28 +96,33 @@ button.return-button img {
 }
 
 button.return-button, button.back-button {
-  /*background-color: #6f402a;*/
   background-color: var(--main-buttons-bg-color);
   border-radius: 30px;
- /* margin: 0 10px;*/
   margin-right: 2vw;
-
 }
 button.back-popup-button{
   margin-right: 0;
 }
+ 
+*/
+button.return-button, button.back-button {
+  background-color: var(--main-buttons-bg-color);
+  border-radius: 30px;
+
+  display: flex;
+  flex-direction: row;
+
+  /*margin-right: 2vw;*/
+}
+button.return-button a{
+  display: flex;
+  align-items: center;
+}
+
 .return-button img, .back-button img {
-  /*
-  margin: 6px 25px;
-  width: 30px;
-  height: 20px;*/
-  /*margin: 10px 30px;*/
-  margin: 0.6vw 1.6vw;
   width: 3vw;
   height: 2vw;
-  /*width: 60px;
-  height: 40px;*/
-}   
+}  
 
 .button-title {
   color: rgba(255, 255, 255, 1);
@@ -124,9 +133,9 @@ button.back-popup-button{
 
 
 .main-header{
-  max-width: 80vw/*1500px*/;
   margin: 0 auto;
   padding: 0;
+  max-width: 80vw;
 }
 
 .header-list{
@@ -138,7 +147,7 @@ button.back-popup-button{
   border-radius: 30px;
   background: repeating-linear-gradient(10deg, var(--main-bg-dark-color), var(--main-bg-bright-color) 3.5vw);
 
-  /*margin-bottom: 20px;*/
+
   order:2;
 }
 
@@ -209,3 +218,211 @@ button.edit-element-button {
 }
 
 /*Searcher */
+
+/*Services Cards*/
+/*
+.view-choose{
+  max-width: 70vw;
+  margin: 30px auto;
+  padding: 0;
+}
+
+.list-of-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-row-gap: 20px;
+  grid-column-gap: 5%;
+}
+
+.clear-card {
+  height: 100%;
+  width: 100%;
+  border: 1px solid #623B2AE5;
+  border-radius: 20px;
+  background: var(--main-buttons-bg-color);
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.clear-card .card-button {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+*/
+
+/*Gestural cards*/
+/*
+.gestural-language .card-button {
+  width: 100%;
+  padding: 0;
+  height: auto;
+  border: 2px solid #895b3e;
+  border-radius: 20px;
+  background: var(--main-buttons-bg-color);
+  box-shadow: 6px 4px 3px #0000001c;
+}
+
+video.gif {
+  width: 100%;
+}
+.video-overlay video.gif {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: center; 
+}
+
+.video-overlay{
+  position: relative;
+  border-color: rgba(89, 60, 47, 1);
+  margin-bottom: 10px;
+  border: 2px solid #623B2A;
+  border-radius: 20px;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden; 
+
+}
+
+.substrate {
+  grid-row: 2;
+  margin-top: 20px;
+  align-items: center;
+  display: flex;
+  margin-top: 0;
+  padding-bottom: 0.8vw;
+}
+
+.substrate .card-title {
+  text-align: start;
+  color: #FFFFFF;
+  font-size: 30px;
+  margin: 15px 5px;
+  font-weight: 400;
+  margin-left: 15px;
+  margin-bottom: 0;
+  text-wrap: balance;
+
+  margin-top: 0;
+}
+*/
+
+.clear-card {
+  height: 100%;
+  width: 100%;
+  border: 1px solid #623B2AE5;
+  border-radius: 20px;
+  background: var(--main-buttons-bg-color);
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+
+.clear-card .card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  gap:10px;
+}
+.clear-card .card-title {
+  margin-top: 20px;
+  color: #FFFFFF;
+  font-size: 30px;
+  font-weight: 400;
+  text-align: left;
+  padding-right: 30px;
+  height: 100%;
+  width: auto;
+  text-wrap: balance;
+  height: fit-content;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.card-footer {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  padding: 10px;
+  padding-right: 20px;
+}
+
+.card-footer img{
+  margin-left: auto;
+  width: 2vw;
+}
+
+.icon-container{
+  padding: 10px;
+}
+
+.clear-card .count-services {
+  color: #FFFFFF;
+  margin-bottom: 0;
+  font-size: 20px;
+}
+
+/*Gestural*/
+.gestural-language .card {
+  width: 100%;
+  padding: 0;
+  height: auto;
+  border: 2px solid #895b3e;
+  border-radius: 20px;
+  background: var(--main-buttons-bg-color);
+  box-shadow: 6px 4px 3px #0000001c;
+}
+
+.card-content button {
+  padding: 0;
+}
+
+.video-overlay{
+  margin-bottom: 10px;
+  overflow: hidden; 
+}
+
+video.gif{
+  border: 2px solid #623B2A;
+  border-radius: 20px;
+}
+
+
+
+.substrate .card-title {
+  text-align: start;
+  color: #FFFFFF;
+  font-size: 30px;
+  margin: 15px 5px;
+  font-weight: 400;
+  margin-left: 15px;
+  margin-bottom: 0;
+  text-wrap: balance;
+  margin-top: 0;
+}
+
+.substrate {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.substrate img{
+  padding:20px;
+  width: 4vw;
+  margin-left: auto;
+  min-width: 4vw;
+  max-width: 4vw;
+}

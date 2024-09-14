@@ -1,4 +1,5 @@
 import HeaderComponent from "./Header";
+import ServicesListComponent from "./ServiceCards/ServicesListComponent";
 
 const ServicesComponent = () => {
     //const language = localStorage.getItem("language");
@@ -8,7 +9,7 @@ const ServicesComponent = () => {
         <section className={classes}>
             <HeaderComponent/>
             <section className="view-choose">
-
+                <ServicesListComponent />
             </section>
         </section>
     );

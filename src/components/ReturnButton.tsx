@@ -1,17 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
 
 import arrowLeftSVG from "../img/arrow-left-white.svg";
+import { Button } from "@mui/material";
 
 
-const ReturnButtonComponent = ()=>{
+interface ReturnButtonComponentProps {
+    destination: string;
+}
+
+const ReturnButtonComponent = ({destination}:ReturnButtonComponentProps)=>{
     const arrowImg = arrowLeftSVG;
     return(
-        <button className="return-button">
+        <Link to={destination}>
         <img src={arrowImg} alt="Кнопка назад" />
         <span className="button-title back-title">Назад</span>
-        </button>
+        </Link>
     );
 }
+
+
 
 const LinkReturnButtonComponent = ()=>{
     let destination = "/";
@@ -20,9 +27,16 @@ const LinkReturnButtonComponent = ()=>{
         if (localStorage.getItem("language") === "gestural-language") destination = "/instruction"
     }
     return (
-        <Link to={destination}>
-            <ReturnButtonComponent/>    
-        </Link>
+        <Button 
+        variant="contained" 
+        className="return-button"
+        sx={{ 
+            textTransform: 'none',
+            mr:"1.5vw;"
+        }}
+        >
+            <ReturnButtonComponent destination={destination}/>    
+        </Button>
     );
 }
 

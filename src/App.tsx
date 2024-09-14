@@ -12,7 +12,6 @@ import { useState } from 'react';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
-
   return (
     <BrowserRouter>
       <div className={"App " +  language}>
