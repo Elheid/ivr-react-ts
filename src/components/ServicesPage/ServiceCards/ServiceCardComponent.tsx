@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import arrowSVG from "../../../img/arrow.svg";
 import arrowLargeSVG from "../../../img/arrowLarge.svg";
-import { Card, Grid2 } from '@mui/material';
+import { Button, Card, Grid2 } from '@mui/material';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -82,6 +82,9 @@ interface VideoError {
 }
 
 // Настраиваемый хук для управления видеоплеером
+
+//Не помагает
+/*
 const useVideoHandleError = (videoUrl: string)=>{
     const [error, setError] = useState<VideoError | null>(null); // Состояние ошибки
     const videoRef = useRef<HTMLVideoElement>(null); // Ссылка на элемент видео
@@ -118,18 +121,18 @@ const useVideoHandleError = (videoUrl: string)=>{
     }, [videoUrl]);
 
     return { error, videoRef };
-}
+}*/
 
 interface GesturalVideoComponentProps {
     gifSrc: string;
 }
 
 const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
-    const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
+    //const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
     return (
         <div className="video-overlay">
-            {error && <p>Ошибка загрузки видео: {error.message}</p>} 
-            <video ref={videoRef} className="gif"
+            {/*error && <p>Ошибка загрузки видео: {error.message}</p>*/} 
+            <video className="gif"
                 src={gifSrc}
                 playsInline={true}
                 loop={true}
@@ -171,7 +174,14 @@ const CatalogCardComponent: React.FC<CatalogCardComponentProps> = ({ catalogId, 
         <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px" }}>
             <Card className={`catalog-card`} catalog-id={catalogId} children-count={childrenCount.toString()} sx={{ borderRadius: "20px" }}>
                 <div className={`card-content ${cardType}`}>
-                    <button
+                    <Button 
+                        sx={{ 
+                            textTransform: 'none',
+                            fontWeight: "400",
+                            fontSize: "0.875rem",
+                            lineHeight: "normal",
+                            display:"inline-block"
+                        }}
                         data-gifsrc={gifSrc}
                         data-iconsrc={iconSrc}
                         className='card'
@@ -183,7 +193,7 @@ const CatalogCardComponent: React.FC<CatalogCardComponentProps> = ({ catalogId, 
                         {localStorage.getItem("language") === "clear-language"
                             ? (<ClearCardHeader title={title} childrenCount={childrenCount} />)
                             : (<GesturalCardSubstrateComponent title={title} />)}
-                    </button>
+                    </Button>
                 </div>
             </Card>
         </Grid2>

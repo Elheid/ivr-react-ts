@@ -11,20 +11,21 @@ interface ViewCardComponentProps {
     setLanguage: (language: string) => void;
 }
 
-const ViewCardComponent = ({className, destination, img, alt, setLanguage, languageName}:ViewCardComponentProps) => {
+const ViewCardComponent = ({ className, destination, img, alt, setLanguage, languageName }: ViewCardComponentProps) => {
     const classNamees = `${styles["view-card"]} ${className}`; //"gestural-language" или "clear-language";
     const image = img;
     return (
-        <li className={classNamees} onClick={()=>{
-            //window.location.reload();
-            setLanguage(languageName); 
-            localStorage.setItem("language", languageName)
+            <li className={classNamees} onClick={() => {
+                //window.location.reload();
+                setLanguage(languageName);
+                localStorage.setItem("language", languageName)
             }}>
-            <Link to={destination}>
-                <button className={styles["transition-icon"]}>
-                    <img src={image} alt={alt} />
-                </button>
-            </Link>
-        </li>);
+                <Link to={destination}>
+                    <button style={{cursor:"pointer"}} className={styles["transition-icon"]}>
+                        <img src={image} alt={alt} />
+                    </button>
+                </Link>
+            </li>
+    );
 }
 export default ViewCardComponent;

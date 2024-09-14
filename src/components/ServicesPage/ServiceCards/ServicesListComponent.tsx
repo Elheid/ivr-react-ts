@@ -11,7 +11,16 @@ const ListComponent = () => {
             <CatalogCard
                 catalogId="2"
                 childrenCount={6}
-                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/2.mp4"
+                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/21.mp4"
+                iconSrc="https://storage.yandexcloud.net/akhidov-ivr/icon2.svg"
+                title="Консультация по регистрационному учету"
+                size={size}
+            />
+
+            <CatalogCard
+                catalogId="2"
+                childrenCount={6}
+                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/20.mp4"
                 iconSrc="https://storage.yandexcloud.net/akhidov-ivr/icon2.svg"
                 title="Консультация по регистрационному учету"
                 size={size}
@@ -29,16 +38,7 @@ const ListComponent = () => {
             <CatalogCard
                 catalogId="2"
                 childrenCount={6}
-                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/2.mp4"
-                iconSrc="https://storage.yandexcloud.net/akhidov-ivr/icon2.svg"
-                title="Консультация по регистрационному учету"
-                size={size}
-            />
-
-            <CatalogCard
-                catalogId="2"
-                childrenCount={6}
-                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/2.mp4"
+                gifSrc="https://storage.yandexcloud.net/akhidov-ivr/3.mp4"
                 iconSrc="https://storage.yandexcloud.net/akhidov-ivr/icon2.svg"
                 title="Консультация по регистрационному учету"
                 size={size}
