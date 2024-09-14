@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import arrowSVG from "../../../img/arrow.svg";
 import arrowLargeSVG from "../../../img/arrowLarge.svg";
@@ -8,7 +8,7 @@ import { Card, Grid2 } from '@mui/material';
 interface ClearCardIconComponentProps {
     iconSrc: string;
 }
-const loadSVG = async(svgUrl:string) =>{
+const loadSVG = async (svgUrl: string) => {
     try {
         const response = await fetch(svgUrl);
         const svgText = await response.text();
@@ -16,7 +16,7 @@ const loadSVG = async(svgUrl:string) =>{
         // Parse the SVG using svgo
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-    
+
 
         const fillElements = svgDoc.querySelectorAll('[fill]');
         fillElements.forEach((el) => {
@@ -39,13 +39,13 @@ const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
     const [icon, setIcon] = useState(iconSrc);
 
     useEffect(() => {
-    const fetchIcon = async () => {
-    const iconUrl = await loadSVG(iconSrc);
-        if (iconUrl) {
-            setIcon(iconUrl); 
+        const fetchIcon = async () => {
+            const iconUrl = await loadSVG(iconSrc);
+            if (iconUrl) {
+                setIcon(iconUrl);
+            }
         }
-    }
-    fetchIcon();
+        fetchIcon();
     }, [])
     return (
         <div className="icon-container">
@@ -74,14 +74,62 @@ const ClearCardHeader = ({ title, childrenCount }: ClearCardHeaderProps) => {
 ///
 
 ///Gestural card components 
+
+
+// Интерфейс для описания ошибки
+interface VideoError {
+    message: string;
+}
+
+// Настраиваемый хук для управления видеоплеером
+const useVideoHandleError = (videoUrl: string)=>{
+    const [error, setError] = useState<VideoError | null>(null); // Состояние ошибки
+    const videoRef = useRef<HTMLVideoElement>(null); // Ссылка на элемент видео
+    let retryCount = 0; // Счетчик попыток
+    const maxRetries = 3; // Максимальное количество попыток
+
+    // Эффект для обработки ошибки загрузки видео
+    useEffect(() => {
+        const handleError = (event: ErrorEvent) => {
+            const error = event.error as VideoError;
+            console.log(error)
+            if (error.message.includes('net::ERR_CACHE_OPERATION_NOT_SUPPORTED') && retryCount < maxRetries) {
+                retryCount++;
+                setTimeout(() => {
+                    videoRef.current!.src = videoUrl;
+                    videoRef.current!.load();
+                }, 1000 * retryCount); // Задержка между попытками
+            } else {
+                setError(error);
+            }
+        };
+
+        const videoElement = videoRef.current;
+        if (videoElement) {
+            videoElement.addEventListener('error', handleError);
+        }
+
+        // Очистка обработчика при размонтировании компонента
+        return () => {
+            if (videoElement) {
+                videoElement.removeEventListener('error', handleError);
+            }
+        };
+    }, [videoUrl]);
+
+    return { error, videoRef };
+}
+
 interface GesturalVideoComponentProps {
     gifSrc: string;
 }
 
 const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
+    const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
     return (
         <div className="video-overlay">
-            <video className="gif"
+            {error && <p>Ошибка загрузки видео: {error.message}</p>} 
+            <video ref={videoRef} className="gif"
                 src={gifSrc}
                 playsInline={true}
                 loop={true}

@@ -57,15 +57,6 @@ const ServicesListComponent = () => {
             }}
         >
             <ListComponent />
-            {/*<ul className={"list-of-cards catalogs-list"}>
-                <CatalogCard
-                    catalogId="2"
-                    childrenCount={6}
-                    gifSrc="https://storage.yandexcloud.net/akhidov-ivr/2.mp4"
-                    iconSrc="https://storage.yandexcloud.net/akhidov-ivr/icon2.svg"
-                    title="Консультация по регистрационному учету"
-                />
-            </ul>*/}
         </Container>
     );
 };
