@@ -1,4 +1,4 @@
-import arrowLargeSVG from "../../../../img/arrowLarge.svg";
+import arrowLargeSVG from "../../../../assets/img/arrowLarge.svg"
 ///Gestural card components 
 
 // Интерфейс для описания ошибки

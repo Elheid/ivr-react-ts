@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import arrowSVG from "../../../../img/arrow.svg";
+import arrowSVG from "../../../../assets/img/arrow.svg";
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -53,7 +53,7 @@ const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
 }
 
 interface ClearCardHeaderProps {
-    childrenCount: number;
+    childrenCount?: number;
     title: string;
 }
 
@@ -63,7 +63,7 @@ const ClearCardHeader = ({ title, childrenCount }: ClearCardHeaderProps) => {
         <div className="card-header">
             <h3 className="card-title card-description">{title}</h3>
             <div className="card-footer">
-                <p className="count-services">услуг: {childrenCount}</p>
+                {childrenCount && <p className="count-services">услуг: {childrenCount}</p>}
                 <img className="arrow-img" src={arrowSVG} alt="Arrow" />
             </div>
         </div>

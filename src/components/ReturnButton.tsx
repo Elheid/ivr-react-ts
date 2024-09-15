@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 
-import arrowLeftSVG from "../img/arrow-left-white.svg";
+import arrowLeftSVG from "../assets/img/arrow-left-white.svg";
 import { Button } from "@mui/material";
 
 
@@ -32,7 +32,8 @@ const LinkReturnButtonComponent = ()=>{
         className="return-button"
         sx={{ 
             textTransform: 'none',
-            mr:"1.5vw;"
+            mr:"1.5vw;",
+            fontWeight: "500",
         }}
         >
             <ReturnButtonComponent destination={destination}/>    

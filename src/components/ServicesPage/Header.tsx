@@ -1,5 +1,5 @@
 import BreadCrumpsComponent from "./BreadCrumps";
-import SearcherComponent from "./SearcherComponent";
+import SearcherComponent from "./Sercher/SearcherComponent";
 
 const HeaderComponent = () => {
     return (

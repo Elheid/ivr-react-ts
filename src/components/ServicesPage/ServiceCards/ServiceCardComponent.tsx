@@ -2,54 +2,95 @@
 import { Button, Card, Grid2 } from '@mui/material';
 import { ClearCardHeader, ClearCardIconComponent } from "./CardParts/ClearCardParts";
 import { GesturalCardSubstrateComponent, GesturalVideoComponent } from './CardParts/GesturalParts';
-
-
-////
-
-interface CatalogCardComponentProps {
-    catalogId: string;
-    childrenCount: number;
-    gifSrc: string;
-    iconSrc: string;
+import { CardTemplate, Category, Service } from '../../../interfaces/CardsInterfaces';
+interface CardButtonTitleProps {
     title: string;
-    size: number;
+    itemsInCategoryIds? : number[];
 }
 
 
+const CardButtonTitle = ({title, itemsInCategoryIds}:CardButtonTitleProps)=>{
+    const hasItems = itemsInCategoryIds && itemsInCategoryIds.length > 0;
+    let header: React.ReactNode;
+    if (hasItems) header = <ClearCardHeader title={title} childrenCount={itemsInCategoryIds.length} />;
+    else header = <ClearCardHeader title={title} />;
 
-const CatalogCardComponent: React.FC<CatalogCardComponentProps> = ({ catalogId, childrenCount, gifSrc, title, iconSrc, size = 6 }) => {
+    return (
+        localStorage.getItem("language") === "clear-language"
+            ? (header)
+            : (<GesturalCardSubstrateComponent title={title} />)
+    );
+}
+
+interface CardButtonMediaProps {
+    gifPreview: string;
+    mainIconLink : string;
+}
+
+const CardButtonMedia = ({gifPreview, mainIconLink}:CardButtonMediaProps)=>{
+    return (
+        localStorage.getItem("language") === "clear-language"
+            ? (<ClearCardIconComponent iconSrc={mainIconLink} />)
+            : (<GesturalVideoComponent gifSrc={gifPreview} />)
+    );
+}
+
+
+interface CardButtonProps extends CardTemplate {
+    itemsInCategoryIds?: number[];
+}
+
+
+const CardButtonComponent = ({gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
+    const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
+    return (
+        <div className={`card-content ${cardType}`}>
+        <Button
+        sx={{
+            textTransform: 'none',
+            fontWeight: "400",
+            fontSize: "0.875rem",
+            lineHeight: "normal",
+            display: "inline-block"
+        }}
+        data-gifsrc={gifPreview}
+        data-iconsrc={mainIconLink}
+        className='card'
+    >
+        <CardButtonMedia mainIconLink={mainIconLink}  gifPreview={gifPreview}/>
+        <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds}/>
+    </Button>
+    </div>
+    )
+}
+
+const ServiceCardComponent: React.FC<Service> = ({ id, categoryId, gifPreview, title, mainIconLink, size = 6 }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     return (
         <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px" }}>
-            <Card className={`catalog-card`} catalog-id={catalogId} children-count={childrenCount.toString()} sx={{ borderRadius: "20px" }}>
-                <div className={`card-content ${cardType}`}>
-                    <Button 
-                        sx={{ 
-                            textTransform: 'none',
-                            fontWeight: "400",
-                            fontSize: "0.875rem",
-                            lineHeight: "normal",
-                            display:"inline-block"
-                        }}
-                        data-gifsrc={gifSrc}
-                        data-iconsrc={iconSrc}
-                        className='card'
-                    >
-                        {localStorage.getItem("language") === "clear-language"
-                            ? (<ClearCardIconComponent iconSrc={iconSrc} />)
-                            : (<GesturalVideoComponent gifSrc={gifSrc} />)}
-
-                        {localStorage.getItem("language") === "clear-language"
-                            ? (<ClearCardHeader title={title} childrenCount={childrenCount} />)
-                            : (<GesturalCardSubstrateComponent title={title} />)}
-                    </Button>
-                </div>
+            <Card className={`catalog-card`} service-id={id} parent-catalog-id={categoryId} sx={{ borderRadius: "20px", backgroundColor: "unset" }}>
+                    <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={[]}>
+                    </CardButtonComponent>
             </Card>
         </Grid2>
     );
 };
 
-export default CatalogCardComponent;
+
+
+const CatalogCardComponent: React.FC<Category> = ({ id, itemsInCategoryIds, gifPreview, title, mainIconLink, size = 6 }) => {
+    const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
+    return (
+        <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px", gridAutoRows: '1fr' }}>
+            <Card className={`catalog-card`} catalog-id={id} children-count={itemsInCategoryIds.length.toString()} sx={{ borderRadius: "20px", backgroundColor: "unset" }}>
+                    <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds}>
+                    </CardButtonComponent>
+            </Card>
+        </Grid2>
+    );
+};
+
+export { CatalogCardComponent, ServiceCardComponent };
 
 
 

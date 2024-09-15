@@ -129,13 +129,18 @@ button.return-button a{
   padding-left: 25px;
   font-family: "Roboto", serif;
   font-size: 1.2vw;
+
+  padding-top: 0;
+    padding-bottom: 0;
+
 }
 
 
 .main-header{
   margin: 0 auto;
   padding: 0;
-  max-width: 80vw;
+  /*min-width: 80vw;*/
+  max-width: 1500px;
 }
 
 .header-list{
@@ -210,7 +215,7 @@ img.arrow{
 button.edit-element-button {
   pointer-events: auto;
   position: absolute;
-  font-size: 30px;
+  font-size: 1.5vw;
   color: black;
   background: white;
   border-radius: 50px;
@@ -336,7 +341,7 @@ video.gif {
 .clear-card .card-title {
   margin-top: 20px;
   color: #FFFFFF;
-  font-size: 30px;
+  font-size: 1.5vw;
   font-weight: 400;
   text-align: left;
   padding-right: 30px;
@@ -368,7 +373,7 @@ video.gif {
 .clear-card .count-services {
   color: #FFFFFF;
   margin-bottom: 0;
-  font-size: 20px;
+  font-size: 1vw;
 }
 
 /*Gestural*/
@@ -401,7 +406,7 @@ video.gif{
 .substrate .card-title {
   text-align: start;
   color: #FFFFFF;
-  font-size: 30px;
+  font-size: 1.5vw;
   margin: 15px 5px;
   font-weight: 400;
   margin-left: 15px;
@@ -425,4 +430,13 @@ video.gif{
   margin-left: auto;
   min-width: 4vw;
   max-width: 4vw;
+}
+
+
+.clear-card img {
+  display: block;
+}
+.icon-container img {
+  width: 100%;
+  height: auto;
 }

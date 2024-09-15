@@ -1,4 +1,4 @@
-import clearIndexPNG from '../img/clearIndex.png'
+import clearIndexPNG from '../assets/img/clearIndex.png'
 class ClearLanguage {
     static _indexImg = clearIndexPNG;
     get indexImg(): string {

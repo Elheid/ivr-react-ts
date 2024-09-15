@@ -1,4 +1,4 @@
-import breadMiniSVG from "../../img/breadMini.svg";
+import breadMiniSVG from "../../assets/img/breadMini.svg"
 
 interface BreadCrumpComponentProps {
     class: string;

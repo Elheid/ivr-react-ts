@@ -1,4 +1,4 @@
-import gesturalIndexPNG from '../img/gesturalIndex.png'
+import gesturalIndexPNG from '../assets/img/gesturalIndex.png' 
 class GesturalLanguage {
    static _indexImg = gesturalIndexPNG;
 
