@@ -67,7 +67,13 @@ button{
 video.gif {
   width: 100%;
 }
-
+.MuiBreadcrumbs-ol{
+  width: 100%;
+}
+.MuiBreadcrumbs-li:last-child {
+  flex-grow: 1; /* Растягивает элемент */
+  text-align: center; /* Центрирование текста (опционально) */
+}
 
 
 /*Index/Main Page*/
@@ -162,12 +168,12 @@ img.arrow{
   height: 3vw;
   width: auto;
 }
-
+/*
 .breadcrumb-item{
   align-items: center;
   display: flex;
 }
-
+*/
 .breadcrumb-item {
   border-radius: 20px;
   flex: 1 1 auto; /* Определите гибкость элементов */

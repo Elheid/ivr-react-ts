@@ -1,4 +1,5 @@
 import { API_BACK_URL } from "../assets/data/constants";
+import { Category, Service } from "../interfaces/CardsInterfaces";
 const BASE_URL = API_BACK_URL;
 
 const Route = {
@@ -81,7 +82,13 @@ const getService= (id : number) => loadByValue(Route.SERVICES, id, ErrorText.GET
 const getServiceById= (id : number) => loadByValue(Route.GET_SERVICES, id, ErrorText.GET_DATA);
 const getInfoById= (id : number) => loadByValue(Route.ADDITIONS, id, ErrorText.GET_DATA);
 
+const getCategoryNameById= (id:number) => load(Route.CATEGORIES, ErrorText.GET_DATA).then(data => {
+  const res = data.content.filter((el : Category | Service)=> Number(el.id) === id);
+  const title = res[0].title;
+  return title;
+});
+
 const getServiceByTitle= (title : string) => loadByValue(Route.SEARCH_SERVICE_BY_TITTLE, title, ErrorText.GET_DATA);
 
 
-export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle}
+export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById}
