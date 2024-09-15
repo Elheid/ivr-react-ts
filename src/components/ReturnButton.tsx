@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import arrowLeftSVG from "../assets/img/arrow-left-white.svg";
 import { Button } from "@mui/material";
@@ -8,35 +8,43 @@ interface ReturnButtonComponentProps {
     destination: string;
 }
 
-const ReturnButtonComponent = ({destination}:ReturnButtonComponentProps)=>{
+const ReturnButtonComponent = (/*{destination}:ReturnButtonComponentProps*/) => {
     const arrowImg = arrowLeftSVG;
-    return(
-        <Link to={destination}>
-        <img src={arrowImg} alt="Кнопка назад" />
-        <span className="button-title back-title">Назад</span>
-        </Link>
+    return (
+        <div>
+            <img src={arrowImg} alt="Кнопка назад" />
+            <span className="button-title back-title">Назад</span>
+        </div>
     );
 }
 
 
 
-const LinkReturnButtonComponent = ()=>{
+const LinkReturnButtonComponent = () => {
+    const navigate = useNavigate(); // Используем useNavigate для программной навигации
+    //const location = useLocation(); // Получаем текущий путь
+
     let destination = "/";
     const location = useLocation();
-    if (location.pathname === '/services'){
+    if (location.pathname === '/services') {
         if (localStorage.getItem("language") === "gestural-language") destination = "/instruction"
     }
+    const backClick = () => {
+        if (window.location.search === '') navigate(destination)
+        else navigate(-1);
+    }
     return (
-        <Button 
-        variant="contained" 
-        className="return-button"
-        sx={{ 
-            textTransform: 'none',
-            mr:"1.5vw;",
-            fontWeight: "500",
-        }}
+        <Button
+            variant="contained"
+            className="return-button"
+            sx={{
+                textTransform: 'none',
+                mr: "1.5vw;",
+                fontWeight: "500",
+            }}
+            onClick={backClick}
         >
-            <ReturnButtonComponent destination={destination}/>    
+            <ReturnButtonComponent /*destination={destination}*/ />
         </Button>
     );
 }

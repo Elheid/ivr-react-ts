@@ -18,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPageComponent language={language} setLanguage={setLanguage}  />} />
           <Route path="/instruction" element={<InstructionComponent />} />
+          <Route path="/services/:id" element={<ServicesComponent />} />
           <Route path="/services" element={<ServicesComponent />} /> 
         </Routes>
       </div>

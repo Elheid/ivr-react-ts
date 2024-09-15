@@ -1,11 +1,11 @@
 import { Container, Grid2 } from '@mui/material';
 import {CatalogCardComponent, ServiceCardComponent} from './ServiceCardComponent'; // Импорт компонента
-import { getCategories } from '../../../api/backendApi';
-import { useEffect, useState } from 'react';
+import { getCategories, getServiceById } from '../../../api/backendApi';
+import { useEffect } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
-import Category from '../../../interfaces/CardsInterfaces';
-import { checkUndefined } from '../../../utill';
 import { useCards } from '../../../contextProviders/CardsProvider';
+import { useParams } from 'react-router-dom';
+import { checkUndefined } from '../../../utill';
 
 
 const ListComponent = () => {
@@ -15,15 +15,36 @@ const ListComponent = () => {
 
     //const [categories, setCategories] = useState<Category[]>([]);
 
-    const { categories, setCategories, services } = useCards();
+    const { categories, setCategories, services, setServices } = useCards();
     const { size } = useCardSize();
 
+    const { categoryId } = useParams<{ categoryId?: string }>();///Поч без этого не работает???
+
+    const queryParams = new URLSearchParams(location.search);
+    const categoryIdFromUrl = queryParams.get('categoryId');
+    const idNumber = checkUndefined(categoryIdFromUrl) || categoryIdFromUrl === null? -1 : Number(categoryIdFromUrl);
+
+
+
     useEffect(() => {
-        getCategories().then((data) => {
-            const content = data.content;
-            setCategories(content);
-        });
-    }, []);
+        if (idNumber !== -1){
+            getServiceById(idNumber).then((data) => {
+                const content = data.content;
+                setServices(content);
+                setCategories([]);
+            });
+        }
+        else {
+            // Если id отсутствует, загружаем категории и очищаем сервисы
+            setCategories([]);
+            setServices([]);
+            getCategories().then((data) => {
+                const content = data.content;
+                setCategories(content);
+            });
+        }
+
+    },  [ location.search])
 
     return (
         <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
@@ -35,6 +56,7 @@ const ListComponent = () => {
                     gifPreview={category.gifPreview} // Assuming 'gifSrc' exists
                     mainIconLink={category.mainIconLink} // Assuming 'iconSrc' exists
                     title={category.title} // Assuming 'title' exists
+
                     size={size} // You can use 'normalSize' or 'bigSize' as needed
                 />
             ))}

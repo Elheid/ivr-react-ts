@@ -114,7 +114,7 @@ button.return-button, button.back-button {
 
   /*margin-right: 2vw;*/
 }
-button.return-button a{
+button.return-button a, button.return-button div{
   display: flex;
   align-items: center;
 }

@@ -3,6 +3,9 @@ import { Button, Card, Grid2 } from '@mui/material';
 import { ClearCardHeader, ClearCardIconComponent } from "./CardParts/ClearCardParts";
 import { GesturalCardSubstrateComponent, GesturalVideoComponent } from './CardParts/GesturalParts';
 import { CardTemplate, Category, Service } from '../../../interfaces/CardsInterfaces';
+
+import { useLocation, useNavigate  } from 'react-router-dom';
+
 interface CardButtonTitleProps {
     title: string;
     itemsInCategoryIds? : number[];
@@ -41,8 +44,19 @@ interface CardButtonProps extends CardTemplate {
 }
 
 
-const CardButtonComponent = ({gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
+const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
+    const navigate = useNavigate(); // Используем useNavigate для программной навигации
+    const location = useLocation(); // Получаем текущий путь
+
+    const handleClick = () => {
+        // Перенаправляем пользователя на страницу с использованием categoryId
+        const currentPath = location.pathname;
+        const newPath = `${currentPath}?categoryId=${id}`;
+        navigate(newPath);
+        // Здесь можно добавить дополнительную логику, если требуется
+    };
+
     return (
         <div className={`card-content ${cardType}`}>
         <Button
@@ -56,6 +70,7 @@ const CardButtonComponent = ({gifPreview, mainIconLink, title, itemsInCategoryId
         data-gifsrc={gifPreview}
         data-iconsrc={mainIconLink}
         className='card'
+        onClick={handleClick}
     >
         <CardButtonMedia mainIconLink={mainIconLink}  gifPreview={gifPreview}/>
         <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds}/>
@@ -64,7 +79,9 @@ const CardButtonComponent = ({gifPreview, mainIconLink, title, itemsInCategoryId
     )
 }
 
-const ServiceCardComponent: React.FC<Service> = ({ id, categoryId, gifPreview, title, mainIconLink, size = 6 }) => {
+type ServiceCard = Omit<Service, "additionIds"|"description"|"gifLink"|"iconLinks">
+
+const ServiceCardComponent: React.FC<ServiceCard> = ({ id, categoryId, gifPreview, title, mainIconLink, size = 6 }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     return (
         <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px" }}>
@@ -77,8 +94,9 @@ const ServiceCardComponent: React.FC<Service> = ({ id, categoryId, gifPreview, t
 };
 
 
+type CategoryCard = Omit<Category, "childrenCategoryIds"|"parentCategoryId">
 
-const CatalogCardComponent: React.FC<Category> = ({ id, itemsInCategoryIds, gifPreview, title, mainIconLink, size = 6 }) => {
+const CatalogCardComponent: React.FC<CategoryCard> = ({ id, itemsInCategoryIds, gifPreview, title, mainIconLink, size = 6 }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     return (
         <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px", gridAutoRows: '1fr' }}>

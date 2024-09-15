@@ -61,7 +61,8 @@ const loadByValue = (route : string, value : number | string, errorText :string,
         throw new Error();
       }
       //return response.json();
-      return response.text().then(text => {
+      let text = response.text();
+      return text.then(text => {
         try {
           return JSON.parse(text);
         } catch (e) {
@@ -77,7 +78,7 @@ const loadByValue = (route : string, value : number | string, errorText :string,
 
 const getCategories= () => load(Route.CATEGORIES, ErrorText.GET_DATA);
 const getService= (id : number) => loadByValue(Route.SERVICES, id, ErrorText.GET_DATA);
-const getServiceById= (id : number) => loadByValue(Route.SERVICES, id, ErrorText.GET_DATA);
+const getServiceById= (id : number) => loadByValue(Route.GET_SERVICES, id, ErrorText.GET_DATA);
 const getInfoById= (id : number) => loadByValue(Route.ADDITIONS, id, ErrorText.GET_DATA);
 
 const getServiceByTitle= (title : string) => loadByValue(Route.SEARCH_SERVICE_BY_TITTLE, title, ErrorText.GET_DATA);
