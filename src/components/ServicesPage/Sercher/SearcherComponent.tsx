@@ -8,30 +8,41 @@ import ImageButton from "../../ImageButtonComponent";
 import { useState } from "react";
 import { useCards } from "../../../contextProviders/CardsProvider";
 import { getServiceByTitle } from "../../../api/backendApi";
+import { navigateHandleClick } from "../../../utill";
+import { useNavigate } from "react-router-dom";
 
 
 const SearhComponent = ()=>{
     const [inputValue, setInputValue] = useState('');
     const { setCategories ,setServices } = useCards();
+    const navigate = useNavigate();
     const searchImg = searchSVG//`${process.env.PUBLIC_URL}img/search.svg`;
 
-    const handleSearch = async ( query: string) => {
+    const searchAndShowResults = (query: string)=>{
         if (query === "") {
             return;
         }
         try {
-            await getServiceByTitle(query)
+            navigateHandleClick(`query=${query}`, navigate);
+            /*getServiceByTitle(query)
             .then((data) => {
-                setServices(data.content);
+                navigateHandleClick(`query=${query}`, navigate);
                 setCategories([]);
+                console.log("Категории очищены")
+                console.log("Servieces", data.content)
+                setServices(data.content);
+                console.log("Услуги пришли и вставлены: ", data.content)
             })
             .catch((err) => {
                 throw new Error(err);
-            });
+            });*/
         } catch (error) {
             console.log(error);
             alert("Проблема с работой поиска :(")
         }
+    }
+    const handleSearch = async ( query: string) => {
+        await searchAndShowResults(query);
     };
 
     return(

@@ -4,7 +4,8 @@ import { ClearCardHeader, ClearCardIconComponent } from "./CardParts/ClearCardPa
 import { GesturalCardSubstrateComponent, GesturalVideoComponent } from './CardParts/GesturalParts';
 import { CardTemplate, Category, Service } from '../../../interfaces/CardsInterfaces';
 
-import { useLocation, useNavigate  } from 'react-router-dom';
+import { useNavigate  } from 'react-router-dom';
+import { navigateHandleClick } from '../../../utill';
 
 interface CardButtonTitleProps {
     title: string;
@@ -43,19 +44,11 @@ interface CardButtonProps extends CardTemplate {
     itemsInCategoryIds?: number[];
 }
 
-
 const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     const navigate = useNavigate(); // Используем useNavigate для программной навигации
-    const location = useLocation(); // Получаем текущий путь
+    //const location = useLocation(); // Получаем текущий путь
 
-    const handleClick = () => {
-        // Перенаправляем пользователя на страницу с использованием categoryId
-        const currentPath = location.pathname;
-        const newPath = `${currentPath}?categoryId=${id}`;
-        navigate(newPath);
-        // Здесь можно добавить дополнительную логику, если требуется
-    };
 
     return (
         <div className={`card-content ${cardType}`}>
@@ -70,7 +63,7 @@ const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCatego
         data-gifsrc={gifPreview}
         data-iconsrc={mainIconLink}
         className='card'
-        onClick={handleClick}
+        onClick={()=> navigateHandleClick(`categoryId=${id}`, navigate)}
     >
         <CardButtonMedia mainIconLink={mainIconLink}  gifPreview={gifPreview}/>
         <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds}/>
@@ -79,14 +72,32 @@ const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCatego
     )
 }
 
+const gridCardStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+
+    borderRadius: "20px",
+    gridAutoRows: '1fr',
+    height: "inherit"
+};
+
+
+const cardStyle = {
+    borderRadius: "20px", 
+    backgroundColor: "unset",
+    height:"100%"
+};
+
+
+
 type ServiceCard = Omit<Service, "additionIds"|"description"|"gifLink"|"iconLinks">
 
 const ServiceCardComponent: React.FC<ServiceCard> = ({ id, categoryId, gifPreview, title, mainIconLink, size = 6 }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     return (
-        <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px" }}>
-            <Card className={`catalog-card`} service-id={id} parent-catalog-id={categoryId} sx={{ borderRadius: "20px", backgroundColor: "unset" }}>
-                    <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={[]}>
+        <Grid2 size={size} className={`${cardType}`} sx={gridCardStyle}>
+            <Card className={`catalog-card`} service-id={id} parent-catalog-id={categoryId} sx={cardStyle}>
+                    <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title}>
                     </CardButtonComponent>
             </Card>
         </Grid2>
@@ -99,8 +110,8 @@ type CategoryCard = Omit<Category, "childrenCategoryIds"|"parentCategoryId">
 const CatalogCardComponent: React.FC<CategoryCard> = ({ id, itemsInCategoryIds, gifPreview, title, mainIconLink, size = 6 }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     return (
-        <Grid2 size={size} className={`${cardType}`} sx={{ borderRadius: "20px", gridAutoRows: '1fr' }}>
-            <Card className={`catalog-card`} catalog-id={id} children-count={itemsInCategoryIds.length.toString()} sx={{ borderRadius: "20px", backgroundColor: "unset" }}>
+        <Grid2 size={size} className={`${cardType}`} sx={gridCardStyle}>
+            <Card className={`catalog-card`} catalog-id={id} children-count={itemsInCategoryIds.length.toString()} sx={cardStyle}>
                     <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds}>
                     </CardButtonComponent>
             </Card>

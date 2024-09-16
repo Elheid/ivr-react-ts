@@ -18,7 +18,7 @@ const BreadCrumpComponent = (props : BreadCrumpComponentProps) => {
         </div>
     );
 }
-
+//Разобраться как это работает
 const BreadCrumpsComponent = () => {
     const arrowClasses = `arrow`;
     const arrowImg = breadMiniSVG;
@@ -51,16 +51,15 @@ const BreadCrumpsComponent = () => {
             // Обработка параметров запроса
             const categoryId = searchParams.get("categoryId");
             const subCategoryId = searchParams.get("sub-categoryId");
+            const query = searchParams.get("query");
 
-            if (categoryId || subCategoryId) {
+            if (categoryId || subCategoryId || query) {
                 let content: string = 'Ошибка';
 
-                if (categoryId) {
-                    // Получаем название категории асинхронно
-                    content = await getCategoryNameById(Number(categoryId));
-                } else if (subCategoryId) {
-                    content = `Подкатегория ${subCategoryId}`;
-                }
+                if (categoryId) content = await getCategoryNameById(Number(categoryId));
+                if (subCategoryId) content = `Подкатегория ${subCategoryId}`;
+                if (query) content = `Результаты поиска`;
+                
 
                 newBreadcrumbs.push({
                     destination: `${location.pathname}?${searchParams.toString()}`,

@@ -1,6 +1,6 @@
 import { Container, Grid2 } from '@mui/material';
 import {CatalogCardComponent, ServiceCardComponent} from './ServiceCardComponent'; // Импорт компонента
-import { getCategories, getServiceById } from '../../../api/backendApi';
+import { getCategories, getServiceById, getServiceByTitle } from '../../../api/backendApi';
 import { useEffect } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
@@ -22,20 +22,32 @@ const ListComponent = () => {
 
     const queryParams = new URLSearchParams(location.search);
     const categoryIdFromUrl = queryParams.get('categoryId');
-    const idNumber = checkUndefined(categoryIdFromUrl) || categoryIdFromUrl === null? -1 : Number(categoryIdFromUrl);
+    const subCaregoryFromUrl = queryParams.get('sub-categoryId');
+    const quetyFromUrl = queryParams.get('query');
 
+    const idNumberCategory = checkUndefined(categoryIdFromUrl) || categoryIdFromUrl === null? -1 : Number(categoryIdFromUrl);
+    const idNumberSubCategory = checkUndefined(subCaregoryFromUrl) || subCaregoryFromUrl === null? -1 : Number(subCaregoryFromUrl);
+    const query = checkUndefined(quetyFromUrl) || quetyFromUrl === null? '' : quetyFromUrl;
 
 
     useEffect(() => {
-        if (idNumber !== -1){
-            getServiceById(idNumber).then((data) => {
+        if (idNumberCategory !== -1){
+            getServiceById(idNumberCategory).then((data) => {
                 const content = data.content;
                 setServices(content);
                 setCategories([]);
             });
         }
-        else {
-            // Если id отсутствует, загружаем категории и очищаем сервисы
+        if (idNumberSubCategory) console.log("Not yet");
+        if (query) {
+            getServiceByTitle(query)
+            .then((data) => {
+                setCategories([]);
+                setServices(data.content);
+            })
+        }
+        if(idNumberCategory === -1 && idNumberSubCategory === -1 && query === ""){
+            // Если все param отсутствует, загружаем категории и очищаем сервисы
             setCategories([]);
             setServices([]);
             getCategories().then((data) => {
