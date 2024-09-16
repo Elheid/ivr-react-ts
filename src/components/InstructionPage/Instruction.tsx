@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import imgArrowSVG from "../../img/arrow-left-white.svg";
+import imgArrowSVG from "../../assets/img/arrow-left-white.svg"
 
-import recordSVG from "../../img/record.svg";
-import playSimpleSVG from "../../img/playSimple.svg";
+import recordSVG from "../../assets/img/record.svg";
+import playSimpleSVG from "../../assets/img/playSimple.svg";
 
 import styles from './instructionPage.module.css'
 

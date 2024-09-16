@@ -1,0 +1,54 @@
+.gestural-card .gestural-button-card {
+    width: 100%;
+    padding: 0;
+    height: auto;
+    border: 2px solid #895b3e;
+    border-radius: 20px;
+    background: var(--main-buttons-bg-color);
+    box-shadow: 6px 4px 3px #0000001c;
+}
+
+.card-content button {
+    padding: 0;
+}
+
+.video-overlay {
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+video.gif {
+    border: 2px solid #623B2A;
+    border-radius: 20px;
+}
+
+
+
+.substrate .card-title {
+    text-align: start;
+    color: #FFFFFF;
+    font-size: 1.5vw;
+    margin: 15px 5px;
+    font-weight: 400;
+    margin-left: 15px;
+    margin-bottom: 0;
+    text-wrap: balance;
+    margin-top: 0;
+}
+
+.substrate {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    padding-bottom: 20px;
+}
+
+.substrate img {
+    padding: 20px;
+    width: 4vw;
+    margin-left: auto;
+    min-width: 4vw;
+    max-width: 4vw;
+}

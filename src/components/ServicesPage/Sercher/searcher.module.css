@@ -5,6 +5,7 @@
     /* align-items: center;*/
     align-items: flex-end;
     width: 100%;
+    height: fit-content;
 }
 
 section.search-and-buttons {
@@ -12,6 +13,7 @@ section.search-and-buttons {
     margin-top: 15px;
 
     width: 100%;
+    height: fit-content;
     max-width: 70vw;
     /*1200px;*/
     margin-left: auto;
@@ -55,7 +57,7 @@ button.search-button img {
     border-radius: 30px;
     border: 2px solid #00000066;
 
-    width: 70%;
+    width: 55%;
 }
 
 
@@ -72,18 +74,20 @@ button.showPopup {
     background-color: var(--main-buttons-bg-color);
     border-radius: 30px;
     /*margin: 0 10px;*/
+    padding: 7px;
 }
 
 button.showPopup img {
     /*margin: 6px 25px;
     margin: 10px 36px;*/
     /*margin: 0.6vw 1.6vw;*/
-    margin: 0.6vw 1.1vw;
+    /*margin: 0.6vw 1.1vw;*/
 
     width: 3vw;
     height: 2vw;
     /* width: 60px;
     height: 41px;*/
+    padding-right: 15px;
 }
 
 .view-buttons img {
@@ -96,7 +100,7 @@ button.showPopup img {
     /*max-width: 50vw;/*273px*/
     /*min-width: 25vw; добавил медиа запрос*/
     width: 100%;
-    height: 3vw;
+    /*height: 3vw;*/
     /*margin-right: 2vw;*/
 }
 

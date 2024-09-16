@@ -5,21 +5,24 @@ import './App.css'
 
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainPageComponent from './components/MainPage/Main.tsx'
+import MainPageComponent from './components/MainPage/MainPageComponent.tsx'
 import InstructionComponent from './components/InstructionPage/Instruction.tsx';
 import ServicesComponent from './components/ServicesPage/Services.tsx';
 import { useState } from 'react';
+import ServiceResultComponent from './components/ServiceResultPage/ServiceResultComponent.tsx';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
-
   return (
     <BrowserRouter>
       <div className={"App " +  language}>
         <Routes>
           <Route path="/" element={<MainPageComponent language={language} setLanguage={setLanguage}  />} />
           <Route path="/instruction" element={<InstructionComponent />} />
+          <Route path="/result" element={<ServiceResultComponent />} />
+          <Route path="/services/:categoryId" element={<ServicesComponent />} />
           <Route path="/services" element={<ServicesComponent />} /> 
+          {/*<Route path="/result?categotyId=:id" element={<ServicesComponent />} /> */}
         </Routes>
       </div>
     </BrowserRouter>

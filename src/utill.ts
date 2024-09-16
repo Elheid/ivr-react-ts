@@ -1,6 +1,20 @@
+import { NavigateFunction } from "react-router-dom";
+
 const checkUndefined = <T>(value: T): boolean => {
     return typeof value === 'undefined';
 }
+
+const navigateHandleClick = (withBaseUrl : boolean, paramState : string, navigate: NavigateFunction) => {
+    // Перенаправляем пользователя на страницу с использованием categoryId
+    const basePath = location.pathname //+ '?';
+    //const baseSearchPath = location.pathname + location.search;
+    const currentPath = withBaseUrl? basePath : "";
+    const newPath = `${currentPath}${paramState}`;
+    navigate(newPath);
+    // Здесь можно добавить дополнительную логику, если требуется
+};
+
+
 
 const idCreator = (): (() => number) => {
     let lastGeneratedId = 0;
@@ -43,4 +57,4 @@ const isAdmin = () => {
     return null;
 }
 
-export { checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator }
+export { checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick }
