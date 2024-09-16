@@ -6,15 +6,15 @@ import GesturalSearchComponent from "./GesturalSearchComponent";
 import ImageButton from "../../ImageButtonComponent";
 
 import { useState } from "react";
-import { useCards } from "../../../contextProviders/CardsProvider";
-import { getServiceByTitle } from "../../../api/backendApi";
+//import { useCards } from "../../../contextProviders/CardsProvider";
+//import { getServiceByTitle } from "../../../api/backendApi";
 import { navigateHandleClick } from "../../../utill";
 import { useNavigate } from "react-router-dom";
 
 
 const SearhComponent = ()=>{
     const [inputValue, setInputValue] = useState('');
-    const { setCategories ,setServices } = useCards();
+   // const { setCategories ,setServices } = useCards();
     const navigate = useNavigate();
     const searchImg = searchSVG//`${process.env.PUBLIC_URL}img/search.svg`;
 
@@ -23,7 +23,7 @@ const SearhComponent = ()=>{
             return;
         }
         try {
-            navigateHandleClick(`query=${query}`, navigate);
+            navigateHandleClick(true,`?query=${query}`, navigate);
             /*getServiceByTitle(query)
             .then((data) => {
                 navigateHandleClick(`query=${query}`, navigate);

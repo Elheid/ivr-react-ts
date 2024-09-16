@@ -7,6 +7,10 @@ import { CardTemplate, Category, Service } from '../../../interfaces/CardsInterf
 import { useNavigate  } from 'react-router-dom';
 import { navigateHandleClick } from '../../../utill';
 
+import clearStyles from "./clearCard.module.css"
+import gesturalStyles from './gesturalCard.module.css'
+
+
 interface CardButtonTitleProps {
     title: string;
     itemsInCategoryIds? : number[];
@@ -44,12 +48,9 @@ interface CardButtonProps extends CardTemplate {
     itemsInCategoryIds?: number[];
 }
 
-const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
-    const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
-    const navigate = useNavigate(); // Используем useNavigate для программной навигации
-    //const location = useLocation(); // Получаем текущий путь
-
-
+const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds} : CardButtonProps)=>{
+    const cardType = localStorage.getItem("language") === "clear-language" ?  clearStyles["clear-card"] : gesturalStyles["gestural-card"];
+    const cardButtonClass =  localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"]: gesturalStyles["gestural-button-card"];
     return (
         <div className={`card-content ${cardType}`}>
         <Button
@@ -62,8 +63,7 @@ const CardButtonComponent = ({id, gifPreview, mainIconLink, title, itemsInCatego
         }}
         data-gifsrc={gifPreview}
         data-iconsrc={mainIconLink}
-        className='card'
-        onClick={()=> navigateHandleClick(`categoryId=${id}`, navigate)}
+        className={cardButtonClass}
     >
         <CardButtonMedia mainIconLink={mainIconLink}  gifPreview={gifPreview}/>
         <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds}/>
@@ -93,10 +93,20 @@ const cardStyle = {
 type ServiceCard = Omit<Service, "additionIds"|"description"|"gifLink"|"iconLinks">
 
 const ServiceCardComponent: React.FC<ServiceCard> = ({ id, categoryId, gifPreview, title, mainIconLink, size = 6 }) => {
-    const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
+    const navigate = useNavigate(); // Используем useNavigate для программной навигации
+    const cardType = localStorage.getItem("language") === "clear-language" ?  clearStyles["clear-card"] : "";
     return (
         <Grid2 size={size} className={`${cardType}`} sx={gridCardStyle}>
-            <Card className={`catalog-card`} service-id={id} parent-catalog-id={categoryId} sx={cardStyle}>
+            <Card 
+            className={`catalog-card`} 
+            service-id={id} 
+            parent-catalog-id={categoryId} 
+            sx={cardStyle}
+            onClick={()=>{
+                navigateHandleClick(false ,`/result`, navigate)
+
+                }}///${id
+            >
                     <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title}>
                     </CardButtonComponent>
             </Card>
@@ -108,11 +118,26 @@ const ServiceCardComponent: React.FC<ServiceCard> = ({ id, categoryId, gifPrevie
 type CategoryCard = Omit<Category, "childrenCategoryIds"|"parentCategoryId">
 
 const CatalogCardComponent: React.FC<CategoryCard> = ({ id, itemsInCategoryIds, gifPreview, title, mainIconLink, size = 6 }) => {
-    const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
+
+    const navigate = useNavigate(); // Используем useNavigate для программной навигации
+    //const location = useLocation(); // Получаем текущий путь
+
+    const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : "";
     return (
-        <Grid2 size={size} className={`${cardType}`} sx={gridCardStyle}>
+        <Grid2 
+        size={size} 
+        className={`${cardType}`} 
+        sx={gridCardStyle}
+        onClick={()=> navigateHandleClick(true ,`/${id}`, navigate)}//`categoryId=${id}`
+        >
             <Card className={`catalog-card`} catalog-id={id} children-count={itemsInCategoryIds.length.toString()} sx={cardStyle}>
-                    <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds}>
+                    <CardButtonComponent 
+                    id={id} 
+                    gifPreview={gifPreview} 
+                    mainIconLink={mainIconLink} 
+                    title={title} 
+                    itemsInCategoryIds={itemsInCategoryIds}
+                    >
                     </CardButtonComponent>
             </Card>
         </Grid2>

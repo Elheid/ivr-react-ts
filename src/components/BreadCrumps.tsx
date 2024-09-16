@@ -1,8 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
-import breadMiniSVG from "../../assets/img/breadMini.svg"
+import { Link, useLocation, useParams } from "react-router-dom";
+import breadMiniSVG from "../assets/img/breadMini.svg"
 import { Breadcrumbs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getCategoryNameById } from "../../api/backendApi";
+import { getCategoryNameById } from "../api/backendApi";
 
 
 interface BreadCrumpComponentProps {
@@ -25,49 +25,63 @@ const BreadCrumpsComponent = () => {
 
         const [breadcrumbs, setBreadcrumbs] = useState<BreadCrumpComponentProps[]>([]);
         const location = useLocation();
+        const { categoryId } = useParams<{ categoryId?: string }>();
+        const categoryIdFromUrl = categoryId;
+
         
         useEffect(() => {
         const updateBreadcrumbs = async () => {
             const paths = location.pathname.split('/').filter(x => x); // Разделение пути по "/"
             const searchParams = new URLSearchParams(location.search);
             const newBreadcrumbs: BreadCrumpComponentProps[] = [];
-
+            const storageOfBreadCrumbs = localStorage.getItem("breadcrumbs");
+            if (paths.includes("result")) setBreadcrumbs(
+                JSON.parse(
+                    storageOfBreadCrumbs !== null 
+                    ? storageOfBreadCrumbs
+                    : "Error"))
+            else {
             // Добавляем главный элемент
             newBreadcrumbs.push({ destination: '/', content: 'Главное меню' });
 
             // Добавляем элементы для каждого сегмента пути
             let accumulatedPath = '';
-            paths.forEach((path) => {
+            for (const path of paths) {
                 accumulatedPath += `/${path}`;
                 const destination = accumulatedPath;
+
+                let title: string = "Error";
+                const categoryId = searchParams.get("categoryId") || categoryIdFromUrl;
+                const subCategoryId = searchParams.get("sub-categoryId");
+                if (categoryId || subCategoryId){
+                    if (categoryId) title = await getCategoryNameById(Number(categoryId));
+                    if (subCategoryId) title = `Подкатегория ${subCategoryId}`;
+                }
 
                 // Добавляем хлебные крошки для каждого сегмента
                 newBreadcrumbs.push({
                     destination,
-                    content: decodeURIComponent(path) === "services" ?'Выбор категорий': decodeURIComponent(path)
+                    content: decodeURIComponent(path) === "services" ?'Выбор категорий': title
                 });
-            });
+            };
 
             // Обработка параметров запроса
-            const categoryId = searchParams.get("categoryId");
-            const subCategoryId = searchParams.get("sub-categoryId");
             const query = searchParams.get("query");
 
-            if (categoryId || subCategoryId || query) {
+            if (query) {
                 let content: string = 'Ошибка';
 
-                if (categoryId) content = await getCategoryNameById(Number(categoryId));
-                if (subCategoryId) content = `Подкатегория ${subCategoryId}`;
                 if (query) content = `Результаты поиска`;
                 
 
                 newBreadcrumbs.push({
-                    destination: `${location.pathname}?${searchParams.toString()}`,
+                    destination: searchParams.size > 0 ? `${location.pathname}?${searchParams.toString()}` : `${location.pathname}`,
                     content,
                 });
             }
-
             setBreadcrumbs(newBreadcrumbs);
+            localStorage.setItem("breadcrumbs", JSON.stringify(newBreadcrumbs))
+        }
         };
 
         updateBreadcrumbs();

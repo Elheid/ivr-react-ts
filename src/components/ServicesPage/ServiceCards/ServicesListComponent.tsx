@@ -4,7 +4,7 @@ import { getCategories, getServiceById, getServiceByTitle } from '../../../api/b
 import { useEffect } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { checkUndefined } from '../../../utill';
 
 
@@ -18,12 +18,16 @@ const ListComponent = () => {
     const { categories, setCategories, services, setServices } = useCards();
     const { size } = useCardSize();
 
-    const { categoryId } = useParams<{ categoryId?: string }>();///Поч без этого не работает???
+    const [searchParams] = useSearchParams();
+    //const id = searchParams.get('categoryId'); 
 
-    const queryParams = new URLSearchParams(location.search);
-    const categoryIdFromUrl = queryParams.get('categoryId');
-    const subCaregoryFromUrl = queryParams.get('sub-categoryId');
-    const quetyFromUrl = queryParams.get('query');
+    const { categoryId } = useParams<{ categoryId?: string }>();
+
+
+    //const queryParams = new URLSearchParams(location.search);
+    const categoryIdFromUrl = categoryId//searchParams.get('categoryId'); 
+    const subCaregoryFromUrl = categoryId//searchParams.get('sub-categoryId');
+    const quetyFromUrl = searchParams.get('query');
 
     const idNumberCategory = checkUndefined(categoryIdFromUrl) || categoryIdFromUrl === null? -1 : Number(categoryIdFromUrl);
     const idNumberSubCategory = checkUndefined(subCaregoryFromUrl) || subCaregoryFromUrl === null? -1 : Number(subCaregoryFromUrl);
@@ -34,6 +38,7 @@ const ListComponent = () => {
         if (idNumberCategory !== -1){
             getServiceById(idNumberCategory).then((data) => {
                 const content = data.content;
+                setCategories([]);
                 setServices(content);
                 setCategories([]);
             });
@@ -44,6 +49,7 @@ const ListComponent = () => {
             .then((data) => {
                 setCategories([]);
                 setServices(data.content);
+                setCategories([]);
             })
         }
         if(idNumberCategory === -1 && idNumberSubCategory === -1 && query === ""){
@@ -56,7 +62,7 @@ const ListComponent = () => {
             });
         }
 
-    },  [ location.search])
+    },  [ location.search, categoryId])
 
     return (
         <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
@@ -68,7 +74,6 @@ const ListComponent = () => {
                     gifPreview={category.gifPreview} // Assuming 'gifSrc' exists
                     mainIconLink={category.mainIconLink} // Assuming 'iconSrc' exists
                     title={category.title} // Assuming 'title' exists
-
                     size={size} // You can use 'normalSize' or 'bigSize' as needed
                 />
             ))}

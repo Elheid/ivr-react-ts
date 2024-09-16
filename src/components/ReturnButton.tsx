@@ -23,15 +23,17 @@ const ReturnButtonComponent = (/*{destination}:ReturnButtonComponentProps*/) => 
 const LinkReturnButtonComponent = () => {
     const navigate = useNavigate(); // Используем useNavigate для программной навигации
     //const location = useLocation(); // Получаем текущий путь
-
+/*
     let destination = "/";
     const location = useLocation();
     if (location.pathname === '/services') {
         if (localStorage.getItem("language") === "gestural-language") destination = "/instruction"
-    }
+    }*/
     const backClick = () => {
-        if (window.location.search === '') navigate(destination)
-        else navigate(-1);
+        console.log(location);
+        //if (window.location.href.indexOf("services")>0 && window.location.search === '') navigate(destination)
+        //else 
+        navigate(-1);
     }
     return (
         <Button
