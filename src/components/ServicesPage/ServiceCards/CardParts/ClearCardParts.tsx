@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import arrowSVG from "../../../../assets/img/arrow.svg";
 
 import styles from "../clearCard.module.css"
+import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -34,25 +35,27 @@ const loadSVG = async (svgUrl: string) => {
     }
 }
 
-const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
-    //const getBlobIconUrl = loadSVG(iconSrc);
-    const [icon, setIcon] = useState(iconSrc);
+    const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
+        //const getBlobIconUrl = loadSVG(iconSrc);
+        const [icon, setIcon] = useState(iconSrc);
+        const { setIconLoaded } = useLoadContext();
 
-    useEffect(() => {
-        const fetchIcon = async () => {
-            const iconUrl = await loadSVG(iconSrc);
-            if (iconUrl) {
-                setIcon(iconUrl);
+        useEffect(() => {
+            const fetchIcon = async () => {
+                const iconUrl = await loadSVG(iconSrc);
+                if (iconUrl) {
+                    setIcon(iconUrl);
+                    setIconLoaded(true)
+                }
             }
-        }
-        fetchIcon();
-    }, [])
-    return (
-        <div className={styles["icon-container"]}>
-            <img src={icon} alt="Icon" />
-        </div>
-    );
-}
+            fetchIcon();
+        }, [])
+        return (
+            <div className={styles["icon-container"]}>
+                <img src={icon} alt="Icon" />
+            </div>
+        );
+    }
 
 interface ClearCardHeaderProps {
     childrenCount?: number;

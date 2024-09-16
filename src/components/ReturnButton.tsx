@@ -30,7 +30,6 @@ const LinkReturnButtonComponent = () => {
         if (localStorage.getItem("language") === "gestural-language") destination = "/instruction"
     }*/
     const backClick = () => {
-        console.log(location);
         //if (window.location.href.indexOf("services")>0 && window.location.search === '') navigate(destination)
         //else 
         navigate(-1);

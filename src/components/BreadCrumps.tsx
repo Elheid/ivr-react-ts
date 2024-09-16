@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import breadMiniSVG from "../assets/img/breadMini.svg"
 import { Breadcrumbs } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getCategoryNameById } from "../api/backendApi";
+import { getTitleById } from "../utill";
 
 
 interface BreadCrumpComponentProps {
@@ -54,7 +54,8 @@ const BreadCrumpsComponent = () => {
                 const categoryId = searchParams.get("categoryId") || categoryIdFromUrl;
                 const subCategoryId = searchParams.get("sub-categoryId");
                 if (categoryId || subCategoryId){
-                    if (categoryId) title = await getCategoryNameById(Number(categoryId));
+                    //console.log(getCategoriesTitles());
+                    if (categoryId) title = getTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
                     if (subCategoryId) title = `Подкатегория ${subCategoryId}`;
                 }
 

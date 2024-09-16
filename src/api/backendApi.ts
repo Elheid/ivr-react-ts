@@ -1,5 +1,6 @@
 import { API_BACK_URL } from "../assets/data/constants";
 import { Category, Service } from "../interfaces/CardsInterfaces";
+import { saveCategoriesTitles } from "../utill";
 const BASE_URL = API_BACK_URL;
 
 const Route = {
@@ -88,7 +89,12 @@ const getCategoryNameById= (id:number) => load(Route.CATEGORIES, ErrorText.GET_D
   return title;
 });
 
+const loadCategoriesTitles = () => {
+  getCategories().then((data) => {
+    saveCategoriesTitles(data.content);
+  });
+};
 const getServiceByTitle= (title : string) => loadByValue(Route.SEARCH_SERVICE_BY_TITTLE, title, ErrorText.GET_DATA);
 
 
-export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById}
+export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById, loadCategoriesTitles}
