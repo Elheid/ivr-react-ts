@@ -44,7 +44,7 @@ const loadSVG = async (svgUrl: string) => {
             const fetchIcon = async () => {
                 const iconUrl = await loadSVG(iconSrc);
                 if (iconUrl) {
-                    setIcon(iconUrl);
+                    await setIcon(iconUrl);
                     setIconLoaded(true)
                 }
             }

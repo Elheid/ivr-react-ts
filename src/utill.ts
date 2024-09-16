@@ -40,6 +40,12 @@ const getTitleById = (id : number) => {
 };
 
 
+const myFunctionWithDelay =(callback: () => void, delay: number)=> {
+    setTimeout(() => {
+      callback(); // Выполняем callback после задержки
+    }, delay);
+  }
+
 
 const idCreator = (): (() => number) => {
     let lastGeneratedId = 0;
@@ -83,5 +89,5 @@ const isAdmin = () => {
 }
 
 export { checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
-    saveCategoriesTitles, getCategoriesTitles, getTitleById,
+    saveCategoriesTitles, getCategoriesTitles, getTitleById, myFunctionWithDelay
  }

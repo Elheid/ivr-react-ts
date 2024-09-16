@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { checkUndefined, saveCategoriesTitles } from '../../../utill';
+import { checkUndefined, myFunctionWithDelay, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
 
 
@@ -35,7 +35,7 @@ const ListComponent = () => {
     const query = checkUndefined(quetyFromUrl) || quetyFromUrl === null ? '' : quetyFromUrl;
 
     useEffect(() => {
-
+        const skeletonsHideDelay = 1;
         setLoadingServices(false);
         setLoadingCategories(false);
         try {
@@ -44,20 +44,18 @@ const ListComponent = () => {
                     const content = data.content;
                     setCategories([]);
                     setServices(content);
-                    setCategories([]);
 
-                    setLoadingServices(true);
+                    myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
                 });
             }
-            if (idNumberCategory !== -1) console.log("Not yet");
+            if (idNumberSubCategory !== -1) console.log("Not yet");
             if (query) {
                 getServiceByTitle(query)
                     .then((data) => {
                         setCategories([]);
                         setServices(data.content);
-                        setCategories([]);
 
-                        setLoadingServices(true);
+                        myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
                     })
             }
             if (idNumberCategory === -1 && idNumberSubCategory === -1 && query === "") {
@@ -69,7 +67,7 @@ const ListComponent = () => {
                     const content = data.content;
                     setCategories(content);
 
-                    setLoadingCategories(true);
+                    myFunctionWithDelay(()=>setLoadingCategories(true), skeletonsHideDelay);
                 });
             }
         } catch (error) {
