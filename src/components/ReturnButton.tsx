@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import arrowLeftSVG from "../assets/img/arrow-left-white.svg";
 import { Button } from "@mui/material";
+import { myFunctionWithDelay } from "../utill";
 
 
 interface ReturnButtonComponentProps {
@@ -32,7 +33,7 @@ const LinkReturnButtonComponent = () => {
     const backClick = () => {
         //if (window.location.href.indexOf("services")>0 && window.location.search === '') navigate(destination)
         //else 
-        navigate(-1);
+        myFunctionWithDelay(()=>navigate(-1), 260);
     }
     return (
         <Button

@@ -1,5 +1,6 @@
 import arrowLargeSVG from "../../../../assets/img/arrowLarge.svg"
 import { useLoadContext } from "../../../../contextProviders/LoadMediaProvider";
+import VideoObserverComponent from "../../../VideoObserverComponent";
 ///Gestural card components 
 
 import styles from '../gesturalCard.module.css'
@@ -60,7 +61,8 @@ const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
     return (
         <div className={styles["video-overlay"]}>
             {/*error && <p>Ошибка загрузки видео: {error.message}</p>*/} 
-            <video className={styles["gif"]}
+            <VideoObserverComponent
+                className={styles["gif"]}
                 src={gifSrc}
                 playsInline={true}
                 loop={true}
@@ -70,7 +72,7 @@ const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
                 onCanPlayThrough={() => setVideoLoaded(true)}
                 >
 
-            </video>
+            </VideoObserverComponent>
         </div>
     );
 }

@@ -10,11 +10,14 @@ import InstructionComponent from './components/InstructionPage/Instruction.tsx';
 import ServicesComponent from './components/ServicesPage/Services.tsx';
 import { useState } from 'react';
 import ServiceResultComponent from './components/ServiceResultPage/ServiceResultComponent.tsx';
+import HomeReturnerComponent from './components/HomeReturnerComponent.tsx';
+import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
   return (
     <BrowserRouter>
+    <HomeReturnerComponent timer={DEFAULT_GO_HOME_TIMER} />
       <div className={"App " +  language}>
         <Routes>
           <Route path="/" element={<MainPageComponent language={language} setLanguage={setLanguage}  />} />

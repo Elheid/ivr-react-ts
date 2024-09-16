@@ -1,13 +1,12 @@
-import { Container, Grid2 } from '@mui/material';
+import { Container, debounce, Grid2 } from '@mui/material';
 import { CatalogCardComponent, ServiceCardComponent } from './ServiceCardComponent'; // Импорт компонента
 import { getCategories, getServiceById, getServiceByTitle } from '../../../api/backendApi';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Location, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { checkUndefined, myFunctionWithDelay, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
-
 
 
 const ListComponent = () => {
@@ -18,6 +17,9 @@ const ListComponent = () => {
     //const [loadingServices, setLoadingServices] = useState(false);
     const [loadingCategories, setLoadingCategories] = useState(false);
     const [loadingServices, setLoadingServices] = useState(false);
+
+    const location = useLocation();
+
 
     const [searchParams] = useSearchParams();
     //const id = searchParams.get('categoryId'); 
@@ -34,15 +36,27 @@ const ListComponent = () => {
     const idNumberSubCategory = checkUndefined(subCaregoryFromUrl) || subCaregoryFromUrl === null ? -1 : Number(subCaregoryFromUrl);
     const query = checkUndefined(quetyFromUrl) || quetyFromUrl === null ? '' : quetyFromUrl;
 
+
+    const [debouncedLocation, setDebouncedLocation] = useState<Location>(location);
+
+    // Дебаунсированная функция для обновления состояния
+    const debouncedUpdate = useCallback(debounce((loc: Location) => {
+        setDebouncedLocation(loc);
+    }, 300), []); // Указываем пустой массив зависимостей
+
+    useEffect(() => {
+        debouncedUpdate(location);
+    }, [location, debouncedUpdate]);
+
     useEffect(() => {
         const skeletonsHideDelay = 1;
         setLoadingServices(false);
         setLoadingCategories(false);
         try {
             if (idNumberCategory !== -1) {
+                setCategories([]);
                 getServiceById(idNumberCategory).then((data) => {
                     const content = data.content;
-                    setCategories([]);
                     setServices(content);
 
                     myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
@@ -50,9 +64,9 @@ const ListComponent = () => {
             }
             if (idNumberSubCategory !== -1) console.log("Not yet");
             if (query) {
+                setCategories([]);
                 getServiceByTitle(query)
                     .then((data) => {
-                        setCategories([]);
                         setServices(data.content);
 
                         myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
@@ -73,7 +87,7 @@ const ListComponent = () => {
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
         }
-    }, [location.search, categoryId])
+    }, [debouncedLocation])
 
     return (
         <LoadMediaProvider>
