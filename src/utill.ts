@@ -62,7 +62,7 @@ const tryJsonParse = (value: string, name: string) => {
     try {
         res = JSON.parse(value)[name];  // Попробуем распарсить как JSON
     } catch (e) {
-        console.log(e);
+        //console.log(e);
         res = value;
     }
     const undefindCheck = typeof res !== 'undefined';

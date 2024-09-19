@@ -42,4 +42,11 @@ interface Category extends CardTemplate {
     size?: number;
 }
 
-export type {Category, Service, CardTemplate};
+interface InfoCard extends CardTemplate{
+    itemId:number;
+    description:string;
+    gifLink:string;
+    iconLinks: number[];
+}
+
+export type {Category, Service, CardTemplate, InfoCard};

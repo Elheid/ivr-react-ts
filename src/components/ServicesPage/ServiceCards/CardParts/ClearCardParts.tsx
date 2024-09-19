@@ -4,6 +4,7 @@ import arrowSVG from "../../../../assets/img/arrow.svg";
 
 import styles from "../clearCard.module.css"
 import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
+import { tryJsonParse } from '../../../../utill';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -37,6 +38,7 @@ const loadSVG = async (svgUrl: string) => {
 
     const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
         //const getBlobIconUrl = loadSVG(iconSrc);
+        iconSrc = tryJsonParse(iconSrc, "image")
         const [icon, setIcon] = useState(iconSrc);
         const { setIconLoaded } = useLoadContext();
 

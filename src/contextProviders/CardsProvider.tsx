@@ -23,7 +23,7 @@ export const CardProvider:  React.FC<{ children: ReactNode }> = ({ children }) =
     const [services, setServices] = useState<Service[]>([]);
 
     return (
-        <CardContext.Provider value={{ categories, setCategories, services, setServices }}>
+        <CardContext.Provider value={{ categories, setCategories, services, setServices}}>
             {children}
         </CardContext.Provider>
     );

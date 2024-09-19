@@ -1,31 +1,16 @@
-import { Container } from "@mui/material";
-import BreadCrumpsComponent from "../BreadCrumps";
-import LinkReturnButtonComponent from "../ReturnButton";
+import { CircularProgress, Container } from "@mui/material";
+//import { GesturalVideoComponent } from "../ServicesPage/ServiceCards/CardParts/GesturalParts";
+import { LoadMediaProvider } from "../../contextProviders/LoadMediaProvider";
 
 
-const ManualStrp = () => {
-    return (
-        <div className="manual-strp true-manual">
-            <video
-                src="https://storage.yandexcloud.net/akhidov-ivr/13full.mp4"
-                className="instr result-video"
-                autoPlay
-                loop
-                muted
-                typeof="video/mp4"
-            ></video>
-            <div className="manual">
-                <button className="modal additional-info" id="showPopup" type="button">
-                    <span className="infoButton-title">Дополнительная информация</span>
-                    <img title="Дополнительная информация" className="info-button hover" src="img/info1.svg" />
-                </button>
-                <pre className="manual-text result-text">
-                    {/* Content omitted for brevity */}
-                </pre>
-            </div>
-        </div>
-    );
-};
+import ManualStrpComponent from "./ManualStripComponent";
+import ServiceResultHeader from "./ServiceResultHeader";
+import { useParams } from "react-router-dom";
+import { getService } from "../../api/backendApi";
+import { checkUndefined } from "../../utill";
+import { useEffect, useState } from "react";
+
+
 
 const Loader = () => {
     return (
@@ -35,83 +20,72 @@ const Loader = () => {
     );
 };
 
-const CardFormContainer = () => {
-    return (
-        <div id="card-form-container" className="hidden">
-            <div className="close-form">
-                <img src="img/Close.svg" width="32px" height="30px" alt="Close" />
-            </div>
-            <section className="instruction hidden">
-                <div className="form-instruct-header">
-                    <h3 className="form-instruct-title">title</h3>
-                </div>
-                <article className="instruction-text"></article>
-                <button className="back-from-instruction-button back-button">Назад</button>
-            </section>
-            <form id="card-form">
-                <div className="form-header">
-                    <h3 className="form-title">title</h3>
-                    <div className="instruction-button">
-                        <img src="img/question.svg" alt="Instruction" />
-                    </div>
-                </div>
-                <div className="form-flex">
-                    <article className="main-form">
-                        {/* Card form content */}
-                    </article>
-                </div>
-                <button className="submit-form" type="submit">Добавить карточку</button>
-            </form>
-        </div>
-    );
-};
 
 
-const PopupContainer = () => {
-    return (
-        <div className="popup-container">
-            <div className="overlay" id="overlay"></div>
-            <div className="popup cases-table-popup" id="popup" addition-info-id="6">
-                <div className="popup-header">
-                    <h3 className="popup-title title">Дополнительная информация</h3>
-                    <button className="close-info" id="closePopup">
-                        <img src="img/close.jpg" width="32px" height="30px" alt="Close" />
-                    </button>
-                </div>
-                <div className="popup-content">
-                    <ul className="info-cards list-of-cards"></ul>
-                    <div className="additional-info-res"></div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-
+interface ServiceData {
+    title: string;
+    gifLink: string;
+    iconLinks: string[];
+    description: string;
+}
 
 const ServiceResultComponent = () => {
-    return (
-        <section>
-            <header className="main-header">
-            <BreadCrumpsComponent />
-            <Container sx={{display:"flex", justifyContent: "space-between" ,mt:"20px"}} >
-            <LinkReturnButtonComponent />
-            <h3 className="res-title title card-title">Постоянная регистрация Совершеннолетний</h3>
-            <LinkReturnButtonComponent />
-            </Container>
-            </header>
-            <main className="main-content main-result">
-                <section className="view-choose">
-                    <Container>
-                    <ManualStrp />
-                    {/* <Loader />*/}
-                    <CardFormContainer />
-                    {/*<PopupContainer />*/}  
-                    </Container>
-                </section>
-            </main>
-        </section>
+    const { serviceId } = useParams<{ serviceId?: string }>();
+    const [serviceData, setServiceData] = useState<ServiceData>({
+        title: 'Error',
+        gifLink: 'Error',
+        iconLinks: [],
+        description: 'Error',
+    });
+    const [isLoading, setIsLoading] = useState(true); // Add loading state
 
+    // Convert serviceId to a number or set it to -1 if invalid
+    const idNumberService = serviceId ? Number(serviceId) : -1;
+
+    // Fetch data using useEffect
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true); // Set isLoading to true before fetching
+            if (idNumberService !== -1) {
+                try {
+                    const data = await getService(idNumberService);
+                    setServiceData(data);
+                } catch (error) {
+                    console.error('Error fetching service data:', error);
+                    // Consider displaying an error message to the user
+                } finally {
+                    setIsLoading(false); // Set isLoading to false after fetching
+                }
+            }
+        };
+
+        fetchData();
+    }, [idNumberService]);
+
+    return (
+        <LoadMediaProvider>
+            {isLoading && ( // Show loader if isLoading is true
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+                    <CircularProgress size={80} className="brown-loader"/>
+                </div>
+            )}
+
+            {!isLoading && ( // Show content if isLoading is false
+            <div>
+            <ServiceResultHeader title={serviceData.title} />
+                <section>
+                    <main className="main-content main-result">
+                        <section className="view-choose">
+                            <Container>
+                                <ManualStrpComponent gifLink={serviceData.gifLink} description={serviceData.description} />
+                                {/* <Loader />*/}
+                            </Container>
+                        </section>
+                    </main>
+                </section>
+            </div>
+            )}
+        </LoadMediaProvider>
     );
 };
 

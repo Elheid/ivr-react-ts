@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 import arrowLeftSVG from "../assets/img/arrow-left-white.svg";
 import { Button } from "@mui/material";
@@ -6,22 +6,24 @@ import { myFunctionWithDelay } from "../utill";
 
 
 interface ReturnButtonComponentProps {
-    destination: string;
+    img?: string;
+    description?:string;
+    onClick?: () => void;
 }
 
-const ReturnButtonComponent = (/*{destination}:ReturnButtonComponentProps*/) => {
-    const arrowImg = arrowLeftSVG;
+const ReturnButtonComponent = ({img, description}: ReturnButtonComponentProps) => {
+    //const arrowImg = arrowLeftSVG;
     return (
         <div>
-            <img src={arrowImg} alt="Кнопка назад" />
-            <span className="button-title back-title">Назад</span>
+            <img src={img} alt="Кнопка назад" />
+            <span className="button-title back-title">{description}</span>
         </div>
     );
 }
 
 
 
-const LinkReturnButtonComponent = () => {
+const LinkReturnButtonComponent = ({img = arrowLeftSVG, description = "Назад", onClick} : ReturnButtonComponentProps) => {
     const navigate = useNavigate(); // Используем useNavigate для программной навигации
     //const location = useLocation(); // Получаем текущий путь
 /*
@@ -44,9 +46,12 @@ const LinkReturnButtonComponent = () => {
                 mr: "1.5vw;",
                 fontWeight: "500",
             }}
-            onClick={backClick}
+            onClick={()=>{
+                if (!onClick) backClick();
+                else onClick();
+            }}
         >
-            <ReturnButtonComponent /*destination={destination}*/ />
+            <ReturnButtonComponent img={img} description={description} />
         </Button>
     );
 }

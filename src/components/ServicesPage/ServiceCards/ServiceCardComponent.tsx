@@ -104,6 +104,8 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean }> = ({
 }) => {
     const navigate = useNavigate();
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : "";
+
+    const destination = `/result/${id}`;
     return (
         <Grid2 size={size} className={cardType} sx={gridCardStyle}>
             <Card
@@ -111,7 +113,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean }> = ({
                 service-id={id}
                 parent-catalog-id={categoryId}
                 sx={cardStyle}
-                onClick={() => navigateHandleClick(false, `/result`, navigate)}
+                onClick={() => navigateHandleClick(false, destination, navigate)}
             >
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} isLoading={isLoading}/>
             </Card>
@@ -119,22 +121,37 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean }> = ({
     );
 };
 
-type CategoryCard = Omit<Category, "childrenCategoryIds" | "parentCategoryId">;
+//type CategoryCard = Omit<Category, "childrenCategoryIds" | "parentCategoryId">;
 
-const CatalogCardComponent: React.FC<CategoryCard & { isLoading?: boolean }> = ({
+const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = ({
     id,
     itemsInCategoryIds,
     gifPreview,
     title,
     mainIconLink,
+    childrenCategoryIds,
+    parentCategoryId,
     size = 6,
     isLoading
 }) => {
     const navigate = useNavigate();
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : "";
+
+    let childrens = itemsInCategoryIds.length;
+    if (parentCategoryId !== 0){
+        console.log()
+    }
+    if (childrenCategoryIds.length > 0){
+        childrens = childrenCategoryIds.length;
+    }
+
     return (
-        <Grid2 size={size} className={cardType} sx={gridCardStyle} onClick={() => navigateHandleClick(true, `/${id}`, navigate)}>
-            <Card className={"catalog-card"} catalog-id={id} children-count={itemsInCategoryIds.length.toString()} sx={cardStyle}>
+        <Grid2 
+        size={size} 
+        className={cardType} 
+        sx={gridCardStyle} 
+        onClick={() => navigateHandleClick(true, `/${id}`, navigate)}>
+            <Card className={"catalog-card"} catalog-id={id} children-count={childrens.toString()} sx={cardStyle}>
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds} isLoading={isLoading}/>
             </Card>
         </Grid2>

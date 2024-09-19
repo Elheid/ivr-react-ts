@@ -1,9 +1,11 @@
+import { useEffect, useRef, useState } from "react";
 import arrowLargeSVG from "../../../../assets/img/arrowLarge.svg"
 import { useLoadContext } from "../../../../contextProviders/LoadMediaProvider";
 import VideoObserverComponent from "../../../VideoObserverComponent";
 ///Gestural card components 
 
 import styles from '../gesturalCard.module.css'
+import { tryJsonParse } from "../../../../utill";
 // Интерфейс для описания ошибки
 interface VideoError {
     message: string;
@@ -12,7 +14,7 @@ interface VideoError {
 // Настраиваемый хук для управления видеоплеером
 
 //Не помагает
-/*
+
 const useVideoHandleError = (videoUrl: string)=>{
     const [error, setError] = useState<VideoError | null>(null); // Состояние ошибки
     const videoRef = useRef<HTMLVideoElement>(null); // Ссылка на элемент видео
@@ -49,7 +51,7 @@ const useVideoHandleError = (videoUrl: string)=>{
     }, [videoUrl]);
 
     return { error, videoRef };
-}*/
+}
 
 interface GesturalVideoComponentProps {
     gifSrc: string;
@@ -57,6 +59,7 @@ interface GesturalVideoComponentProps {
 
 const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
     //const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
+    gifSrc = tryJsonParse(gifSrc, "video");
     const { setVideoLoaded } = useLoadContext();
     return (
         <div className={styles["video-overlay"]}>

@@ -7,7 +7,32 @@ import { useCards } from '../../../contextProviders/CardsProvider';
 import { Location, useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { checkUndefined, myFunctionWithDelay, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
+import { Category } from '../../../interfaces/CardsInterfaces';
 
+
+const categorizeCategories = (categories: Category[]): {
+    rootCategoriesWithChildren: Category[];
+    rootCategoriesWithoutChildren: Category[];
+    childCategories: Category[];
+} => {
+    const categoryGroups = {
+        rootCategoriesWithChildren: [] as Category[],
+        rootCategoriesWithoutChildren: [] as Category[],
+        childCategories: [] as Category[],
+    };
+
+    categories.forEach(category => {
+        if (category.childrenCategoryIds.length === 0 && category.parentCategoryId === 0) {
+            categoryGroups.rootCategoriesWithoutChildren.push(category);
+        } else if (category.childrenCategoryIds.length > 0 && category.parentCategoryId === 0) {
+            categoryGroups.rootCategoriesWithChildren.push(category);
+        } else if (category.parentCategoryId !== 0) {
+            categoryGroups.childCategories.push(category);
+        }
+    });
+
+    return categoryGroups;
+};
 
 const ListComponent = () => {
     const { categories, setCategories, services, setServices } = useCards();
@@ -59,7 +84,7 @@ const ListComponent = () => {
                     const content = data.content;
                     setServices(content);
 
-                    myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
+                    myFunctionWithDelay(() => setLoadingServices(true), skeletonsHideDelay);
                 });
             }
             if (idNumberSubCategory !== -1) console.log("Not yet");
@@ -69,7 +94,7 @@ const ListComponent = () => {
                     .then((data) => {
                         setServices(data.content);
 
-                        myFunctionWithDelay(()=>setLoadingServices(true), skeletonsHideDelay);
+                        myFunctionWithDelay(() => setLoadingServices(true), skeletonsHideDelay);
                     })
             }
             if (idNumberCategory === -1 && idNumberSubCategory === -1 && query === "") {
@@ -79,9 +104,12 @@ const ListComponent = () => {
                 getCategories().then((data) => {
                     saveCategoriesTitles(data.content);
                     const content = data.content;
-                    setCategories(content);
+                    const gruopsOfCategoties = categorizeCategories(content);
 
-                    myFunctionWithDelay(()=>setLoadingCategories(true), skeletonsHideDelay);
+                    setCategories([...gruopsOfCategoties.rootCategoriesWithoutChildren, 
+                        ...gruopsOfCategoties.rootCategoriesWithChildren]);
+
+                    myFunctionWithDelay(() => setLoadingCategories(true), skeletonsHideDelay);
                 });
             }
         } catch (error) {
@@ -91,33 +119,35 @@ const ListComponent = () => {
 
     return (
         <LoadMediaProvider>
-        <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
-            {categories.map((category, index) => (
-                <CatalogCardComponent
-                    key={index} // Ensure unique key for each card
-                    id={category.id} // Assuming 'catalogId' exists in your data
-                    itemsInCategoryIds={category.itemsInCategoryIds} // Assuming 'childrenCount' exists
-                    gifPreview={category.gifPreview} // Assuming 'gifSrc' exists
-                    mainIconLink={category.mainIconLink} // Assuming 'iconSrc' exists
-                    title={category.title} // Assuming 'title' exists
-                    size={size} // You can use 'normalSize' or 'bigSize' as needed
-                    isLoading={loadingCategories}
-                />
-            ))}
-            {services.map((service, index) => (
-                <ServiceCardComponent
-                    key={index} // Ensure unique key for each card
-                    id={service.id} // Assuming 'catalogId' exists in your data
-                    categoryId={service.categoryId} // Assuming 'childrenCount' exists
-                    gifPreview={service.gifPreview} // Assuming 'gifSrc' exists
-                    mainIconLink={service.mainIconLink} // Assuming 'iconSrc' exists
-                    title={service.title} // Assuming 'title' exists
-                    size={size} // You can use 'normalSize' or 'bigSize' as needed
-                    isLoading={loadingServices}
-                />
-            ))}
+            <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
+                {categories.map((category, index) => (
+                    <CatalogCardComponent
+                        key={index} // Ensure unique key for each card
+                        id={category.id} // Assuming 'catalogId' exists in your data
+                        itemsInCategoryIds={category.itemsInCategoryIds} // Assuming 'childrenCount' exists
+                        gifPreview={category.gifPreview} // Assuming 'gifSrc' exists
+                        mainIconLink={category.mainIconLink} // Assuming 'iconSrc' exists
+                        title={category.title} // Assuming 'title' exists
+                        size={size} // You can use 'normalSize' or 'bigSize' as needed
+                        isLoading={loadingCategories}
+                        parentCategoryId={category.parentCategoryId}
+                        childrenCategoryIds={category.childrenCategoryIds}
+                    />
+                ))}
+                {services.map((service, index) => (
+                    <ServiceCardComponent
+                        key={index} // Ensure unique key for each card
+                        id={service.id} // Assuming 'catalogId' exists in your data
+                        categoryId={service.categoryId} // Assuming 'childrenCount' exists
+                        gifPreview={service.gifPreview} // Assuming 'gifSrc' exists
+                        mainIconLink={service.mainIconLink} // Assuming 'iconSrc' exists
+                        title={service.title} // Assuming 'title' exists
+                        size={size} // You can use 'normalSize' or 'bigSize' as needed
+                        isLoading={loadingServices}
+                    />
+                ))}
 
-        </Grid2>
+            </Grid2>
         </LoadMediaProvider>
     );
 }
