@@ -8,15 +8,11 @@ type InfoCardProps = Omit<InfoCard, "additionIds" | "description" | "gifLink" | 
 
 type InfoCardMediaProps = Omit<InfoCardProps, "additionIds" | "description" | "gifLink" | "iconLinks" | "itemId" | "id" | "title">;
 
-const InfoCardButtonMedia = ({ gifPreview, mainIconLink}: InfoCardMediaProps & { isLoading?: boolean }) => {
-    //const { iconLoaded, videoLoaded} = useLoadContext();
-
+const InfoCardButtonMedia = ({ gifPreview, mainIconLink}: InfoCardMediaProps) => {
     return (
         localStorage.getItem("language") === "clear-language"
         ? <img src={mainIconLink} title="infoCardIcon"/>
         : <VideoComponent gifSrc={gifPreview} />
-            /*? ((isLoading && iconLoaded ? (<CardMedia image={mainIconLink} title="infoCardIcon"/>) : <Skeleton animation="wave" variant="rounded"><CardMedia image={mainIconLink} title="infoCardIcon"/></Skeleton>))
-            : (isLoading && videoLoaded ? <VideoComponent gifSrc={gifPreview} /> : <Skeleton animation="wave" variant="rounded"><VideoComponent gifSrc={gifPreview} /></Skeleton>)*/
     );
 }
 

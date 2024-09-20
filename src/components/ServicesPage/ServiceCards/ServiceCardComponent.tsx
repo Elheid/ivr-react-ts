@@ -15,13 +15,16 @@ import { useLoadContext } from '../../../contextProviders/LoadMediaProvider';
 interface CardButtonTitleProps {
     title: string;
     itemsInCategoryIds?: number[];
+    childrenCategoryIds?: number[];
 }
 
 
-const CardButtonTitle = ({ title, itemsInCategoryIds,  isLoading}: CardButtonTitleProps  & { isLoading?: boolean }) => {
+const CardButtonTitle = ({ title, itemsInCategoryIds, childrenCategoryIds,  isLoading}: CardButtonTitleProps  & { isLoading?: boolean }) => {
     const hasItems = itemsInCategoryIds && itemsInCategoryIds.length > 0;
+    const hasSubCategories = childrenCategoryIds && childrenCategoryIds.length > 0;
     let header: React.ReactNode;
-    if (hasItems) header = <ClearCardHeader title={title} childrenCount={itemsInCategoryIds.length} />;
+    if (hasItems) header = <ClearCardHeader title={title} itemsCount={itemsInCategoryIds?.length} />;
+    else if (hasSubCategories) header = <ClearCardHeader title={title} subCategoriesCount={childrenCategoryIds?.length} />;
     else header = <ClearCardHeader title={title} />;
 
     return (
@@ -48,9 +51,10 @@ const CardButtonMedia = ({ gifPreview, mainIconLink, isLoading}: CardButtonMedia
 
 interface CardButtonProps extends CardTemplate {
     itemsInCategoryIds?: number[];
+    childrenCategoryIds?: number[];
 }
 
-const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, isLoading}: CardButtonProps & { isLoading?: boolean }) => {
+const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading}: CardButtonProps & { isLoading?: boolean }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : gesturalStyles["gestural-card"];
     const cardButtonClass = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"] : gesturalStyles["gestural-button-card"];
     return (
@@ -68,7 +72,7 @@ const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryI
                 className={cardButtonClass}
             >
                 <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} isLoading={isLoading}/>
-                <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds} isLoading={isLoading}/>
+                <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isLoading={isLoading}/>
             </Button>
         </div>
     )
@@ -113,7 +117,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean }> = ({
                 service-id={id}
                 parent-catalog-id={categoryId}
                 sx={cardStyle}
-                onClick={() => navigateHandleClick(false, destination, navigate)}
+                onClick={() => navigateHandleClick(false, destination, navigate, false)}
             >
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} isLoading={isLoading}/>
             </Card>
@@ -138,21 +142,24 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = ({
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : "";
 
     let childrens = itemsInCategoryIds.length;
+    let destinationParams = {withBaseUrl:true, paramState:`/${id}`, navigate, fromStart:true};
     if (parentCategoryId !== 0){
         console.log()
     }
     if (childrenCategoryIds.length > 0){
         childrens = childrenCategoryIds.length;
+        destinationParams = {withBaseUrl:false, paramState:`/subCategories/${id}`, navigate, fromStart:false};
     }
+
 
     return (
         <Grid2 
         size={size} 
         className={cardType} 
         sx={gridCardStyle} 
-        onClick={() => navigateHandleClick(true, `/${id}`, navigate)}>
+        onClick={() => navigateHandleClick(destinationParams.withBaseUrl, destinationParams.paramState, destinationParams.navigate, destinationParams.fromStart)}>
             <Card className={"catalog-card"} catalog-id={id} children-count={childrens.toString()} sx={cardStyle}>
-                <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds} isLoading={isLoading}/>
+                <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds}  childrenCategoryIds={childrenCategoryIds} isLoading={isLoading}/>
             </Card>
         </Grid2>
     );

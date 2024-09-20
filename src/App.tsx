@@ -24,7 +24,10 @@ function App() {
           <Route path="/instruction" element={<InstructionComponent />} />
           <Route path="/result" element={<ServiceResultComponent />} />
           <Route path="/result/:serviceId" element={<ServiceResultComponent />} />
-          <Route path="/services/:categoryId" element={<ServicesComponent />} />
+          <Route path="/services/:categoryId" element={<ServicesComponent />}/>
+          <Route path="/subCategories/:subCategoryId" element={<ServicesComponent />} >
+            <Route path=":categoryId" element={<ServicesComponent />} />
+          </Route>
           <Route path="/services" element={<ServicesComponent />} /> 
           {/*<Route path="/result?categotyId=:id" element={<ServicesComponent />} /> */}
         </Routes>

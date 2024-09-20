@@ -1,5 +1,5 @@
 import HeaderComponent from "./Header";
-import ServicesListComponent from "./ServiceCards/ServicesListComponent";
+import ServicesListComponent from "./ServicesListComponent";
 import { CardSizeProvider } from "../../contextProviders/CardSizeProvider";
 import { CardProvider } from "../../contextProviders/CardsProvider";
 

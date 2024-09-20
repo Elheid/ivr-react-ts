@@ -35,7 +35,7 @@ const LinkReturnButtonComponent = ({img = arrowLeftSVG, description = "Наза�
     const backClick = () => {
         //if (window.location.href.indexOf("services")>0 && window.location.search === '') navigate(destination)
         //else 
-        myFunctionWithDelay(()=>navigate(-1), 260);
+        myFunctionWithDelay(()=>navigate(-1), 300);
     }
     return (
         <Button

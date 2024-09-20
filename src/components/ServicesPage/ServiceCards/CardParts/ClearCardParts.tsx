@@ -39,7 +39,7 @@ const loadSVG = async (svgUrl: string) => {
     const ClearCardIconComponent = ({ iconSrc }: ClearCardIconComponentProps) => {
         //const getBlobIconUrl = loadSVG(iconSrc);
         iconSrc = tryJsonParse(iconSrc, "image")
-        const [icon, setIcon] = useState(iconSrc);
+        const [icon, setIcon] = useState<string>();
         const { setIconLoaded } = useLoadContext();
 
         useEffect(() => {
@@ -60,17 +60,19 @@ const loadSVG = async (svgUrl: string) => {
     }
 
 interface ClearCardHeaderProps {
-    childrenCount?: number;
+    itemsCount?: number;
+    subCategoriesCount?: number;
     title: string;
 }
 
 
-const ClearCardHeader = ({ title, childrenCount }: ClearCardHeaderProps) => {
+const ClearCardHeader = ({ title, itemsCount, subCategoriesCount }: ClearCardHeaderProps) => {
     return (
         <div className={styles["card-header"]}>
             <h3 className={`${styles["card-title"]} card-description"`}>{title}</h3>
             <div className={styles["card-footer"]}>
-                {childrenCount && <p className={styles["count-services"]}>услуг: {childrenCount}</p>}
+                {itemsCount && <p className={styles["count-services"]}>услуг: {itemsCount}</p>}
+                {subCategoriesCount && <p className={styles["count-services"]}>подкатегорий: {subCategoriesCount}</p>}
                 <img className="arrow-img" src={arrowSVG} alt="Arrow" />
             </div>
         </div>

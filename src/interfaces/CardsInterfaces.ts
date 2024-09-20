@@ -26,19 +26,19 @@ interface CardTemplate {
     title: string;
 }
 
+
+interface Category extends CardTemplate {
+    itemsInCategoryIds: number[];
+    childrenCategoryIds: number[];
+    parentCategoryId: number;
+    size?: number;
+}
 interface Service extends CardTemplate  {
     categoryId: number; 
     additionIds: number[];
     description:string;
     gifLink:string;
     iconLinks:string[];
-    size?: number;
-}
-
-interface Category extends CardTemplate {
-    itemsInCategoryIds: number[];
-    childrenCategoryIds: number[];
-    parentCategoryId: number;
     size?: number;
 }
 

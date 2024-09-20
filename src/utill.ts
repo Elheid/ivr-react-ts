@@ -6,9 +6,9 @@ const checkUndefined = <T>(value: T): boolean => {
     return typeof value === 'undefined';
 }
 
-const navigateHandleClick = (withBaseUrl : boolean, paramState : string, navigate: NavigateFunction) => {
+const navigateHandleClick = (withBaseUrl : boolean, paramState : string, navigate: NavigateFunction, fromStart?:boolean) => {
     // Перенаправляем пользователя на страницу с использованием categoryId
-    const basePath = location.pathname //+ '?';
+    const basePath = fromStart ? location.pathname : "" //+ '?';
     //const baseSearchPath = location.pathname + location.search;
     const currentPath = withBaseUrl? basePath : "";
     const newPath = `${currentPath}${paramState}`;
@@ -25,6 +25,11 @@ const saveCategoriesTitles = (content : Service[] | Category[] ) =>{
     });
 
     localStorage.setItem('titles', JSON.stringify(obj));
+}
+
+const getLastParam = ()=>{
+    const urlParts = window.location.pathname.split('/');
+    return urlParts[urlParts.length - 1]; // Получаем последний элемент
 }
 
 const getCategoriesTitles = ()=>{
@@ -89,5 +94,5 @@ const isAdmin = () => {
 }
 
 export { checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
-    saveCategoriesTitles, getCategoriesTitles, getTitleById, myFunctionWithDelay
+    saveCategoriesTitles, getCategoriesTitles, getTitleById, myFunctionWithDelay, getLastParam
  }

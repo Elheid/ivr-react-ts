@@ -6,27 +6,6 @@ import InfoCardComponent from "./InfoCardComponent";
 import { InfoCard } from "../../../interfaces/CardsInterfaces";
 import LinkReturnButtonComponent from "../../ReturnButton";
 
-/*const PopupContainer = () => {
-    return (
-        <div className="popup-container">
-            <div className="overlay" id="overlay"></div>
-            <div className="popup cases-table-popup" id="popup" addition-info-id="6">
-                <div className="popup-header">
-                    <h3 className="popup-title title">Дополнительная информация</h3>
-                    <button className="close-info" id="closePopup">
-                        &#x2716;
-                    </button>
-                </div>
-                <div className="popup-content">
-                    <ul className="info-cards list-of-cards"></ul>
-                    <div className="additional-info-res"></div>
-                </div>
-            </div>
-        </div>
-
-    );
-};*/
-
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',

@@ -76,9 +76,20 @@ video.gif {
 .MuiBreadcrumbs-ol{
   width: 100%;
 }
+ol.MuiBreadcrumbs-ol.css-4pdmu4-MuiBreadcrumbs-ol {
+  padding: 10px;
+}
+
 .MuiBreadcrumbs-li:last-child {
   flex-grow: 1; /* Растягивает элемент */
   text-align: center; /* Центрирование текста (опционально) */
+}
+
+.skeleton-title-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  padding: 0;
 }
 
 
@@ -408,4 +419,17 @@ max-width: 1000px;
     border-radius: 20px;
     margin-bottom: 0;
     margin-top: 0;
+}
+
+img.icons {
+  max-width: 4vw;
+}
+
+.text-icon-block {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  text-align: left;
 }
