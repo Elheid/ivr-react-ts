@@ -12,7 +12,7 @@ const iconInsertion = (textFromBd: string, iconLinks: IconLinks): string => {
     const iconRegex = /\\icon(\d+)/g;
 
     // Замена иконок
-    const replacedText = textFromBd.replace(iconRegex, (match, p1) => {
+    const replacedText = textFromBd.replace(iconRegex, ( p1) => {
         let icon = iconLinks[Number(p1)];
         icon = tryJsonParse(icon, "link");
         return `<img class="icons" src="${icon}" alt="icon${p1}" />`;

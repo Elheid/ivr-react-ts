@@ -8,19 +8,10 @@ import { getTitleById } from "../utill";
 interface BreadCrumpComponentProps {
     destination: string;
     content?: string;
-    fontSize?:number;
+    fontSize?: number;
 }
 
-const BreadCrumpComponent = ({destination, content, fontSize}: BreadCrumpComponentProps) => {
-    //const classes = `breadcrumb-item ${props.class}`;
-    return (
-        <div className={"breadcrumb-item page"}>
-            <Link aria-current="page" to={destination}>
-                <span style={{fontSize:`${fontSize}`}}>{content}</span>
-            </Link>
-        </div>
-    );
-}
+
 //Разобраться как это работает
 const BreadCrumpsComponent = () => {
     const BASE_FONT_SIZE = 1.2;
@@ -41,7 +32,7 @@ const BreadCrumpsComponent = () => {
     const [fontSize, setFontSize] = useState(BASE_FONT_SIZE); // Начальный размер шрифта
     const breadcrumbContainerRef = useRef<HTMLDivElement>(null);
     const prevFontSizes = useRef<number[]>([]);
-    const prevBreadcrumbsLength = useRef<number>(breadcrumbs.length); 
+    const prevBreadcrumbsLength = useRef<number>(breadcrumbs.length);
 
     useEffect(() => {
         const updateFontSize = () => {
@@ -55,7 +46,7 @@ const BreadCrumpsComponent = () => {
                     const breadcrumbWidth = (breadcrumb as HTMLElement).offsetWidth;
                     totalBreadcrumbWidth += breadcrumbWidth;
                 });
-                
+
                 if (totalBreadcrumbWidth + 50 < containerWidth && prevBreadcrumbsLength.current > breadcrumbs.length) {
                     const previousFontSize = prevFontSizes.current.pop();
                     setFontSize(previousFontSize || BASE_FONT_SIZE);
@@ -72,16 +63,16 @@ const BreadCrumpsComponent = () => {
 
             }
         };
-    
+
         const handleResize = () => {
             setFontSize(BASE_FONT_SIZE); // Сброс шрифта при изменении окна
             updateFontSize();
         };
-    
+
         window.addEventListener('resize', handleResize);
-    
+
         updateFontSize(); // Вызов функции при монтировании компонента
-    
+
         prevBreadcrumbsLength.current = breadcrumbs.length;
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -175,17 +166,11 @@ const BreadCrumpsComponent = () => {
                 {/*<BreadCrumpComponent  destination={"/"} class={"prev-page"} content={"Главное меню"}/>
             <BreadCrumpComponent  destination={"/services"} class={"current-page"} content={"Выбор категорий"}/>*/}
                 {breadcrumbs.map((breadcrumb, index) => (
-                    /*<BreadCrumpComponent
-                        key={index} // Ensure unique key for each card
-                        destination={breadcrumb.destination}
-                        content={breadcrumb.content}
-                        fontSize={fontSize}
-                    />*/
                     <div key={index} className={"breadcrumb-item page"}>
-                    <Link aria-current="page" to={breadcrumb.destination}>
-                        <span style={{fontSize:`${fontSize}vw`}}>{breadcrumb.content}</span>
-                    </Link>
-                </div>
+                        <Link aria-current="page" to={breadcrumb.destination}>
+                            <span style={{ fontSize: `${fontSize}vw` }}>{breadcrumb.content}</span>
+                        </Link>
+                    </div>
 
                 ))}
 
