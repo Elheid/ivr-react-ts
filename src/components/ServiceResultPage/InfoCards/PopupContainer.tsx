@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid2, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Container, Grid2, IconButton, Modal, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import infoButton from "../../../assets/img/info.svg"
 import ImageButton from "../../ImageButtonComponent";

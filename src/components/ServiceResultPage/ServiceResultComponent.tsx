@@ -7,15 +7,15 @@ import ManualStrpComponent from "./ManualStripComponent";
 import ServiceResultHeader from "./ServiceResultHeader";
 import { useParams } from "react-router-dom";
 import { getService } from "../../api/backendApi";
-import { useEffect, useRef, useState } from "react";
-import { InfoCard } from "../../interfaces/CardsInterfaces";
+import { useEffect, useState } from "react";
+//import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 
 const ServiceResultSkeleton = ()=>{
     return (
     <div className="skeleton-container">
     <Skeleton  sx={{br:"30px",margin:"0 auto", padding:"0", transform: "unset;", background:"#a77259;"}} width={"70vw"} height={"7vh"}></Skeleton>
-    <Container maxWidth="false" sx={{width:"70vw !important"}} className={"skeleton-title-container"}>
+    <Container maxWidth={false} sx={{width:"70vw !important"}} className={"skeleton-title-container"}>
     <Skeleton  sx={{br:"30px", padding:"0", transform: "unset;", background:"#a77259;"}} width={"5vw"} height={"10vh"}></Skeleton>
     <Skeleton  sx={{margin:"0 auto", padding:"0", transform: "unset;", background:"#a77259;"}} width={"50vw"} height={"10vh"}></Skeleton>
     <Skeleton  sx={{padding:"0", transform: "unset;", background:"#a77259;"}} width={"5vw"} height={"10vh"}></Skeleton>

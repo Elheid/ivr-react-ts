@@ -5,7 +5,7 @@ import {  useEffect, useRef, useState } from 'react';
 import { useCardSize } from '../../contextProviders/CardSizeProvider';
 import { useCards } from '../../contextProviders/CardsProvider';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { getLastParam, myFunctionWithDelay, saveCategoriesTitles } from '../../utill';
+import { getLastParam, saveCategoriesTitles } from '../../utill';
 import { LoadMediaProvider } from '../../contextProviders/LoadMediaProvider';
 import { Category } from '../../interfaces/CardsInterfaces';
 
