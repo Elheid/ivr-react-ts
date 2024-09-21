@@ -1,11 +1,11 @@
 //import { useEffect, useRef, useState } from "react";
-import arrowLargeSVG from "../../../../assets/img/arrowLarge.svg"
-import { useLoadContext } from "../../../../contextProviders/LoadMediaProvider";
-import VideoObserverComponent from "../../../VideoObserverComponent";
+import arrowLargeSVG from "../../../../../assets/img/arrowLarge.svg"
+import { useLoadContext } from "../../../../../contextProviders/LoadMediaProvider";
+import VideoObserverComponent from "../../../../VideoObserverComponent";
 ///Gestural card components 
 
 import styles from '../gesturalCard.module.css'
-import { tryJsonParse } from "../../../../utill";
+import { tryJsonParse } from "../../../../../utill";
 // Интерфейс для описания ошибки
 /*interface VideoError {
     message: string;

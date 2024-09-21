@@ -1,14 +1,14 @@
-import LinkReturnButtonComponent from "../../ReturnButton";
+import LinkReturnButtonComponent from "../../../ReturnButton";
 import styles from './searcher.module.css'
-import searchSVG from "../../../assets/img/search.svg";
+import searchSVG from "../../../../assets/img/search.svg";
 import TypeViewButtons from "./TypeViewButtonsComponent";
 import GesturalSearchComponent from "./GesturalSearchComponent";
-import ImageButton from "../../ImageButtonComponent";
+import ImageButton from "../../../ImageButtonComponent";
 
 import { useState } from "react";
 //import { useCards } from "../../../contextProviders/CardsProvider";
 //import { getServiceByTitle } from "../../../api/backendApi";
-import { navigateHandleClick } from "../../../utill";
+import { navigateHandleClick } from "../../../../utill";
 import { useNavigate } from "react-router-dom";
 
 

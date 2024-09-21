@@ -1,14 +1,14 @@
 import { Box, Container, Grid2, IconButton, Modal, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import infoButton from "../../../assets/img/info.svg"
-import ImageButton from "../../ImageButtonComponent";
+import ImageButton from "../../ImageButtonComponent"//"../../../ImageButtonComponent";
 import InfoCardComponent from "./InfoCardComponent";
-import { InfoCard } from "../../../interfaces/CardsInterfaces";
-import LinkReturnButtonComponent from "../../ReturnButton";
-import Scrollbar from "../../ScrollBar/ScrollBar";
+import { InfoCard } from "../../../interfaces/CardsInterfaces"//"../../../../interfaces/CardsInterfaces";
+import LinkReturnButtonComponent from "../../ReturnButton"//"../../../ReturnButton";
+import Scrollbar from "../../ScrollBar/ScrollBar"//"../../../ScrollBar/ScrollBar";
 
 const style = {
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',

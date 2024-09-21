@@ -1,6 +1,6 @@
 import { Button, Card, Grid2, Typography } from "@mui/material";
-import { InfoCard } from "../../../interfaces/CardsInterfaces";
-import VideoComponent from "../../VideoComponent";
+import { InfoCard } from "../../../../interfaces/CardsInterfaces";
+import VideoComponent from "../../../VideoComponent";
 //import { useLoadContext } from "../../../contextProviders/LoadMediaProvider";
 
 

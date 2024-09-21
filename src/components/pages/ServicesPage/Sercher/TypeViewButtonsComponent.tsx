@@ -1,8 +1,8 @@
 import styles from './searcher.module.css'
-import { useCardSize } from "../../../contextProviders/CardSizeProvider";
-import twoInRowSVG from "../../../assets/img/twoInRow.svg";
-import oneInRowSVG from "../../../assets/img/oneInRow.svg";
-import ImageButton from '../../ImageButtonComponent';
+import { useCardSize } from "../../../../contextProviders/CardSizeProvider";
+import twoInRowSVG from "../../../../assets/img/twoInRow.svg";
+import oneInRowSVG from "../../../../assets/img/oneInRow.svg";
+import ImageButton from '../../../ImageButtonComponent';
 
 
 const NORMAL_CARD_SIZE = 6;

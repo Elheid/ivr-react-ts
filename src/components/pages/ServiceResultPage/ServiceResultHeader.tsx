@@ -1,6 +1,6 @@
-import BreadCrumpsComponent from "../BreadCrumps";
-import LinkReturnButtonComponent from "../ReturnButton";
-import homeButton from "../../assets/img/home.svg"
+import BreadCrumpsComponent from "../../BreadCrumps";
+import LinkReturnButtonComponent from "../../ReturnButton";
+import homeButton from "../../../assets/img/home.svg"
 import { Container } from "@mui/material";
 
 interface ServiceResultHeaderProps{

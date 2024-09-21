@@ -2,14 +2,14 @@
 import { Button, Card, Grid2, Skeleton } from '@mui/material';
 import { ClearCardHeader, ClearCardIconComponent } from "./CardParts/ClearCardParts";
 import { GesturalCardSubstrateComponent, GesturalVideoComponent } from './CardParts/GesturalParts';
-import { CardTemplate, Category, Service } from '../../../interfaces/CardsInterfaces';
+import { CardTemplate, Category, Service } from '../../../../interfaces/CardsInterfaces';
 
 import { useNavigate } from 'react-router-dom';
-import { navigateHandleClick } from '../../../utill';
+import { navigateHandleClick } from '../../../../utill';
 
 import clearStyles from "./clearCard.module.css"
 import gesturalStyles from './gesturalCard.module.css'
-import { useLoadContext } from '../../../contextProviders/LoadMediaProvider';
+import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
 
 
 interface CardButtonTitleProps {

@@ -1,4 +1,4 @@
-import { tryJsonParse } from "../../utill";
+import { tryJsonParse } from "../../../utill";
 
 type IconLinks = Record<number, string>;
 

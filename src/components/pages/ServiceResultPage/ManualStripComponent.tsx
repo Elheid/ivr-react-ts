@@ -1,7 +1,7 @@
 
 import { useEffect, useRef } from "react";
-import { tryJsonParse } from "../../utill";
-import VideoComponent from "../VideoComponent";
+import { tryJsonParse } from "../../../utill";
+import VideoComponent from "../../VideoComponent";
 
 import PopupContainer from "./InfoCards/PopupContainer";
 import insertBlocks from "./blockInsertion";

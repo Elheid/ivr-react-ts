@@ -225,7 +225,7 @@ img.arrow{
 }
 
 .current-page{
-  
+  width:inherit;
 }
 .current-page a {
   

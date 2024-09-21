@@ -1,4 +1,4 @@
-import BreadCrumpsComponent from "../BreadCrumps";
+import BreadCrumpsComponent from "../../BreadCrumps";
 import SearcherComponent from "./Sercher/SearcherComponent";
 
 const HeaderComponent = () => {

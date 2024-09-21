@@ -1,12 +1,12 @@
 import { Container, Skeleton } from "@mui/material";
 //import { GesturalVideoComponent } from "../ServicesPage/ServiceCards/CardParts/GesturalParts";
-import { LoadMediaProvider } from "../../contextProviders/LoadMediaProvider";
+import { LoadMediaProvider } from "../../../contextProviders/LoadMediaProvider";
 
 
 import ManualStrpComponent from "./ManualStripComponent";
 import ServiceResultHeader from "./ServiceResultHeader";
 import { useParams } from "react-router-dom";
-import { getService } from "../../api/backendApi";
+import { getService } from "../../../api/backendApi";
 import { useEffect, useState } from "react";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 

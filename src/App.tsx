@@ -5,11 +5,11 @@ import './App.css'
 
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainPageComponent from './components/MainPage/MainPageComponent.tsx'
-import InstructionComponent from './components/InstructionPage/Instruction.tsx';
-import ServicesComponent from './components/ServicesPage/Services.tsx';
+import MainPageComponent from './components/pages/MainPage/MainPageComponent.tsx'
+import InstructionComponent from './components/pages/InstructionPage/Instruction.tsx';
+import ServicesComponent from './components/pages/ServicesPage/Services.tsx';
 import { useState } from 'react';
-import ServiceResultComponent from './components/ServiceResultPage/ServiceResultComponent.tsx';
+import ServiceResultComponent from './components/pages/ServiceResultPage/ServiceResultComponent.tsx';
 import HomeReturnerComponent from './components/HomeReturnerComponent.tsx';
 import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
 

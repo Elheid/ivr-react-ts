@@ -1,13 +1,13 @@
 import {  CircularProgress, Container, Grid2 } from '@mui/material';
 import { CatalogCardComponent, ServiceCardComponent } from './ServiceCards/ServiceCardComponent'; // Импорт компонента
-import { getCategories, getServiceById, getServiceByTitle } from '../../api/backendApi';
+import { getCategories, getServiceById, getServiceByTitle } from '../../../api/backendApi';
 import {  useEffect, useRef, useState } from 'react';
-import { useCardSize } from '../../contextProviders/CardSizeProvider';
-import { useCards } from '../../contextProviders/CardsProvider';
+import { useCardSize } from '../../../contextProviders/CardSizeProvider';
+import { useCards } from '../../../contextProviders/CardsProvider';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { getLastParam, saveCategoriesTitles } from '../../utill';
-import { LoadMediaProvider } from '../../contextProviders/LoadMediaProvider';
-import { Category } from '../../interfaces/CardsInterfaces';
+import { getLastParam, saveCategoriesTitles } from '../../../utill';
+import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
+import { Category } from '../../../interfaces/CardsInterfaces';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],

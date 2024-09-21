@@ -1,5 +1,5 @@
 import styles from './searcher.module.css'
-import recordSVG from "../../../assets/img/record.svg";
+import recordSVG from "../../../../assets/img/record.svg";
 import { Button } from '@mui/material';
 
 const GesturalSearchComponent = () => {

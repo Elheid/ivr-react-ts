@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import arrowSVG from "../../../../assets/img/arrow.svg";
+import arrowSVG from "../../../../../assets/img/arrow.svg";
 
 import styles from "../clearCard.module.css"
-import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
-import { tryJsonParse } from '../../../../utill';
+import { useLoadContext } from '../../../../../contextProviders/LoadMediaProvider';
+import { tryJsonParse } from '../../../../../utill';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -51,7 +51,7 @@ const loadSVG = async (svgUrl: string) => {
                 }
             }
             fetchIcon();
-        }, [])
+        }, [iconSrc, setIconLoaded])
         return (
             <div className={styles["icon-container"]}>
                 <img src={icon} alt="Icon" />

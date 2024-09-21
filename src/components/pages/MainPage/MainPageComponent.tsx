@@ -1,5 +1,5 @@
-import ClearLanguage from "../../classes/Clear";
-import GesturalLanguage from "../../classes/Gestural";
+import ClearLanguage from "../../../classes/Clear";
+import GesturalLanguage from "../../../classes/Gestural";
 
 import ViewCardComponent from "./ViewCard";
 

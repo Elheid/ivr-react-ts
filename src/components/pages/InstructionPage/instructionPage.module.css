@@ -26,7 +26,9 @@
     margin: 30px 20px;
 }
 
-.prev-button {}
+.prev-button {
+    width: inherit;
+}
 
 
 
