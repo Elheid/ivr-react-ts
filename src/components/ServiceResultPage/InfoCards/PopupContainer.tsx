@@ -5,6 +5,7 @@ import ImageButton from "../../ImageButtonComponent";
 import InfoCardComponent from "./InfoCardComponent";
 import { InfoCard } from "../../../interfaces/CardsInterfaces";
 import LinkReturnButtonComponent from "../../ReturnButton";
+import Scrollbar from "../../ScrollBar/ScrollBar";
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -17,6 +18,7 @@ const style = {
     boxShadow: 24,
     p: 4,
 };
+
 
 const infoCard: InfoCard = {
     description: "\n- Нет госпошлины.\n\\icon0\n- Срок выполнения государственной услуги начинается после принятия местным отделением МВД необходимых документов и составляет:\n*при предоставлении правоустанавливающего документа - 1 рабочий день\n*при непредъявлении правоустанавливающего документа - 6 рабочих дней\n\\icon1",
@@ -32,7 +34,7 @@ const infoCard: InfoCard = {
 const infoCardsSample = [infoCard, infoCard, infoCard]
 
 
-const PopupContainer = () => {
+const PopupContainer = ({additionIds}:{additionIds:number[]}) => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -43,6 +45,8 @@ const PopupContainer = () => {
 
 
     const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
+
+    console.log("addition info ids = ", additionIds)
 
     useEffect(() => {
         if (open) setInfoCards(infoCardsSample);
@@ -75,8 +79,9 @@ const PopupContainer = () => {
                             &#x2716;
                         </IconButton>
                     </div>
+                    <Scrollbar height="47vh" addArrowsButtons={false}>
                     <div className="popup-content">
-                        <Grid2 className={`info-cards list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
+                        <Grid2   className={`info-cards list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
                             {infoCards.map((infoCard: InfoCard, index: number) => (
                                 <InfoCardComponent
                                     key={index} // Ensure unique key for each card
@@ -95,8 +100,10 @@ const PopupContainer = () => {
 
                             </Container>
                         </div>
-                    </div>
+                    </div> 
+                   </Scrollbar>
                 </Box>
+
             </Modal>
         </div>
     );

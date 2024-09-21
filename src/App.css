@@ -296,7 +296,10 @@ button.additional-info{
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.25);
   color: #623B2A;
   width: 70%;
+  height: 60vh;
+  padding-top: 0;
 }
+
 
 span.infoButton-title {
   padding: 10px;
@@ -319,6 +322,7 @@ span.infoButton-title {
   background: white;
   z-index: 20;
   justify-content: center;
+  height: 8vh;
 
   margin-bottom: 20px;
 }
