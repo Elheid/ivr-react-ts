@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 
 
 const ServiceResultSkeleton = ()=>{
+    const cardType = localStorage.getItem("language") === "clear-language" ;
     return (
     <div className="skeleton-container">
     <Skeleton  sx={{br:"30px",margin:"0 auto", padding:"0", transform: "unset;", background:"#a77259;"}} width={"70vw"} height={"7vh"}></Skeleton>
@@ -20,7 +21,7 @@ const ServiceResultSkeleton = ()=>{
     <Skeleton  sx={{margin:"0 auto", padding:"0", transform: "unset;", background:"#a77259;"}} width={"50vw"} height={"10vh"}></Skeleton>
     <Skeleton  sx={{padding:"0", transform: "unset;", background:"#a77259;"}} width={"5vw"} height={"10vh"}></Skeleton>
     </Container>
-    <Skeleton sx={{margin:"20px auto", padding:"0", transform: "unset;", background:"#ffe6d073;"}}  width={"30vw"} height={"50vh"}></Skeleton>
+    {!cardType && <Skeleton sx={{margin:"20px auto", padding:"0", transform: "unset;", background:"#ffe6d073;"}}  width={"30vw"} height={"50vh"}></Skeleton>}
     <Skeleton sx={{margin:"20px auto", padding:"", transform: "unset;", ml:"auto", mr:"35vw", background:"#b98f7b"}} variant={"rounded"} width={"15vw"} height={"5vh"}></Skeleton>
     <Skeleton sx={{margin:"20px auto", padding:"", transform: "unset;",  background:"#C3936773;"}}  width={"50vw"} height={"30vh"}></Skeleton>
 </div>)

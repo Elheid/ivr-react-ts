@@ -57,6 +57,8 @@
 
 .icon-container {
     padding: 10px;
+    max-width: 6vw;
+    min-width: 6vw;
 }
 
 .clear-card .count-services {

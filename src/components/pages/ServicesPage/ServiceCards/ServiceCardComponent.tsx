@@ -38,12 +38,18 @@ interface CardButtonMediaProps {
     mainIconLink: string;
 }
 
-const CardButtonMedia = ({ gifPreview, mainIconLink, isLoading}: CardButtonMediaProps & { isLoading?: boolean }) => {
+const CardButtonMedia = ({ gifPreview, mainIconLink, isLoading, title, isService = false, id}: CardButtonMediaProps 
+    & { 
+    isLoading?: boolean, 
+    title:string, 
+    isService?: boolean
+    id?: number
+    }) => {
     const { iconLoaded, videoLoaded} = useLoadContext();
 
     return (
         localStorage.getItem("language") === "clear-language"
-            ? ((isLoading && iconLoaded ? (<ClearCardIconComponent iconSrc={mainIconLink} />) : <Skeleton animation="wave" variant="rounded"><ClearCardIconComponent iconSrc={mainIconLink} /></Skeleton>))
+            ? ((isLoading && iconLoaded ? (<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id}/>) : <Skeleton animation="wave" variant="rounded"><ClearCardIconComponent iconSrc={mainIconLink} /></Skeleton>))
             : (isLoading && videoLoaded ? <GesturalVideoComponent gifSrc={gifPreview} /> : <Skeleton animation="wave" variant="rounded"><GesturalVideoComponent gifSrc={gifPreview} /></Skeleton>)
     );
 }
@@ -54,7 +60,7 @@ interface CardButtonProps extends CardTemplate {
     childrenCategoryIds?: number[];
 }
 
-const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading}: CardButtonProps & { isLoading?: boolean }) => {
+const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading, isService ,id}: CardButtonProps & { isLoading?: boolean, isService?: boolean ,id?:number }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : gesturalStyles["gestural-card"];
     const cardButtonClass = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"] : gesturalStyles["gestural-button-card"];
     return (
@@ -71,7 +77,7 @@ const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryI
                 data-iconsrc={mainIconLink}
                 className={cardButtonClass}
             >
-                <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} isLoading={isLoading}/>
+                <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} isLoading={isLoading} title={title} id={id} isService={isService} />
                 <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isLoading={isLoading}/>
             </Button>
         </div>
@@ -119,7 +125,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean }> = ({
                 sx={cardStyle}
                 onClick={() => navigateHandleClick(false, destination, navigate, false)}
             >
-                <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} isLoading={isLoading}/>
+                <CardButtonComponent id={id} isService={true} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} isLoading={isLoading}/>
             </Card>
         </Grid2>
     );

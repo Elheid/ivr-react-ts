@@ -15,11 +15,11 @@ interface ManualStrpComponentProps {
 
 
 const ManualStrpComponent = ({ gifLink, description, iconLinks, additionIds }: ManualStrpComponentProps) => {
-    gifLink = tryJsonParse(gifLink, "video")
+    gifLink = tryJsonParse(gifLink, "resVideo")
     description = tryJsonParse(description, "description")
 
     const textRef = useRef<HTMLPreElement>(null);
-
+    const cardType = localStorage.getItem("language") === "clear-language" ;
     useEffect(() => {
         insertBlocks(textRef, description, iconLinks);
     }, [description, iconLinks]);
@@ -28,7 +28,7 @@ const ManualStrpComponent = ({ gifLink, description, iconLinks, additionIds }: M
     //console.log("Id additional info cards ", additionIds);
     return (
         <div className="manual-strp true-manual">
-            <VideoComponent class={"instruct-video"} gifSrc={gifLink}></VideoComponent>
+            {!cardType && <VideoComponent class={"instruct-video"} gifSrc={gifLink}></VideoComponent>}
             <div className="manual">
                 <PopupContainer additionIds={additionIds} />
                 <pre ref={textRef} className="manual-text result-text">

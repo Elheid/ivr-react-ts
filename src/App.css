@@ -296,7 +296,7 @@ button.additional-info{
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.25);
   color: #623B2A;
   width: 70%;
-  height: 60vh;
+  height: 80vh;
   padding-top: 0;
 }
 
@@ -363,6 +363,17 @@ button#closePopup {
   margin-bottom: 32px;
 
   display: inline-grid;
+}
+.info-manual{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.info-manual .manual{
+  width: 100%;
+  max-width: 2000px;
 }
 .manual-text{
 

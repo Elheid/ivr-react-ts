@@ -104,7 +104,7 @@ const Scrollbar = ({
     }, [isDragging, scrollStartPosition, thumbHeight, initialScrollTop]);
 
     // If the content and the scrollbar track exist, use a ResizeObserver to adjust height of thumb and listen for scroll event to move the thumb
-    useEffect(() => {
+    const regullateThumb = ()=>{
         const ref = contentRef.current;
         const trackRef = scrollTrackRef.current;
     
@@ -126,8 +126,11 @@ const Scrollbar = ({
                 ref.removeEventListener('scroll', handleThumbPosition);
             };
         }
+    }
+    useEffect(() => {
+        regullateThumb();
     }, [handleThumbPosition]);
-
+    window.addEventListener('infoCardOpen', regullateThumb);
     // Listen for mouse events to handle scrolling by dragging the thumb
     useEffect(() => {
         document.addEventListener('mousemove', handleThumbMousemove);

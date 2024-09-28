@@ -46,7 +46,7 @@ interface InfoCard extends CardTemplate{
     itemId:number;
     description:string;
     gifLink:string;
-    iconLinks: number[];
+    iconLinks: string[];
 }
 
 export type {Category, Service, CardTemplate, InfoCard};
