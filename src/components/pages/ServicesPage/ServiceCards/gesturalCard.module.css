@@ -16,6 +16,7 @@
 }
 
 .gestural-card{
+    position: relative;
     height: inherit;
 }
 

@@ -79,12 +79,76 @@ const loadByValue = (route : string, value : number | string, errorText :string,
 
 
 
+const refreshToken = (methodName = "POST") => 
+  fetch(`${BASE_URL}auth/refresh-token`, {
+      method: methodName,
+      body: JSON.stringify({token: localStorage.getItem("token"), refreshToken:localStorage.getItem("refresh-token")}),
+      headers: {
+          'Content-Type': 'application/json',
+          'accept': '*/*',
+          'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : undefined, // Добавляем Authorization, если есть токен
+      },
+  })
+      .then((response) => {
+          if (!response.ok) {
+              return response.text().then((text) => {
+                  throw new Error(text);
+              });
+          }
+          return response.json();
+      })
+      .catch((error) => {
+          //console.error('Error details:', error);
+          localStorage.removeItem('token');
+          localStorage.removeItem('refresh-token');
+          alert("Время истекло, перезайдите в аккаунт " + err);
+
+          throw new Error(error);
+      });
+
+const login = (username :string, password :string) => {
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+  return fetch(`${BASE_URL}auth/sign-in`, {
+      method: 'POST',
+      headers: {
+          'Accept': '*/*',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          username: username,
+          password: password,
+      }),
+  })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(response.statusText);
+          }
+          console.log(response)
+          return response.json()
+      })
+      .then(data => {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refresh-token', data.refreshToken);
+        //checkAdmin();
+      })
+      .catch((error) => {
+          alert('Login failed ' + error);
+          throw new Error(error);
+      });
+};
+
+
 
 const getCategories= () => load(Route.CATEGORIES, ErrorText.GET_DATA);
 const getService= (id : number) => loadByValue(Route.SERVICES, id, ErrorText.GET_DATA);
 const getServiceById= (id : number) => loadByValue(Route.GET_SERVICES, id, ErrorText.GET_DATA);
 const getInfoById= (id : number) => loadByValue(Route.ADDITIONS, id, ErrorText.GET_DATA);
 const getInfoCardsByServiceId= (id : number) => loadByValue("additions/search/item/", id, ErrorText.GET_DATA);
+
+const logIn = (username:string, password:string)=> login(username, password);
+const fetchAndRefreshToken = ()=> refreshToken();
 
 const getCategoryNameById= (id:number) => load(Route.CATEGORIES, ErrorText.GET_DATA).then(data => {
   const res = data.content.filter((el : Category | Service)=> Number(el.id) === id);
@@ -100,4 +164,8 @@ const loadCategoriesTitles = () => {
 const getServiceByTitle= (title : string) => loadByValue(Route.SEARCH_SERVICE_BY_TITTLE, title, ErrorText.GET_DATA);
 
 
-export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById, loadCategoriesTitles, getInfoCardsByServiceId}
+export {getCategories, getService, getServiceById, 
+getInfoById, getServiceByTitle, getCategoryNameById, 
+loadCategoriesTitles, getInfoCardsByServiceId, logIn, fetchAndRefreshToken,
+
+}

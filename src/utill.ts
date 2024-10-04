@@ -96,6 +96,10 @@ const addSubHeaderForQuery = (title: string, isFromQuery: boolean, setSubTitle: 
     }
 }
 
+const isAdmin = ()=>{
+    return localStorage.getItem("token");
+}
+
 const getCellNameById = () => {
     return null;
 }
@@ -104,9 +108,6 @@ const getParamFromURL = () => {
     return null;
 }
 
-const isAdmin = () => {
-    return null;
-}
 
 export {
     checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,

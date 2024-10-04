@@ -5,11 +5,13 @@ import { GesturalCardSubstrateComponent, GesturalVideoComponent } from './CardPa
 import { CardTemplate, Category, Service } from '../../../../interfaces/CardsInterfaces';
 
 import { useNavigate } from 'react-router-dom';
-import { navigateHandleClick } from '../../../../utill';
+import { isAdmin, navigateHandleClick } from '../../../../utill';
 
 import clearStyles from "./clearCard.module.css"
 import gesturalStyles from './gesturalCard.module.css'
 import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
+import AdminButtonsComponent from '../../../AdminUtils/AdminButtonsComponent';
+import { useRef } from 'react';
 
 
 interface CardButtonTitleProps {
@@ -64,8 +66,16 @@ interface CardButtonProps extends CardTemplate {
 const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading, isService, id, isFromQuery=false }: CardButtonProps & { isLoading?: boolean, isService?: boolean, id?: number, isFromQuery?:boolean }) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : gesturalStyles["gestural-card"];
     const cardButtonClass = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"] : gesturalStyles["gestural-button-card"];
+    const cardRef = useRef(null);
     return (
-        <div className={`card-content ${cardType}`}>
+        <div data-id={id}
+        className={`card-content ${cardType}`}
+        data-title={title}
+        data-gifsrc={gifPreview}
+        data-iconsrc={mainIconLink}
+        ref={cardRef}
+        >
+            {isAdmin() && <AdminButtonsComponent ref={cardRef} />}
             <Button
                 sx={{
                     textTransform: 'none',
@@ -74,8 +84,6 @@ const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryI
                     lineHeight: "normal",
                     display: "inline-block"
                 }}
-                data-gifsrc={gifPreview}
-                data-iconsrc={mainIconLink}
                 className={cardButtonClass}
             >
                 <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} isLoading={isLoading} title={title} id={id} isService={isService} />

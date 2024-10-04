@@ -4,6 +4,7 @@
   --main-bg-text-blocks:#C3936773;
 
   --main-buttons-bg-color:#a77259;
+  --main-admin-buttons-bg-color:rgba(200, 186, 173, 0.836);
 
 
   --main-text-color:#35190d;
@@ -298,11 +299,11 @@ span.infoButton-title {
   padding: 10px;
 }
 
-.info-modal img{
+.info-modal .info-icon{
   width: 35%;
   height: auto;
 }
-.info-modal .list-of-cards img{
+.info-modal .list-of-cards .info-icon{
   padding-top: 10px;
 }
 
@@ -449,7 +450,7 @@ img.icons {
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.25);
   color: #623B2A;
   min-width: 55%;
-  height: 80vh;
+  min-height: 80vh;
   padding-top: 0;
 
   display: flex;
@@ -515,4 +516,24 @@ img.icons {
   border: 1px solid #623B2A;
   border-radius: 12px;
   gap: 10px;
+}
+
+/*Admin buttons*/
+.extended-container{
+  padding-top: 10px;
+  top:2%;
+
+  display: flex;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+button.extended-button{
+  background-color: var(--main-admin-buttons-bg-color);
+  border: 2px solid #ffffff;
+  border-radius: 30px;
+}
+
+.extended-container img{
+  max-width: 1.4vw;
 }

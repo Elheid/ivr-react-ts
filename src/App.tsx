@@ -12,6 +12,8 @@ import { useState } from 'react';
 import ServiceResultComponent from './components/pages/ServiceResultPage/ServiceResultComponent.tsx';
 import HomeReturnerComponent from './components/HomeReturnerComponent.tsx';
 import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
+import LogInPage from './components/pages/LogInAndSignIn/LogInPage.tsx';
+import ExitPage from './components/pages/LogInAndSignIn/ExitPage.tsx';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
@@ -20,6 +22,8 @@ function App() {
     <HomeReturnerComponent timer={DEFAULT_GO_HOME_TIMER} />
       <div className={"App " +  language}>
         <Routes>
+        <Route path="/login" element={<LogInPage />} />
+        <Route path="/exit" element={<ExitPage />} />
           <Route path="/" element={<MainPageComponent language={language} setLanguage={setLanguage}  />} />
           <Route path="/instruction" element={<InstructionComponent />} />
           <Route path="/result" element={<ServiceResultComponent />} />

@@ -1,7 +1,10 @@
 import { Button, Card, Grid2, Typography } from "@mui/material";
 import { InfoCard } from "../../../../interfaces/CardsInterfaces";
 import VideoComponent from "../../../VideoComponent";
-import { tryJsonParse } from "../../../../utill";
+import { isAdmin, tryJsonParse } from "../../../../utill";
+import AdminButtonsComponent from "../../../AdminUtils/AdminButtonsComponent";
+import { useRef } from "react";
+import styled from "@emotion/styled";
 //import { useLoadContext } from "../../../contextProviders/LoadMediaProvider";
 
 
@@ -12,7 +15,7 @@ type InfoCardMediaProps = Omit<InfoCardProps, "additionIds" | "description" | "g
 const InfoCardButtonMedia = ({ gifPreview, mainIconLink }: InfoCardMediaProps) => {
     return (
         localStorage.getItem("language") === "clear-language"
-            ? <img src={mainIconLink} title="infoCardIcon" />
+            ? <img className={"info-icon"}src={mainIconLink} title="infoCardIcon" />
             : <VideoComponent gifSrc={gifPreview} />
     );
 }
@@ -30,6 +33,8 @@ interface InfoCardPropsNew extends InfoCardProps {
     hideOnClick: () => void;
 }
 
+const CardWithRef = styled(Card)``;
+
 const InfoCardComponent = (props: InfoCardPropsNew) => {
     const cardType = localStorage.getItem("language") === "clear-language" ? "clear-card" : "";
     const handleCardClick = () => {
@@ -40,15 +45,21 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
         window.dispatchEvent(infoCardOpenEvent); // Диспетчеризация события
     };
 
+    const infoCardRef = useRef(null);
+
     const title = tryJsonParse(props.title,"title")
     const icon = tryJsonParse(props.mainIconLink,"image")
 
     return (
         <Grid2 size={6} className={cardType} sx={gridCardStyle}>
-            <Card className={"info-card"}
+            <CardWithRef className={"info-card"}
                 info-id={props.id}
                 item-id={props.itemId}
+                data-title={title}
+                data-gifsrc={props.gifPreview}
+                data-iconsrc={props.mainIconLink}
                 onClick={handleCardClick}
+                ref={infoCardRef}
             >
                 <Button
                     sx={{
@@ -60,16 +71,15 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
                         width: "inherit",
                         height: "inherit"
                     }}
-                    data-gifsrc={props.gifPreview}
-                    data-iconsrc={props.mainIconLink}
                     onClick={props.hideOnClick}
                 >
+                    {isAdmin() && <AdminButtonsComponent ref={infoCardRef}/>}
                     <InfoCardButtonMedia mainIconLink={icon} gifPreview={props.gifPreview} />
                     <div className="info-title-container">
                         <Typography className="card-title card-description" variant="h5" gutterBottom>{title}</Typography>
                     </div>
                 </Button>
-            </Card>
+            </CardWithRef>
         </Grid2>
     );
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { API_GESTURAL_URL } from '../assets/data/constants';
 import { io } from 'socket.io-client';
 
-const interval = 1000 / 30;
+const interval = 1000 / 50;
 const socketURL = API_GESTURAL_URL;
 const socket = io(socketURL, {
     path: '/rsl-filter/socket.io/',
@@ -32,7 +32,7 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
 
     const framesArr: string[] = [];
     const framesPac = 4;
-    const prevWords: string[] = [];
+    const [prevWords, setPrevWords]= useState<string[]>([]);
     const prevResults: string[] = [];
 
     const startWebcam = () => {
@@ -77,7 +77,7 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
             const newKeyWords = results.filter(result => !prevWords.includes(result))[0];
             if (newKeyWords && newKeyWords !== 'нет жеста') {
                 setKeyWords(prev => [...prev, newKeyWords]);
-                prevWords.push(newKeyWords);
+                setPrevWords(prev => [...prev, newKeyWords]);
                 console.log("Выведено ", newKeyWords);
             }
         }

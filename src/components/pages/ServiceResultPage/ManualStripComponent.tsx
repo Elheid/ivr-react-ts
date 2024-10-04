@@ -1,10 +1,11 @@
 
 import { useEffect, useRef } from "react";
-import { tryJsonParse } from "../../../utill";
+import { isAdmin, tryJsonParse } from "../../../utill";
 import VideoComponent from "../../VideoComponent";
 
 import PopupContainer from "./InfoCards/PopupContainer";
 import insertBlocks from "./blockInsertion";
+import ServiceResultButtonsComponent from "../../AdminUtils/ServiceResultButtonsComponent";
 
 interface ManualStrpComponentProps {
     gifLink: string;
@@ -19,18 +20,23 @@ const ManualStrpComponent = ({ gifLink, description, iconLinks, additionIds }: M
     description = tryJsonParse(description, "description")
 
     const textRef = useRef<HTMLPreElement>(null);
+    const videoRef = useRef(null);
+
+
     const cardType = localStorage.getItem("language") === "clear-language" ;
     useEffect(() => {
         insertBlocks(textRef, description, iconLinks);
     }, [description, iconLinks]);
 
-    //console.log("iconLinks  ", iconLinks);
-    //console.log("Id additional info cards ", additionIds);
     return (
         <div className="manual-strp true-manual">
-            {!cardType && <VideoComponent class={"instruct-video"} gifSrc={gifLink}></VideoComponent>}
+            {!cardType && isAdmin() && <ServiceResultButtonsComponent ref={videoRef} /> }
+            {!cardType &&
+                <VideoComponent ref={videoRef} class={"instruct-video"} gifSrc={gifLink}></VideoComponent>
+            }
             <div className="manual">
                 <PopupContainer additionIds={additionIds} />
+                {isAdmin() && <ServiceResultButtonsComponent ref={textRef}/> }
                 <pre ref={textRef} className="manual-text result-text">
                 </pre>
             </div>
