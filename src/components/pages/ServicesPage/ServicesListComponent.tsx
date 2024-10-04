@@ -8,6 +8,7 @@ import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import { getLastParam, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
 import { Category } from '../../../interfaces/CardsInterfaces';
+import LoadingCompanent from '../../LoadingComponent';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],
@@ -80,7 +81,9 @@ const ListComponent = () => {
                 getServiceById(idNumberCategory).then((data) => {
                     const content = data.content;
                     setServices(content);
-                    //myFunctionWithDelay(() => setLoadingServices(true), skeletonsHideDelay);
+
+                    setLoadingServices(true);
+                    setLoadingCategories(true)
                 });
             }
             if (idNumberSubCategory !== -1 && idNumberSubCategory === lastParam )
@@ -92,6 +95,9 @@ const ListComponent = () => {
                         ...gruopsOfCategoties.current.subWithChild];
                     const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
                     setCategories(subCategoriesToShow);
+
+                    setLoadingServices(true);
+                    setLoadingCategories(true)
                 }
                 else{
                     getCategories().then((data) => {
@@ -106,6 +112,9 @@ const ListComponent = () => {
                     const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
                     setCategories(subCategoriesToShow);
                     });
+
+                    setLoadingServices(true);
+                    setLoadingCategories(true)
                 }
             } 
             if (query !== '') {
@@ -116,8 +125,10 @@ const ListComponent = () => {
                     .then((data) => {
                         setServices(data.content);
                         setSearching(false);
-                        //myFunctionWithDelay(() => setLoadingServices(true), skeletonsHideDelay);
                     })
+
+                    setLoadingServices(true);
+                    setLoadingCategories(true)
             }
             if (idNumberCategory === -1 && idNumberSubCategory === -1 && query === "") {
                 getCategories().then((data) => {
@@ -130,37 +141,30 @@ const ListComponent = () => {
 
                     setCategories([...gruopsOfCategoties.current.rootWithNotSub, 
                         ...gruopsOfCategoties.current.rootWithSub]);
+
+
+                        setLoadingServices(true);
+                        setLoadingCategories(true)
+
                     //myFunctionWithDelay(() => setLoadingCategories(true), skeletonsHideDelay);
                 });
             }
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
         }
-        finally{
-            setLoadingServices(true);
-            setLoadingCategories(true)
-        }
         return()=>{
             setServices([])
             setCategories([]);
             //console.log('unmount')
         }
-    }, [location])
+    }, [idNumberCategory, idNumberSubCategory, query, setCategories, setServices])
 
+    const isSetLoading = (isSearching || (!loadingServices || !loadingCategories));
     return (
         <LoadMediaProvider>
             <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
-                {isSearching && (
-                <div style={{     
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "60vh",
-                    margin: "0 auto ",
-                    }}>
-                    <CircularProgress size={80} className="brown-loader"/>
-                </div>)}
-                {categories.map((category, index) => (
+                {isSetLoading && <LoadingCompanent /> }
+                {!isSearching && categories.map((category, index) => (
                     <CatalogCardComponent
                         key={index} // Ensure unique key for each card
                         id={category.id} // Assuming 'catalogId' exists in your data
@@ -173,8 +177,9 @@ const ListComponent = () => {
                         parentCategoryId={category.parentCategoryId}
                         childrenCategoryIds={category.childrenCategoryIds}
                     />
-                ))}
-                {services.map((service, index) => (
+                ))
+                }
+                {!isSearching && services.map((service, index) => (
                     <ServiceCardComponent
                         key={index} // Ensure unique key for each card
                         id={service.id} // Assuming 'catalogId' exists in your data
@@ -184,6 +189,7 @@ const ListComponent = () => {
                         title={service.title} // Assuming 'title' exists
                         size={size} // You can use 'normalSize' or 'bigSize' as needed
                         isLoading={loadingServices}
+                        isFromQuery={query !== ''}
                     />
                 ))}
 

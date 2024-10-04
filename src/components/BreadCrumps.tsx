@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import breadMiniSVG from "../assets/img/breadMini.svg"
 import { Breadcrumbs } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getTitleById } from "../utill";
+import { getCategoryTitleById } from "../utill";
 
 
 interface BreadCrumpComponentProps {
@@ -92,10 +92,8 @@ const BreadCrumpsComponent = () => {
                         ? storageOfBreadCrumbs
                         : "Error"))
             else {
-                // Добавляем главный элемент
                 newBreadcrumbs.push({ destination: '/', content: 'Главное меню' });
 
-                // Добавляем элементы для каждого сегмента пути
                 let accumulatedPath = '';
 
                 for (const path of paths) {
@@ -106,13 +104,13 @@ const BreadCrumpsComponent = () => {
                     const categoryId = categoryIdFromUrl//searchParams.get("categoryId") || categoryIdFromUrl;
                     const subCategoryId = subCategoryIdFromUrl//searchParams.get("subCategoryId");
                     if (categoryId || subCategoryId) {
-                        if (categoryId) title = getTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
-                        if (subCategoryId) title = getTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
+                        if (categoryId) title = getCategoryTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
+                        if (subCategoryId) title = getCategoryTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
                     }
 
                     // Добавляем хлебные крошки для каждого сегмента
                     newBreadcrumbs.push({
-                        destination,
+                        destination: decodeURIComponent(path) === "subCategories" ? "/services" : destination,
                         content: decodeURIComponent(path) === "services" || decodeURIComponent(path) === "subCategories" ? 'Выбор категорий' : title
                     });
                 };

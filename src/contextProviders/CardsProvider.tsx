@@ -31,7 +31,7 @@ export const CardProvider:  React.FC<{ children: ReactNode }> = ({ children }) =
 export const useCards = (): CardContextProps => {
     const context = useContext(CardContext);
     if (context === undefined) {
-        throw new Error('useCardSize must be used within a CardProvider');
+        throw new Error('useCardmust be used within a CardProvider');
     }
     return context;
 };

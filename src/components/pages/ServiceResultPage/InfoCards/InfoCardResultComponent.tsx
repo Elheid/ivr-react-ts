@@ -27,7 +27,7 @@ const InfoCardResultComponent = ({ gifLink, description, iconLinks, id }: InfoSt
 
     useLayoutEffect(() => {
         if (cardId !== -1) {
-        // Заглушка для имитации запроса на сервер
+
         setTimeout(() => {
             getInfoById(cardId)
             .then((data) => {

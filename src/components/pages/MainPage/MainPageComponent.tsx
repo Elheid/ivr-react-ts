@@ -1,5 +1,6 @@
-import ClearLanguage from "../../../classes/Clear";
-import GesturalLanguage from "../../../classes/Gestural";
+
+import clearIndexPNG from '../../../assets/img/clearIndex.png'
+import gesturalIndexPNG from '../../../assets/img/gesturalIndex.png' 
 
 import ViewCardComponent from "./ViewCard";
 
@@ -12,8 +13,8 @@ interface MainPageComponentProps {
 
 
 const MainPageComponent = ({  setLanguage }:MainPageComponentProps) => {
-    const clearImg = ClearLanguage._indexImg;
-    const gesturalImg = GesturalLanguage._indexImg;
+    const clearImg = clearIndexPNG//ClearLanguage._indexImg;
+    const gesturalImg = gesturalIndexPNG//GesturalLanguage._indexImg;
 
     return (
         <section className={`main-menu ${styles["main-content"]}`}>

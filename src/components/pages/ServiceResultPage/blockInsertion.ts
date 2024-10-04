@@ -28,8 +28,8 @@ const insertBlocks = (
     if (!textFromBd.includes("\n-")) {
         textOfBlocks = extractSubstringsInfo(textFromBd);
         const notZeroBlocks = textOfBlocks.filter(el => el !== "");
-        if (notZeroBlocks.length === 0 && textFromBd !== ""){
-            textOfBlocks = textFromBd.split("\n").map(block => "\n" + block); ;
+        if (notZeroBlocks.length === 0 && textFromBd !== "") {
+            textOfBlocks = textFromBd.split("\n").map(block => "\n" + block);;
         }
     }
 
@@ -41,7 +41,22 @@ const insertBlocks = (
     } else {
         const blocks = partingByBlocks(textOfBlocks, icons);
         if (textElement.current) {
-            blocks.forEach(block => textElement.current?.appendChild(block));
+            blocks.forEach(block => {
+                // Проверяем, содержит ли textElement.current уже этот блок
+                const childrens = textElement.current ?  textElement.current.children: []
+                let existingBlock = false;
+                if (blocks.length === childrens.length) return;
+                if (childrens.length > 0){
+                    existingBlock = Array.from(childrens).some(child => {
+                        return child.innerHTML === block.innerHTML
+                    });
+                }
+                // Если элемент с таким содержимым не найден, добавляем его
+                if (!existingBlock) {
+                    // Если нет, добавляем блок
+                    textElement.current?.appendChild(block);
+                }
+            });
         }
     }
 };

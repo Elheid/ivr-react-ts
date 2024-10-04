@@ -41,6 +41,7 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
     };
 
     const title = tryJsonParse(props.title,"title")
+    const icon = tryJsonParse(props.mainIconLink,"image")
 
     return (
         <Grid2 size={6} className={cardType} sx={gridCardStyle}>
@@ -56,13 +57,14 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
                         fontSize: "0.875rem",
                         lineHeight: "normal",
                         display: "inline-block",
-                        width: "inherit"
+                        width: "inherit",
+                        height: "inherit"
                     }}
                     data-gifsrc={props.gifPreview}
                     data-iconsrc={props.mainIconLink}
                     onClick={props.hideOnClick}
                 >
-                    <InfoCardButtonMedia mainIconLink={props.mainIconLink} gifPreview={props.gifPreview} />
+                    <InfoCardButtonMedia mainIconLink={icon} gifPreview={props.gifPreview} />
                     <div className="info-title-container">
                         <Typography className="card-title card-description" variant="h5" gutterBottom>{title}</Typography>
                     </div>

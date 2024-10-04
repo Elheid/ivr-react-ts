@@ -5,7 +5,8 @@ import VideoObserverComponent from "../../../../VideoObserverComponent";
 ///Gestural card components 
 
 import styles from '../gesturalCard.module.css'
-import { tryJsonParse } from "../../../../../utill";
+import { addSubHeaderForQuery, tryJsonParse } from "../../../../../utill";
+import { useEffect, useState } from "react";
 // Интерфейс для описания ошибки
 /*interface VideoError {
     message: string;
@@ -60,7 +61,8 @@ interface GesturalVideoComponentProps {
 const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
     //const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
     gifSrc = tryJsonParse(gifSrc, "video");
-    const { setVideoLoaded } = useLoadContext();
+    const { setVideoLoaded, videoLoaded } = useLoadContext();
+    console.log(videoLoaded)
     return (
         <div className={styles["video-overlay"]}>
             {/*error && <p>Ошибка загрузки видео: {error.message}</p>*/} 
@@ -84,10 +86,18 @@ interface GesturalCardSubstrateComponentProps {
     title: string;
 }
 
-const GesturalCardSubstrateComponent = ({ title }: GesturalCardSubstrateComponentProps) => {
+const GesturalCardSubstrateComponent = ({ title, isFromQuery }: GesturalCardSubstrateComponentProps & {isFromQuery:boolean}) => {
+    const [subTitle, setSubTitle] = useState<string>("");
+    useEffect(() => {
+        addSubHeaderForQuery(title, isFromQuery, setSubTitle);
+    }, [title]);
+
+    const displayTitle = isFromQuery ? <><span className='query-sub-header'>{subTitle}</span>{title} </> : title;
     return (
         <div className={styles["substrate"]}>
-            <h3 className={`${styles["card-title"]} card-description `}>{title}</h3>
+            <h3 className={`${styles["card-title"]} card-description `}>
+                {displayTitle}
+            </h3>
             <img src={arrowLargeSVG} />
         </div>
     );

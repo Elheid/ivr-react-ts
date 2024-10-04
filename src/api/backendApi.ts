@@ -78,10 +78,14 @@ const loadByValue = (route : string, value : number | string, errorText :string,
       throw new Error(errorText);
 });
 
+
+
+
 const getCategories= () => load(Route.CATEGORIES, ErrorText.GET_DATA);
 const getService= (id : number) => loadByValue(Route.SERVICES, id, ErrorText.GET_DATA);
 const getServiceById= (id : number) => loadByValue(Route.GET_SERVICES, id, ErrorText.GET_DATA);
 const getInfoById= (id : number) => loadByValue(Route.ADDITIONS, id, ErrorText.GET_DATA);
+const getInfoCardsByServiceId= (id : number) => loadByValue("additions/search/item/", id, ErrorText.GET_DATA);
 
 const getCategoryNameById= (id:number) => load(Route.CATEGORIES, ErrorText.GET_DATA).then(data => {
   const res = data.content.filter((el : Category | Service)=> Number(el.id) === id);
@@ -97,4 +101,4 @@ const loadCategoriesTitles = () => {
 const getServiceByTitle= (title : string) => loadByValue(Route.SEARCH_SERVICE_BY_TITTLE, title, ErrorText.GET_DATA);
 
 
-export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById, loadCategoriesTitles}
+export {getCategories, getService, getServiceById, getInfoById, getServiceByTitle, getCategoryNameById, loadCategoriesTitles, getInfoCardsByServiceId}

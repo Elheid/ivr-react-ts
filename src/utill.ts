@@ -6,50 +6,50 @@ const checkUndefined = <T>(value: T): boolean => {
     return typeof value === 'undefined';
 }
 
-const navigateHandleClick = (withBaseUrl : boolean, paramState : string, navigate: NavigateFunction, fromStart?:boolean) => {
+const navigateHandleClick = (withBaseUrl: boolean, paramState: string, navigate: NavigateFunction, fromStart?: boolean) => {
     // Перенаправляем пользователя на страницу с использованием categoryId
     const basePath = fromStart ? location.pathname : "" //+ '?';
     //const baseSearchPath = location.pathname + location.search;
-    const currentPath = withBaseUrl? basePath : "";
+    const currentPath = withBaseUrl ? basePath : "";
     const newPath = `${currentPath}${paramState}`;
     navigate(newPath);
     // Здесь можно добавить дополнительную логику, если требуется
 };
 type TitlesMap = { [key: number]: string };
 
-const saveCategoriesTitles = (content : Service[] | Category[] ) =>{
+const saveCategoriesTitles = (content: Service[] | Category[]) => {
     const obj: TitlesMap = {}; // Объект с числовыми ключами и строковыми значениями
-    
+
     content.forEach((el: Category | Service) => {
-      obj[el.id] = el.title; // Используем id как ключ
+        obj[el.id] = el.title; // Используем id как ключ
     });
 
     localStorage.setItem('titles', JSON.stringify(obj));
 }
 
-const getLastParam = ()=>{
+const getLastParam = () => {
     const urlParts = window.location.pathname.split('/');
     return urlParts[urlParts.length - 1]; // Получаем последний элемент
 }
 
-const getCategoriesTitles = ()=>{
+const getCategoriesTitles = () => {
     const titles = localStorage.getItem('titles');
     if (!titles) loadCategoriesTitles()
     const res = titles ? JSON.parse(titles) : {};
     return res;
 }
 
-const getTitleById = (id : number) => {
+const getCategoryTitleById = (id: number) => {
     const titles = getCategoriesTitles();
     return titles[id] || null; // Возвращает заголовок по id или null, если id нет в объекте
 };
 
 
-const myFunctionWithDelay =(callback: () => void, delay: number)=> {
+const myFunctionWithDelay = (callback: () => void, delay: number) => {
     setTimeout(() => {
-      callback(); // Выполняем callback после задержки
+        callback(); // Выполняем callback после задержки
     }, delay);
-  }
+}
 
 
 const idCreator = (): (() => number) => {
@@ -79,7 +79,22 @@ const getCurState = (): string => {
     return (urlParams.match('serviceId')) ? 'info-cards' : (urlParams.match('catalog')) ? 'services-list' : 'catalogs-list';
 }
 
-
+const addSubHeaderForQuery = (title: string, isFromQuery: boolean, setSubTitle: React.Dispatch<React.SetStateAction<string>>) => {
+    // Эффект для поиска элементов DOM и установки подзаголовка
+    if (isFromQuery) {
+        const titles = document.querySelectorAll(".card-description");
+        titles.forEach((titleNode) => {
+            const text = titleNode.textContent ? titleNode.textContent : "";
+            if (text.indexOf(title) >= 0) {
+                const parentCatalog = titleNode.closest("[parent-catalog-id]");
+                if (parentCatalog) {
+                    const parentCatalogId = Number(parentCatalog.getAttribute("parent-catalog-id") || "-1");
+                    setSubTitle(getCategoryTitleById(parentCatalogId));
+                }
+            }
+        });
+    }
+}
 
 const getCellNameById = () => {
     return null;
@@ -93,6 +108,7 @@ const isAdmin = () => {
     return null;
 }
 
-export { checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
-    saveCategoriesTitles, getCategoriesTitles, getTitleById, myFunctionWithDelay, getLastParam
- }
+export {
+    checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
+    saveCategoriesTitles, getCategoriesTitles, getCategoryTitleById, myFunctionWithDelay, getLastParam, addSubHeaderForQuery
+}

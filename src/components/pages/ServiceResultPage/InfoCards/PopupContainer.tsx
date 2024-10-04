@@ -4,11 +4,12 @@ import infoButton from "../../../../assets/img/info.svg"
 import ImageButton from "../../../ImageButtonComponent";
 import InfoCardComponent from "./InfoCardComponent";
 import { InfoCard } from "../../../../interfaces/CardsInterfaces";
-import LinkReturnButtonComponent from "../../../ReturnButton";
+import LinkButtonComponent from "../../../ReturnButton";
 import Scrollbar from "../../../ScrollBar/ScrollBar";
 import InfoCardResultComponent from "./InfoCardResultComponent";
-import { getInfoById } from "../../../../api/backendApi";
+import { getInfoById, getInfoCardsByServiceId } from "../../../../api/backendApi";
 import ModalStyle from "../../../../styles/modalStyle";
+import { useParams } from "react-router-dom";
 
 
 const infoCard: InfoCard = {
@@ -31,6 +32,8 @@ const PopupContainer = ({ additionIds }: { additionIds: number[] }) => {
     const [isHidden, setHidden] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState<number>();
 
+    const { serviceId } = useParams<{ serviceId?: string }>();
+    const serviceUrlId = serviceId ? Number(serviceId) : -1;
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -45,33 +48,33 @@ const PopupContainer = ({ additionIds }: { additionIds: number[] }) => {
         if (open) {
             const fillInfoArray = async()=>{
                 const loadInfo = (id : number) =>
-                    getInfoById(id)
+                    getInfoCardsByServiceId(id)
+                    //getInfoById(id)
                         .then((data) => {
-                            const card : InfoCard = data;
-                            setInfoCards((prevCards) => [...prevCards, card]);
+                            const cards : InfoCard[] = data.content;
+                            //setInfoCards((prevCards) => [...prevCards, card]);
+                            setInfoCards(cards);
                         })
                         .catch((err)=> console.log(err)
                 );
-                for (const id of additionIds){
-                    await loadInfo(id);
-                }
+                //for (const id of additionIds){
+                    await loadInfo(serviceUrlId);
+                //}
             }
             fillInfoArray();
             console.log(additionIds)
         }
     }, [open]);
 
-    // Подписка на событие "infoCardOpen" для обработки кликов по карточкам
     useEffect(() => {
         const handleInfoCardOpen = (event: Event) => {
             const customEvent = event as CustomEvent<{ id: number }>;
             console.log("Card ID received: ", customEvent.detail.id);
-            setSelectedCardId(customEvent.detail.id); // Обновление выбранного ID карточки
+            setSelectedCardId(customEvent.detail.id);
         };
 
         window.addEventListener('infoCardOpen', handleInfoCardOpen);
 
-        // Удаление слушателя события при размонтировании компонента
         return () => {
             window.removeEventListener('infoCardOpen', handleInfoCardOpen);
         };
@@ -125,7 +128,7 @@ const PopupContainer = ({ additionIds }: { additionIds: number[] }) => {
                                 <div className={`additional-info-res ${!isHidden && open ? "hidden" : ""}`}>
                                     <Container>
                                         <InfoCardResultComponent id={selectedCardId} description={""} gifLink={infoCard.gifLink} iconLinks={infoCard.iconLinks} />
-                                        <LinkReturnButtonComponent onClick={handleShow} />
+                                        <LinkButtonComponent onClick={handleShow} />
                                     </Container>
                                 </div>
                             </div>

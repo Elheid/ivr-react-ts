@@ -8,6 +8,7 @@ import { myFunctionWithDelay } from "../utill";
 interface ReturnButtonComponentProps {
     img?: string;
     description?:string;
+    classes?:string;
     onClick?: () => void;
 }
 
@@ -23,8 +24,9 @@ const ReturnButtonComponent = ({img, description}: ReturnButtonComponentProps) =
 
 
 
-const LinkReturnButtonComponent = ({img = arrowLeftSVG, description = "Назад", onClick} : ReturnButtonComponentProps) => {
-    const navigate = useNavigate(); // Используем useNavigate для программной навигации
+const LinkButtonComponent = ({img = arrowLeftSVG, description = "Назад", classes = "return-button", onClick} : ReturnButtonComponentProps) => {
+    const navigate = useNavigate();
+    const destination = "/";
     //const location = useLocation(); // Получаем текущий путь
 /*
     let destination = "/";
@@ -33,14 +35,14 @@ const LinkReturnButtonComponent = ({img = arrowLeftSVG, description = "Наза�
         if (localStorage.getItem("language") === "gestural-language") destination = "/instruction"
     }*/
     const backClick = () => {
-        //if (window.location.href.indexOf("services")>0 && window.location.search === '') navigate(destination)
-        //else 
-        myFunctionWithDelay(()=>navigate(-1), 300);
+        const baseUrl = 'http://localhost:5173/services';
+        if (window.location.href === baseUrl && window.location.search === '') navigate(destination)
+        else myFunctionWithDelay(()=>navigate(-1), 300);
     }
     return (
         <Button
             variant="contained"
-            className="return-button"
+            className={classes}
             sx={{
                 textTransform: 'none',
                 mr: "1.5vw;",
@@ -56,4 +58,4 @@ const LinkReturnButtonComponent = ({img = arrowLeftSVG, description = "Наза�
     );
 }
 
-export default LinkReturnButtonComponent;
+export default LinkButtonComponent;
