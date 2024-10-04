@@ -63,14 +63,13 @@ const loadByValue = (route : string, value : number | string, errorText :string,
         throw new Error();
       }
       //return response.json();
-      let text = response.text();
+      const text = response.text();
       return text.then(text => {
         try {
           return JSON.parse(text);
         } catch (e) {
-          //console.log('Error parsing JSON:', e, text);
-          //throw new Error('Failed to parse JSON response');
-          return;
+          console.log('Error parsing JSON:', e, text);
+          throw new Error('Failed to parse JSON response');
         }
       });
     })
