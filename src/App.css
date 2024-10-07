@@ -537,3 +537,8 @@ button.extended-button{
 .extended-container img{
   max-width: 1.4vw;
 }
+
+/*Admin card form*/
+#card-form img{
+  width: 1.3vw;
+}

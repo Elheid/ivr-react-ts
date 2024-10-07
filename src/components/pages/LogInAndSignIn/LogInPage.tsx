@@ -30,7 +30,24 @@ const LoginPage = () => {
                 Авторизация
             </Typography>
             <UsernameField register={register} errors={errors} />
-            <PasswordField register={register} errors={errors} />
+
+
+            <PasswordField
+                name="password"
+                label="Password"
+                register={register}
+                errors={errors}
+                validationRules={{
+                required: 'Пароль обязателен',
+                pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                    message:
+                    'В пароле должно быть как минимум 8 символов, вреди них, как минимум одна большая буква, одна маленькая и одна цифра',
+                },
+                }}
+            />
+
+            {/*<PasswordField register={register} errors={errors} />*/}
             <RememberMeCheckbox register={register} />
             <ExtendedButtons />
         </Box>

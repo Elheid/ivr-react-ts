@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import eyeSVG from "../../../assets/img/eye.svg"
+import eyeCrossedSVG from "../../../assets/img/eye-crossed.svg"
+/*import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -6,8 +8,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 import LoginFormInputs from '../../../interfaces/LogInInterface';
 
-import eyeSVG from "../../../assets/img/eye.svg"
-import eyeCrossedSVG from "../../../assets/img/eye-crossed.svg"
+
 
 // Пропсы для компонента PasswordField
 interface PasswordFieldProps {
@@ -57,6 +58,59 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ register, errors }) => {
             }}
         />
     );
+};
+
+export default PasswordField;*/
+
+import React, { useState } from 'react';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
+
+// Пропсы для компонента PasswordField
+interface PasswordFieldProps<T> {
+  name: keyof T;
+  label: string;
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
+  validationRules?: object; // Правила валидации для пароля
+}
+
+const PasswordField = <T,>({ name, label, register, errors, validationRules }: PasswordFieldProps<T>) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
+  return (
+    <TextField
+      fullWidth
+      type={showPassword ? 'text' : 'password'}
+      label={label}
+      {...register(name, validationRules)}
+      error={Boolean(errors[name])}
+      helperText={errors[name]?.message as string}
+      margin="normal"
+      sx={{ mt: 2 }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={handleTogglePasswordVisibility}
+                edge="end"
+              >
+                 {showPassword
+                                    ? <img style={{ width: "1.3vw" }} src={eyeSVG} alt="Показать пароль" />
+                                    : <img style={{ width: "1.3vw" }} src={eyeCrossedSVG} alt="Спрятать пароль" />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  );
 };
 
 export default PasswordField;

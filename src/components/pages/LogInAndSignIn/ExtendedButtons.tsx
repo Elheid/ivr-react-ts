@@ -12,7 +12,7 @@ const ExtendedButtons = () => (
                 Забыли пароль?
             </Link>
             <Box mt={1}>
-                <Link href="#" variant="body2">
+                <Link href="/registration" variant="body2">
                     Зарегистрироваться
                 </Link>
             </Box>

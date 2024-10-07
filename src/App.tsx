@@ -14,14 +14,20 @@ import HomeReturnerComponent from './components/HomeReturnerComponent.tsx';
 import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
 import LogInPage from './components/pages/LogInAndSignIn/LogInPage.tsx';
 import ExitPage from './components/pages/LogInAndSignIn/ExitPage.tsx';
+import RegistrationPage from './components/pages/LogInAndSignIn/RegistrationPage.tsx';
+import AdmonModalPanel from './components/AdminUtils/AdminModal.tsx/AdminModalPanel.tsx';
+import { CardAndFormTypeProvider, CardType, FormType } from './contextProviders/formTypeProvider.tsx';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
   return (
+    <CardAndFormTypeProvider>
     <BrowserRouter>
     <HomeReturnerComponent timer={DEFAULT_GO_HOME_TIMER} />
       <div className={"App " +  language}>
         <Routes>
+        <Route path="/modal" element={<AdmonModalPanel cardInFormType={CardType.SERVICE} formType={FormType.CREATE}/>} />
+        <Route path="/registration" element={<RegistrationPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/exit" element={<ExitPage />} />
           <Route path="/" element={<MainPageComponent language={language} setLanguage={setLanguage}  />} />
@@ -37,6 +43,7 @@ function App() {
         </Routes>
       </div>
     </BrowserRouter>
+    </CardAndFormTypeProvider>
   );
 }
 

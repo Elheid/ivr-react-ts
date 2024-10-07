@@ -38,8 +38,8 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         sx={position}
         className="extended-container" 
         >
-            <AdminButton img={trash} classes={"delete-button"} handleClick={onDeleteClick}/>
             <AdminButton img={edit} classes={"edit-button"} handleClick={onEditClick}/>
+            <AdminButton img={trash} classes={"delete-button"} handleClick={onDeleteClick}/>
         </Container>
     )
 })
