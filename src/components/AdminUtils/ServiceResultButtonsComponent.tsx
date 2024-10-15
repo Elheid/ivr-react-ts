@@ -1,9 +1,12 @@
 import { Button } from "@mui/material"
 import React, { forwardRef } from "react";
+import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 
 
 // Компонент ServiceResultButtonsComponent с поддержкой универсального рефа
 const ServiceResultButtonsComponent = forwardRef(<T,>(_: unknown, ref: React.ForwardedRef<T>) => {
+    const {showAdminButtons} = useShowAdminButtons();
+
     // Проверка на наличие свойства `current`
     const handleClick = () => {
         if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
@@ -37,17 +40,19 @@ const ServiceResultButtonsComponent = forwardRef(<T,>(_: unknown, ref: React.For
         }
     };
 
-
-    return (
-        <Button
-            variant="contained"
-            style={{ maxWidth: "10vw", margin: "10px" }}
-            className="extended-button"
-            onClick={handleClick}
-        >
-            Редактировать
-        </Button>
-    );
+    if (showAdminButtons){
+        return (
+            <Button
+                variant="contained"
+                style={{ maxWidth: "10vw", margin: "10px" }}
+                className="extended-button"
+                onClick={handleClick}
+            >
+                Редактировать
+            </Button>
+        );
+    }
+    else return false;
 });
 
 ServiceResultButtonsComponent.displayName = "ServiceResultButtonsComponent";

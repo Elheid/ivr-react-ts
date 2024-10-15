@@ -8,6 +8,7 @@ import ServiceResultHeader from "./ServiceResultHeader";
 import { useParams } from "react-router-dom";
 import { getService } from "../../../api/backendApi";
 import { useEffect, useState } from "react";
+import AdminHeaderElements from "../../AdminUtils/AdminHeaderElements";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 
@@ -81,6 +82,7 @@ const ServiceResultComponent = () => {
             {!isLoading && ( // Show content if isLoading is false
                 <div>
                     <ServiceResultHeader title={serviceData.title} />
+                    <AdminHeaderElements />
                     <section>
                         <main className="main-content main-result">
                             <section className="view-choose">

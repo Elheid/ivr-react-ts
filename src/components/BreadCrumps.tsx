@@ -77,7 +77,7 @@ const BreadCrumpsComponent = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [breadcrumbs, fontSize]);
+    }, [breadcrumbs, fontSize, MIN_FONT_SIZE]);
 
 
     useEffect(() => {

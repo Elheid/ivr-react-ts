@@ -49,15 +49,16 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
 
     const title = tryJsonParse(props.title,"title")
     const icon = tryJsonParse(props.mainIconLink,"image")
+    const video = tryJsonParse(props.gifPreview,"video")
 
     return (
-        <Grid2 size={6} className={cardType} sx={gridCardStyle}>
+        <Grid2 size={6} className={cardType + " info-card"} sx={gridCardStyle}>
             <CardWithRef className={"info-card"}
                 info-id={props.id}
                 item-id={props.itemId}
                 data-title={title}
-                data-gifsrc={props.gifPreview}
-                data-iconsrc={props.mainIconLink}
+                data-gifsrc={video}
+                data-iconsrc={icon}
                 onClick={handleCardClick}
                 ref={infoCardRef}
             >
@@ -74,7 +75,7 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
                     onClick={props.hideOnClick}
                 >
                     {isAdmin() && <AdminButtonsComponent ref={infoCardRef}/>}
-                    <InfoCardButtonMedia mainIconLink={icon} gifPreview={props.gifPreview} />
+                    <InfoCardButtonMedia mainIconLink={icon} gifPreview={video} />
                     <div className="info-title-container">
                         <Typography className="card-title card-description" variant="h5" gutterBottom>{title}</Typography>
                     </div>

@@ -11,7 +11,7 @@ import clearStyles from "./clearCard.module.css"
 import gesturalStyles from './gesturalCard.module.css'
 import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
 import AdminButtonsComponent from '../../../AdminUtils/AdminButtonsComponent';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 
 interface CardButtonTitleProps {
@@ -64,9 +64,11 @@ interface CardButtonProps extends CardTemplate {
 }
 
 const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading, isService, id, isFromQuery=false }: CardButtonProps & { isLoading?: boolean, isService?: boolean, id?: number, isFromQuery?:boolean }) => {
+    
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : gesturalStyles["gestural-card"];
     const cardButtonClass = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"] : gesturalStyles["gestural-button-card"];
     const cardRef = useRef(null);
+    
     return (
         <div data-id={id}
         className={`card-content ${cardType}`}
@@ -129,7 +131,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean, isFrom
     return (
         <Grid2 size={size} className={cardType} sx={gridCardStyle}>
             <Card
-                className={"catalog-card"}
+                className={"service-card"}
                 service-id={id}
                 parent-catalog-id={categoryId}
                 sx={cardStyle}
@@ -150,7 +152,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean, isFrom
 
 //type CategoryCard = Omit<Category, "childrenCategoryIds" | "parentCategoryId">;
 
-const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = ({
+const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = React.memo(({
     id,
     itemsInCategoryIds,
     gifPreview,
@@ -181,12 +183,15 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = ({
             className={cardType}
             sx={gridCardStyle}
             onClick={() => navigateHandleClick(destinationParams.withBaseUrl, destinationParams.paramState, destinationParams.navigate, destinationParams.fromStart)}>
-            <Card className={"catalog-card"} catalog-id={id} children-count={childrens.toString()} sx={cardStyle}>
+            <Card 
+            className={ parentCategoryId !== 0 ? "sub-catalog-card" : "catalog-card"}
+            catalog-id={id} 
+            hildren-count={childrens.toString()} 
+            sx={cardStyle}>
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isLoading={isLoading} />
             </Card>
         </Grid2>
-    );
-};
+    )});
 
 
 export { CatalogCardComponent, ServiceCardComponent };

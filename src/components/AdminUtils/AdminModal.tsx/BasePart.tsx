@@ -1,10 +1,11 @@
 import React from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
+import { FormType } from '../../../contextProviders/formTypeProvider';
 
-const BasePart = () => {
+const BasePart = ({ formType }: { formType: FormType }) => {
     const { register } = useFormContext();
-
+    const isReadOnly = formType === FormType.EDIT &&  true;
     return (
         <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Базовые поля</Typography>
@@ -14,8 +15,10 @@ const BasePart = () => {
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                InputProps={{
-                    readOnly: true, // Запрет изменения
+                slotProps={{
+                    input: {
+                        readOnly: isReadOnly,
+                    },
                 }}
             />
             <TextField

@@ -4,15 +4,15 @@ import Box from '@mui/material/Box';
 
 const ExtendedButtons = () => (
     <>
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <Button className={"login-button"} type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
             Войти
         </Button>
         <Box sx={{ mt: 2, textAlign: 'center' }}>
-            <Link href="#" variant="body2">
+            <Link  className={"login-link"} href="#" variant="body2">
                 Забыли пароль?
             </Link>
             <Box mt={1}>
-                <Link href="/registration" variant="body2">
+                <Link className={"login-link"} href="/registration" variant="body2">
                     Зарегистрироваться
                 </Link>
             </Box>

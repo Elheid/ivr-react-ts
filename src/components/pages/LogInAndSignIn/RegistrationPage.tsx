@@ -48,12 +48,12 @@ const RegistrationPage: React.FC = () => {
       }}
     >
       <Typography variant="h5" component="div" sx={{ mb: 2 }}>
-        Registration Form
+        Регистрация
       </Typography>
 
       <TextFieldForLogin
         name="username"
-        label="Username"
+        label="Логин"
         register={register}
         errors={errors}
         validationRules={{
@@ -64,7 +64,7 @@ const RegistrationPage: React.FC = () => {
 
       <TextFieldForLogin
         name="firstName"
-        label="First Name"
+        label="Имя"
         register={register}
         errors={errors}
         validationRules={{ required: 'First name is required' }}
@@ -72,7 +72,7 @@ const RegistrationPage: React.FC = () => {
 
       <TextFieldForLogin
         name="lastName"
-        label="Last Name"
+        label="Фамилия"
         register={register}
         errors={errors}
         validationRules={{ required: 'Last name is required' }}
@@ -80,7 +80,7 @@ const RegistrationPage: React.FC = () => {
 
       <PasswordField
         name="password"
-        label="Password"
+        label="Пароль"
         register={register}
         errors={errors}
         validationRules={{
@@ -95,7 +95,7 @@ const RegistrationPage: React.FC = () => {
 
       <PasswordField
         name="passwordConfirm"
-        label="Confirm Password"
+        label="Подтверждение пароля"
         register={register}
         errors={errors}
         validationRules={{
@@ -104,8 +104,8 @@ const RegistrationPage: React.FC = () => {
         }}
       />
 
-      <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-        Register
+      <Button className={"login-button"} type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        Зарегистрироваться
       </Button>
     </Box>
   );

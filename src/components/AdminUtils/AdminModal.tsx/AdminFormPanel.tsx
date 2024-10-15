@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Box, Button, IconButton } from '@mui/material';
 import InstructionSection from './InstructionSection';
@@ -7,6 +6,7 @@ import ParentChooseSection from './ParentChooseSection';
 import ResultParts from './ResultParts';
 import BasePart from './BasePart';
 import { CardType, FormType, useCardAndFormType } from '../../../contextProviders/formTypeProvider';
+import { useEffect, useState } from 'react';
 
 
 
@@ -17,11 +17,18 @@ interface FormValues {
   videoPreview: string;
   parentId?: number; // если это поле может отсутствовать
   resVideo?: string; // если это поле может отсутствовать
-  description?: string; // если это поле может отсутствовать
+  descriptionParts?: string[]; // если это поле может отсутствовать
   iconLinks?: string[]; // если это поле может отсутствовать
 }
 
-const AdmonModalPanel = ({cardInFormType, formType}:{cardInFormType:CardType, formType:FormType}) => {
+const AdminFormPanel = ({cardInFormType, formType, modalClose, handleSubmitModal, openModal}:
+  {
+    cardInFormType:CardType, 
+    formType:FormType, 
+    modalClose: (event:React.MouseEvent<HTMLButtonElement>) => void,
+    handleSubmitModal: (event: React.MouseEvent<HTMLButtonElement>) => void,
+    openModal: boolean,
+  }) => {
   const [showInstruction, setShowInstruction] = useState(false);
   const {cardType, setCardType} = useCardAndFormType();
   const [hideParts, setHideParts] = useState(false); // Состояние для скрытия ResultParts и BasePart
@@ -53,7 +60,7 @@ const getDefaultValues = (type: CardType): FormValues => {
         videoPreview:"",
         parentId: 0,       
         resVideo:"",
-        description:"",
+        descriptionParts:[],
         iconLinks:[""],
       };
     case CardType.SUB_CATEGORY:
@@ -69,10 +76,10 @@ const getDefaultValues = (type: CardType): FormValues => {
         switchToTransfer: false,
         previewTitle:"",
         imagePreview:"",
-        video:"",
+        videoPreview:"",
         parentId: 0,       
         resVideo:"",
-        description:"",
+        descriptionParts:[],
         iconLinks:[""] 
       };
     default:
@@ -95,25 +102,24 @@ const methods = useForm({
 
   useEffect(()=>{
     setCardType(cardInFormType);
-    if (formType !== FormType.EDIT) {
-      methods.reset({
+    if (formType === FormType.EDIT) {
+        methods.reset({
         switchToTransfer: false,
         parentId: 6,
         previewTitle:"title 1 test",
         imagePreview:"main icon 1 test",
         videoPreview: "video 1 test",
         resVideo:"resVid test",
-        description:"description test 2",
+        descriptionParts:["description test 2.1", "description test 2.2", "description test 2.3"],
         iconLinks:["test1", "test2"]
-        // Установите остальные поля из cardInFormType, если они существуют
       });
     }
-  }, [cardInFormType, formType]);
+  }, [cardInFormType, formType, openModal, methods]);
 
   return (
     <Box id="card-form-container" sx={{ padding: 3, maxWidth: 800, margin: '0 auto' }}>
       <Box display="flex" justifyContent="flex-end">
-        <IconButton>
+        <IconButton onClick={(e: React.MouseEvent<HTMLButtonElement>)=>modalClose(e)}>
           X
         </IconButton>
       </Box>
@@ -135,12 +141,16 @@ const methods = useForm({
 
 
             {/* Рендеринг секции BasePart для всех типов, кроме additional-info */}
-            {!hideParts && <BasePart />}
+            {!hideParts && <BasePart formType={formType} />}
 
             {/* Рендеринг секции ResultParts только для additional-info и service */}
-            {!hideParts && (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) && <ResultParts />}
+            {!hideParts && (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) && 
+            <ResultParts 
+            descriptionParts={methods.getValues("descriptionParts")} 
+            iconLinks={methods.getValues("iconLinks")}
+            />}
 
-            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+            <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSubmitModal}>
               {buttonSubmitName}
             </Button>
           </form>
@@ -150,4 +160,4 @@ const methods = useForm({
   );
 };
 
-export default AdmonModalPanel;
+export default AdminFormPanel;

@@ -539,6 +539,91 @@ button.extended-button{
 }
 
 /*Admin card form*/
+#card-form .form-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 #card-form img{
   width: 1.3vw;
+}
+
+/*Login register*/
+
+button.login-button{
+  background-color: var(--main-buttons-bg-color);
+}
+a.login-link{
+  color: var(--main-buttons-bg-color);
+  text-decoration-color: var(--main-buttons-bg-color);
+  font-weight: bold;
+}
+
+
+/*toggle switch admin buttons*/
+
+
+.toggleCheckbox {
+  display: none;
+}
+
+.toggleContainer img {
+  width: 1.8vw;
+  padding: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+/*
+.toggleContainer img:first-child{
+  margin-right: 1vw;
+}
+.toggleContainer img:second-child{
+  margin-right: 1vw;
+}*/
+
+.toggleContainer {
+  /*margin-top: 10px;*/
+  margin-top: 20px;
+
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  width: fit-content;
+  border: 1px solid #343434;
+  border-radius: 30px;
+  background: #a77259;
+  font-weight: bold;
+  color: #343434;
+  cursor: pointer;
+}
+
+.toggleContainer::before {
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  left: 0%;
+  border-radius: 30px;
+  /*background: white;*/
+  background: rgba(200, 186, 173, 0.836);
+  transition: all 0.3s;
+}
+
+.toggleContainer div {
+  padding: 6px;
+  text-align: center;
+  z-index: 1;
+}
+
+.toggleCheckbox:checked+.toggleContainer::before {
+  left: 50%;
+}
+
+
+/*Admin modal*/
+div#card-form-container {
+  background: white;
 }
