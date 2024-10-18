@@ -28,8 +28,8 @@ function App() {
 
     const queryCache = new QueryCache({
         onError: (error, query) => {
-            // Устанавливаем сообщение об ошибке в состояние
-            setError("Problem with " + query.queryKey + " " +error?.message);
+          if (error?.message === '["infoCards"] data is undefined') return;
+          setError("Problem with " + query.queryKey + " " +error?.message);
         }
     });
 
