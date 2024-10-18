@@ -1,4 +1,4 @@
-import {  Container, Grid2 } from '@mui/material';
+import {  Alert, Container, Grid2 } from '@mui/material';
 import { CatalogCardComponent, ServiceCardComponent } from './ServiceCards/ServiceCardComponent'; // Импорт компонента
 import { getCategories, getServiceById, getServiceByTitle } from '../../../api/backendApi';
 import {  useEffect, useRef, useState } from 'react';
@@ -7,8 +7,9 @@ import { useCards } from '../../../contextProviders/CardsProvider';
 import {  useParams, useSearchParams } from 'react-router-dom';
 import { getLastParam, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
-import { Category } from '../../../interfaces/CardsInterfaces';
+import { Category, Service } from '../../../interfaces/CardsInterfaces';
 import LoadingCompanent from '../../LoadingComponent';
+import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCategoriesQuery';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],
@@ -17,26 +18,26 @@ interface GroupsOfCategories{
         subWithNotChild: Category[],
 }
 
-const categorizeCategories = (categories: Category[]): GroupsOfCategories  => {
+const categorizeCategories = (categories: Category[] | undefined): GroupsOfCategories  => {
     const categoryGroups = {
         rootWithNotSub: [] as Category[],
         rootWithSub: [] as Category[],
         subWithChild: [] as Category[],
         subWithNotChild: [] as Category[],
     };
-
-    categories.forEach(category => {
-        if (category.childrenCategoryIds.length === 0 && category.parentCategoryId === 0) {
-            categoryGroups.rootWithNotSub.push(category);
-        } else if (category.childrenCategoryIds.length !== 0 && category.parentCategoryId === 0) {
-            categoryGroups.rootWithSub.push(category);
-        } else if (category.childrenCategoryIds.length !== 0 && category.parentCategoryId !== 0) {
-            categoryGroups.subWithChild.push(category);
-        } else if (category.childrenCategoryIds.length === 0 && category.parentCategoryId !== 0) {
-            categoryGroups.subWithNotChild.push(category);
-        }
-    });
-
+    if (categories){
+        categories.forEach(category => {
+            if (category.childrenCategoryIds.length === 0 && category.parentCategoryId === 0) {
+                categoryGroups.rootWithNotSub.push(category);
+            } else if (category.childrenCategoryIds.length !== 0 && category.parentCategoryId === 0) {
+                categoryGroups.rootWithSub.push(category);
+            } else if (category.childrenCategoryIds.length !== 0 && category.parentCategoryId !== 0) {
+                categoryGroups.subWithChild.push(category);
+            } else if (category.childrenCategoryIds.length === 0 && category.parentCategoryId !== 0) {
+                categoryGroups.subWithNotChild.push(category);
+            }
+        });
+    }
 
     return categoryGroups;
 };
@@ -45,8 +46,6 @@ const ListComponent = () => {
     const { categories, setCategories, services, setServices } = useCards();
     const { size } = useCardSize();
 
-    const [loadingCategories, setLoadingCategories] = useState(false);
-    const [loadingServices, setLoadingServices] = useState(false);
     const [isSearching, setSearching] = useState(false);
 
     const gruopsOfCategoties = useRef<GroupsOfCategories>();
@@ -69,84 +68,46 @@ const ListComponent = () => {
     const idNumberSubCategory = subCaregoryFromUrl ? Number(subCaregoryFromUrl) : -1;
     const query = quetyFromUrl ?? '';
 
+    
+    const {data: categoriesInfo,  error: categoriesError, isLoading: isCategoriesLoading} = useCategoriesQuery();
+    const {data: servicesInfo,  error: servicesError, isLoading: isServicesLoading } = useServicesQuery({categoryId:idNumberCategory, search:query});
     useEffect(() => {
-        //const skeletonsHideDelay = 50;
-        setLoadingServices(false);
-        setLoadingCategories(false);
-
         const lastParam = Number(getLastParam());
         try {
             if (idNumberCategory !== -1 && idNumberCategory === lastParam) {
-                getServiceById(idNumberCategory).then((data) => {
-                    const content = data.content;
-                    setServices(content);
-
-                    setLoadingServices(true);
-                    setLoadingCategories(true)
-                });
+                setServices(servicesInfo as Service[]);
             }
             if (idNumberSubCategory !== -1 && idNumberSubCategory === lastParam )
             {
-                
                 if (gruopsOfCategoties.current) 
                 {
                     const allSubCategories = [...gruopsOfCategoties.current.subWithNotChild, 
                         ...gruopsOfCategoties.current.subWithChild];
                     const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
                     setCategories(subCategoriesToShow);
-
-                    setLoadingServices(true);
-                    setLoadingCategories(true)
                 }
                 else{
-                    getCategories().then((data) => {
-                        setServices([])
-                    setCategories([]);
-
-                    saveCategoriesTitles(data.content);
-                    const content = data.content;
-                    gruopsOfCategoties.current = categorizeCategories(content);
+                    saveCategoriesTitles(categoriesInfo || []);
+                    gruopsOfCategoties.current = categorizeCategories(categoriesInfo);
                     const allSubCategories = [...gruopsOfCategoties.current.subWithNotChild, 
                         ...gruopsOfCategoties.current.subWithChild];
                     const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
                     setCategories(subCategoriesToShow);
-                    });
-
-                    setLoadingServices(true);
-                    setLoadingCategories(true)
                 }
             } 
             if (query !== '') {
-                setServices([]);
+                setServices([])
                 setCategories([]);
-                setSearching(true);
-                getServiceByTitle(query)
-                    .then((data) => {
-                        setServices(data.content);
-                        setSearching(false);
-                    })
-
-                    setLoadingServices(true);
-                    setLoadingCategories(true)
+                    setSearching(true);
+                    setServices(servicesInfo as Service[]);
+                    setSearching(false);
+                    
             }
             if (idNumberCategory === -1 && idNumberSubCategory === -1 && query === "") {
-                getCategories().then((data) => {
-                    setServices([])
-                    setCategories([]);
-
-                    saveCategoriesTitles(data.content);
-                    const content = data.content;
-                    gruopsOfCategoties.current = categorizeCategories(content);
-
+                    saveCategoriesTitles(categoriesInfo || []);
+                    gruopsOfCategoties.current = categorizeCategories(categoriesInfo);
                     setCategories([...gruopsOfCategoties.current.rootWithNotSub, 
                         ...gruopsOfCategoties.current.rootWithSub]);
-
-
-                        setLoadingServices(true);
-                        setLoadingCategories(true)
-
-                    //myFunctionWithDelay(() => setLoadingCategories(true), skeletonsHideDelay);
-                });
             }
         } catch (error) {
             console.error("Ошибка при загрузке данных:", error);
@@ -154,16 +115,27 @@ const ListComponent = () => {
         return()=>{
             setServices([])
             setCategories([]);
-            //console.log('unmount')
         }
-    }, [idNumberCategory, idNumberSubCategory, query, setCategories, setServices])
+    }, [idNumberCategory, idNumberSubCategory, query, setCategories, setServices, categoriesInfo, servicesInfo])
 
-    const isSetLoading = (isSearching || (!loadingServices || !loadingCategories));
+    const loading = isSearching || (isServicesLoading || isCategoriesLoading);
+    if (categoriesError || servicesError){
+        return <Alert severity="warning">
+            {"Что-то пошло не так"}
+        </Alert>
+    }
+    if (loading){
+        return <LoadingCompanent />;
+    }
+    const smthWrong = <Alert severity="warning">
+    {"Что-то пошло не так"}
+    </Alert>;
+    
     return (
         <LoadMediaProvider>
             <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
-                {isSetLoading && <LoadingCompanent /> }
-                {!isSearching && categories.map((category, index) => (
+                {/*isSetLoading && <LoadingCompanent />*/}
+                {!categories ? smthWrong : !isSearching && categories.map((category, index) => (
                     <CatalogCardComponent
                         key={index} // Ensure unique key for each card
                         id={category.id} // Assuming 'catalogId' exists in your data
@@ -172,13 +144,13 @@ const ListComponent = () => {
                         mainIconLink={category.mainIconLink} // Assuming 'iconSrc' exists
                         title={category.title} // Assuming 'title' exists
                         size={size} // You can use 'normalSize' or 'bigSize' as needed
-                        isLoading={loadingCategories}
+                        isLoading={!isCategoriesLoading}
                         parentCategoryId={category.parentCategoryId}
                         childrenCategoryIds={category.childrenCategoryIds}
                     />
                 ))
                 }
-                {!isSearching && services.map((service, index) => (
+                {!services ? smthWrong : !isSearching && services.map((service, index) => (
                     <ServiceCardComponent
                         key={index} // Ensure unique key for each card
                         id={service.id} // Assuming 'catalogId' exists in your data
@@ -187,11 +159,10 @@ const ListComponent = () => {
                         mainIconLink={service.mainIconLink} // Assuming 'iconSrc' exists
                         title={service.title} // Assuming 'title' exists
                         size={size} // You can use 'normalSize' or 'bigSize' as needed
-                        isLoading={loadingServices}
+                        isLoading={!isServicesLoading}
                         isFromQuery={query !== ''}
                     />
                 ))}
-
             </Grid2>
         </LoadMediaProvider>
     );

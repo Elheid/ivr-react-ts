@@ -10,6 +10,8 @@ import InfoCardResultComponent from "./InfoCardResultComponent";
 import { getInfoCardsByServiceId } from "../../../../api/backendApi";
 import ModalStyle from "../../../../styles/modalStyle";
 import { useParams } from "react-router-dom";
+import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
+import LoadingCompanent from "../../../LoadingComponent";
 
 
 const infoCard: InfoCard = {
@@ -41,35 +43,24 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
     const handleHide = () => setHidden(true);
     const handleShow = () => setHidden(false);
 
+    const {data: infoCardInfo,  error: infoError, isLoading: isInfoLoading } = useInfoCardsQuery({serviceId:serviceUrlId});
 
 
 
     useEffect(() => {
         if (open) {
             const fillInfoArray = async()=>{
-                const loadInfo = (id : number) =>
-                    getInfoCardsByServiceId(id)
-                    //getInfoById(id)
-                        .then((data) => {
-                            const cards : InfoCard[] = data.content;
-                            //setInfoCards((prevCards) => [...prevCards, card]);
-                            setInfoCards(cards);
-                        })
-                        .catch((err)=> console.log(err)
-                );
-                //for (const id of additionIds){
-                    await loadInfo(serviceUrlId);
-                //}
+                setInfoCards(infoCardInfo || []);
             }
             fillInfoArray();
-            console.log(additionIds)
+            //console.log(additionIds)
         }
     }, [open]);
 
     useEffect(() => {
         const handleInfoCardOpen = (event: Event) => {
             const customEvent = event as CustomEvent<{ id: number }>;
-            console.log("Card ID received: ", customEvent.detail.id);
+            //console.log("Card ID received: ", customEvent.detail.id);
             setSelectedCardId(customEvent.detail.id);
         };
 
@@ -79,6 +70,10 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
             window.removeEventListener('infoCardOpen', handleInfoCardOpen);
         };
     }, []);
+
+    if (isInfoLoading){
+        return <LoadingCompanent />;
+    }
 
     return (
         <div className="modal-container">

@@ -18,15 +18,46 @@ import RegistrationPage from './components/pages/LogInAndSignIn/RegistrationPage
 import AdminFormPanel from './components/AdminUtils/AdminModal.tsx/AdminFormPanel.tsx';
 import { CardAndFormTypeProvider, CardType, FormType } from './contextProviders/formTypeProvider.tsx';
 import { ShowAdminButtonsProvider } from './contextProviders/ShowAdminButtonsProvider.tsx';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Alert } from '@mui/material';
 
 function App() {
   const [language, setLanguage] = useState(localStorage.getItem('language') || 'clear-language'); 
+
+  const [error, setError] = useState<string | null>(null);
+
+    const queryCache = new QueryCache({
+        onError: (error, query) => {
+            // Устанавливаем сообщение об ошибке в состояние
+            setError("Problem with " + query.queryKey + " " +error?.message);
+        }
+    });
+
+  const queryClient = new QueryClient({
+    defaultOptions:{
+      queries:{
+        retry:false
+      }
+    },
+    queryCache: queryCache,
+  });
+
   return (
+    <QueryClientProvider client={queryClient}>
     <ShowAdminButtonsProvider>
     <CardAndFormTypeProvider>
     <BrowserRouter>
     <HomeReturnerComponent timer={DEFAULT_GO_HOME_TIMER} />
       <div className={"App " +  language}>
+      <div>
+            {/* Отображаем сообщение об ошибке, если оно есть */}
+            {error && (
+                <Alert severity="error" onClose={() => setError(null)}>
+                    {error}
+                </Alert>
+            )}
+            {/* Остальная часть приложения */}
+        </div>
         <Routes>
         <Route path="/modal" element={<AdminFormPanel cardInFormType={CardType.ADDITIONAL_INFO} formType={FormType.CREATE} openModal={true} modalClose={()=>alert("closed")} handleSubmitModal={()=> alert("submit")}/> } />
         <Route path="/registration" element={<RegistrationPage />} />
@@ -47,23 +78,8 @@ function App() {
     </BrowserRouter>
     </CardAndFormTypeProvider>
     </ShowAdminButtonsProvider>
+    </QueryClientProvider>
   );
 }
 
 export default App;
-
-/*
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          {count}
-        </button>
-      </div>
-    </>
-  )
-}*/
-

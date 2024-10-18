@@ -1,5 +1,5 @@
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { isAdmin, tryJsonParse } from "../../../utill";
 import VideoComponent from "../../VideoComponent";
 
@@ -24,9 +24,10 @@ const ManualStrpComponent = ({ gifLink, description, iconLinks, additionIds }: M
 
 
     const cardType = localStorage.getItem("language") === "clear-language" ;
+    const insertBlocksMemo = useCallback(()=>insertBlocks(textRef, description, iconLinks),[description, iconLinks])
     useEffect(() => {
-        insertBlocks(textRef, description, iconLinks);
-    }, [description, iconLinks]);
+        insertBlocksMemo();
+    }, [insertBlocksMemo]);
 
     return (
         <div className="manual-strp true-manual">

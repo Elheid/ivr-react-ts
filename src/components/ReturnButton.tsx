@@ -37,7 +37,7 @@ const LinkButtonComponent = ({img = arrowLeftSVG, description = "Назад", cl
     const backClick = () => {
         const baseUrl = 'http://localhost:5173/services';
         if (window.location.href === baseUrl && window.location.search === '') navigate(destination)
-        else myFunctionWithDelay(()=>navigate(-1), 300);
+        else myFunctionWithDelay(()=>navigate(-1), 1);
     }
     return (
         <Button
