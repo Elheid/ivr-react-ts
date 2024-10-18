@@ -86,7 +86,7 @@ const refreshToken = (methodName = "POST") =>
       headers: {
           'Content-Type': 'application/json',
           'accept': '*/*',
-          'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : undefined, // Добавляем Authorization, если есть токен
+          'Authorization': localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token")}` : "", // Добавляем Authorization, если есть токен
       },
   })
       .then((response) => {
@@ -101,7 +101,7 @@ const refreshToken = (methodName = "POST") =>
           //console.error('Error details:', error);
           localStorage.removeItem('token');
           localStorage.removeItem('refresh-token');
-          alert("Время истекло, перезайдите в аккаунт " + err);
+          alert("Время истекло, перезайдите в аккаунт " + error);
 
           throw new Error(error);
       });

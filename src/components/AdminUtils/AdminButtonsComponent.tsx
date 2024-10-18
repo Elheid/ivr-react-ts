@@ -69,7 +69,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             alert("Удалить: " + element?.getAttribute("data-title"))
         }
     }
-    const handleCloseModal = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleCloseModal = (event: React.MouseEvent) => {
         event.preventDefault();
         event.stopPropagation();
         setOpenModal(false); // Закрываем модалку
@@ -100,7 +100,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     cardInFormType={cardInFormType}
                     formType={formType}
                     open={openModal}
-                    handleClose={(e:React.MouseEvent<HTMLButtonElement>)=>handleCloseModal(e)}
+                    handleClose={(e: React.MouseEvent)=>handleCloseModal(e)}
                     handleSubmitModal={(e)=>handleSubmitModal(e)}
                 />}
             </>

@@ -52,7 +52,7 @@ const CardButtonMedia = ({ gifPreview, mainIconLink, isLoading, title, isService
 
     return (
         localStorage.getItem("language") === "clear-language"
-            ? ((isLoading && iconLoaded ? (<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id} />) : <Skeleton animation="wave" variant="rounded"><ClearCardIconComponent iconSrc={mainIconLink} /></Skeleton>))
+            ? ((isLoading && iconLoaded ? (<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id} />) : <Skeleton animation="wave" variant="rounded"><ClearCardIconComponent title={title} iconSrc={mainIconLink} /></Skeleton>))
             : (isLoading && videoLoaded ? <GesturalVideoComponent gifSrc={gifPreview} /> : <Skeleton animation="wave" variant="rounded"><GesturalVideoComponent gifSrc={gifPreview} /></Skeleton>)
     );
 }

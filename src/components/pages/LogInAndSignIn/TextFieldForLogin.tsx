@@ -1,8 +1,8 @@
 import TextField from '@mui/material/TextField';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
-interface CustomTextFieldProps<T> {
-    name: keyof T;
+interface CustomTextFieldProps<T  extends FieldValues> {
+    name:  Path<T>;
     label: string;
     register: UseFormRegister<T>;
     errors: FieldErrors<T>;
@@ -10,7 +10,7 @@ interface CustomTextFieldProps<T> {
     type?: string; // Тип текстового поля (text, password и т.д.)
 }
 
-const CustomTextField = <T,>({
+const CustomTextField = <T extends FieldValues,>({
     name,
     label,
     register,

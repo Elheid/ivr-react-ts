@@ -6,7 +6,7 @@ interface InstructionSectionProps {
     onBackClick: () => void;
 }
 
-const InstructionSection = ({ showInstruction, onBackClick }:InstructionSectionProps) => {
+const InstructionSection = React.memo(({ showInstruction, onBackClick }:InstructionSectionProps) => {
     return (
         <Box display={showInstruction ? 'block' : 'none'} p={2} border={1} borderColor="grey.300">
             <Typography variant="h5" gutterBottom>
@@ -21,6 +21,6 @@ const InstructionSection = ({ showInstruction, onBackClick }:InstructionSectionP
             </Button>
         </Box>
     );
-};
+});
 
 export default InstructionSection;

@@ -62,15 +62,16 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ register, errors }) => {
 
 export default PasswordField;*/
 
-import React, { useState } from 'react';
+/*
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { FieldErrors, FieldValues, UseFormRegister } from 'react-hook-form';
 
 // Пропсы для компонента PasswordField
-interface PasswordFieldProps<T> {
-  name: keyof T;
+interface PasswordFieldProps<T extends FieldValues> {
+  name: Path<T>;
   label: string;
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
@@ -101,9 +102,58 @@ const PasswordField = <T,>({ name, label, register, errors, validationRules }: P
                 onClick={handleTogglePasswordVisibility}
                 edge="end"
               >
-                 {showPassword
-                                    ? <img style={{ width: "1.3vw" }} src={eyeSVG} alt="Показать пароль" />
-                                    : <img style={{ width: "1.3vw" }} src={eyeCrossedSVG} alt="Спрятать пароль" />}
+                {showPassword
+                  ? <img style={{ width: "1.3vw" }} src={eyeSVG} alt="Показать пароль" />
+                  : <img style={{ width: "1.3vw" }} src={eyeCrossedSVG} alt="Спрятать пароль" />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        },
+      }}
+    />
+  );
+};
+
+export default PasswordField;*/
+import { useState } from "react";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { FieldErrors, UseFormRegister, FieldValues, Path } from "react-hook-form";
+
+interface PasswordFieldProps<T extends FieldValues> {
+  name: Path<T>; // Используем Path<T> вместо keyof T
+  label: string;
+  register: UseFormRegister<T>;
+  errors: FieldErrors<T>;
+  validationRules?: object; // Правила валидации для пароля
+}
+
+const PasswordField = <T extends FieldValues>({ name, label, register, errors, validationRules }: PasswordFieldProps<T>) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePasswordVisibility = () => setShowPassword((prev) => !prev);
+
+  return (
+    <TextField
+      fullWidth
+      type={showPassword ? 'text' : 'password'}
+      label={label}
+      {...register(name, validationRules)}
+      error={Boolean(errors[name])}
+      helperText={errors[name]?.message as string}
+      margin="normal"
+      sx={{ mt: 2 }}
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={handleTogglePasswordVisibility}
+                edge="end"
+              >
+                {showPassword
+                  ? <img style={{ width: "1.3vw" }} src={eyeSVG} alt="Показать пароль" />
+                  : <img style={{ width: "1.3vw" }} src={eyeCrossedSVG} alt="Спрятать пароль" />}
               </IconButton>
             </InputAdornment>
           ),
@@ -114,4 +164,5 @@ const PasswordField = <T,>({ name, label, register, errors, validationRules }: P
 };
 
 export default PasswordField;
+
 

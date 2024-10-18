@@ -1,5 +1,4 @@
 import { IconButton, Typography } from '@mui/material';
-import React from 'react';
 import { CardType, FormType } from '../../../contextProviders/formTypeProvider';
 
 interface FormHeaderProps {

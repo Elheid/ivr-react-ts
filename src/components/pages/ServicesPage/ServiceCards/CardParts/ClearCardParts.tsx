@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import arrowSVG from "../../../../../assets/img/arrow.svg";
 
 import styles from "../clearCard.module.css"
 import { useLoadContext } from '../../../../../contextProviders/LoadMediaProvider';
-import { addSubHeaderForQuery, getCategoryTitleById, tryJsonParse } from '../../../../../utill';
+import { addSubHeaderForQuery, tryJsonParse } from '../../../../../utill';
 
 /// Clear card components
 interface ClearCardIconComponentProps {

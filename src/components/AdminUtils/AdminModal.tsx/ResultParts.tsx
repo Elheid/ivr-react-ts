@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 
@@ -9,6 +9,7 @@ interface DescriptionPart {
 
 const DescriptionPartComponent = ({ text, icon, index }: { text: string; icon: string; index: number }) => {
     const { register } = useFormContext();
+    
     console.log(icon);
     return (
         <>

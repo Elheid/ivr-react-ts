@@ -7,7 +7,7 @@ import { InfoCard } from "../../../../interfaces/CardsInterfaces";
 import LinkButtonComponent from "../../../ReturnButton";
 import Scrollbar from "../../../ScrollBar/ScrollBar";
 import InfoCardResultComponent from "./InfoCardResultComponent";
-import { getInfoById, getInfoCardsByServiceId } from "../../../../api/backendApi";
+import { getInfoCardsByServiceId } from "../../../../api/backendApi";
 import ModalStyle from "../../../../styles/modalStyle";
 import { useParams } from "react-router-dom";
 
@@ -26,7 +26,7 @@ const infoCard: InfoCard = {
 //const infoCardsSample = [infoCard, infoCard, infoCard]
 
 
-const PopupContainer = ({ additionIds }: { additionIds: number[] }) => {
+const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) => {
     const [open, setOpen] = useState(false);
     const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
     const [isHidden, setHidden] = useState(false);
@@ -141,6 +141,6 @@ const PopupContainer = ({ additionIds }: { additionIds: number[] }) => {
             </Modal>
         </div>
     );
-}
+})
 export default PopupContainer;
 //export default PopupContainer;

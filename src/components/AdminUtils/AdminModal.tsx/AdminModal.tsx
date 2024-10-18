@@ -15,12 +15,12 @@ const AdminModal = ({
     cardInFormType: CardType;
     formType: FormType;
     open: boolean;
-    handleClose: (event:React.MouseEvent<HTMLButtonElement>) => void;
+    handleClose: (event: React.MouseEvent) => void;
     handleSubmitModal: (event:React.MouseEvent<HTMLButtonElement>) => void
 }) => {
     const modalRef = useRef<HTMLDivElement>(null)
 
-    const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const handleContainerClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         // Проверяем, был ли клик вне модального окна
         if (modalRef.current && !modalRef.current.contains(e.target as Node)) {

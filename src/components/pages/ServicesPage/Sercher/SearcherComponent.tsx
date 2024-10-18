@@ -5,11 +5,11 @@ import TypeViewButtons from "./TypeViewButtonsComponent";
 import GesturalSearchComponent from "./GesturalSearchComponent";
 import ImageButton from "../../../ImageButtonComponent";
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 //import { useCards } from "../../../contextProviders/CardsProvider";
 //import { getServiceByTitle } from "../../../api/backendApi";
 import { navigateHandleClick } from "../../../../utill";
-import { NavigateFunction, useNavigate, useSearchParams } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useSearchInput } from "../../../../contextProviders/SearchInputProvider";
 import GesturalSearchModal from "./GesturalSearchModal";
 
