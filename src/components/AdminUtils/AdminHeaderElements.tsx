@@ -7,12 +7,14 @@ import { Container } from "@mui/material";
 const AdminHeaderElements = ()=>{
     const [isRefreshable, setRefreshable] = useState(false);
     useEffect(()=>{
-        try{
-            fetchAndRefreshToken();
-            setRefreshable(true);
-        }
-        catch{
-            alert("Ошибка, не вошли в аккаунт")
+        if (isAdmin()){
+            try{
+                fetchAndRefreshToken();
+                setRefreshable(true);
+            }
+            catch{
+                alert("Ошибка, не вошли в аккаунт")
+            }
         }
     },[])
 
