@@ -12,17 +12,17 @@ import { useParams } from "react-router-dom";
 import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
 import LoadingCompanent from "../../../LoadingComponent";
 
-
+/*
 const infoCard: InfoCard = {
     description: "\n- Нет госпошлины.\n\\icon0\n- Срок выполнения государственной услуги начинается после принятия местным отделением МВД необходимых документов и составляет:\n*при предоставлении правоустанавливающего документа - 1 рабочий день\n*при непредъявлении правоустанавливающего документа - 6 рабочих дней\n\\icon1",
-    gifLink: "https://storage.yandexcloud.net/akhidov-ivr/19.mp4",/*resVideo:  */
-    gifPreview: "https://storage.yandexcloud.net/akhidov-ivr/18.mp4",/*video:  */
+    gifLink: "https://storage.yandexcloud.net/akhidov-ivr/19.mp4",
+    gifPreview: "https://storage.yandexcloud.net/akhidov-ivr/18.mp4",
     iconLinks: ["https://storage.yandexcloud.net/akhidov-ivr/icon18.svg", "https://storage.yandexcloud.net/akhidov-ivr/icon18.svg"],
     id: 2,
     itemId: 14,
-    mainIconLink: "https://storage.yandexcloud.net/akhidov-ivr/icon18.svg",/*image:  */
+    mainIconLink: "https://storage.yandexcloud.net/akhidov-ivr/icon18.svg",
     title: "Дополнительная информация"
-};
+};*/
 
 //const infoCardsSample = [infoCard, infoCard, infoCard]
 
@@ -70,10 +70,6 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
         };
     }, []);
 
-    if (isInfoLoading){
-        return <LoadingCompanent />;
-    }
-
     return (
         <div className="modal-container">
             <ImageButton
@@ -105,7 +101,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                         {additionIds ?
                             <div className="popup-content">
                                 <Grid2 className={`info-cards list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
-                                    {infoCards.map((infoCard: InfoCard, index: number) => (
+                                    {isInfoLoading ? <LoadingCompanent /> : infoCards.map((infoCard: InfoCard, index: number) => (
                                         <InfoCardComponent
                                             key={index} // Ensure unique key for each card
                                             itemId={infoCard.itemId}
@@ -121,7 +117,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                                 </Grid2>
                                 <div className={`additional-info-res ${!isHidden && open ? "hidden" : ""}`}>
                                     <Container>
-                                        <InfoCardResultComponent id={selectedCardId} description={""} gifLink={infoCard.gifLink} iconLinks={infoCard.iconLinks} />
+                                        <InfoCardResultComponent id={selectedCardId} />
                                         <LinkButtonComponent onClick={handleShow} />
                                     </Container>
                                 </div>

@@ -28,7 +28,9 @@ function App() {
 
     const queryCache = new QueryCache({
         onError: (error, query) => {
-          if (error?.message === '["infoCards"] data is undefined') return;
+          if (error?.message === '["infoCards"] data is undefined' 
+            || error?.message === `Cannot use 'in' operator to search for 'title' in `
+          ) return;
           setError("Problem with " + query.queryKey + " " +error?.message);
         }
     });

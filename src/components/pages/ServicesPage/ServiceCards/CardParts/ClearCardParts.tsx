@@ -41,7 +41,6 @@ const loadSVG = async (svgUrl: string, noColorize = false) => {
 }
 
 const ClearCardIconComponent = ({ iconSrc, title, isService, id }: ClearCardIconComponentProps) => {
-    //const getBlobIconUrl = loadSVG(iconSrc);
     iconSrc = tryJsonParse(iconSrc, "image")
     const [icon, setIcon] = useState<string>();
     const { setIconLoaded } = useLoadContext();

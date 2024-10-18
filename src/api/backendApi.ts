@@ -1,11 +1,62 @@
 import axios, { AxiosError } from "axios";
 import { API_BACK_URL } from "../assets/data/constants";
 import { Category, Service } from "../interfaces/CardsInterfaces";
-import { saveCategoriesTitles } from "../utill";
+import { saveCategoriesTitles, tryJsonParse } from "../utill";
 const BASE_URL = API_BACK_URL;
 
 axios.defaults.baseURL = BASE_URL;
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token") }` : undefined;
+
+interface ParsedObject {
+  title?: string;
+  description?: string;
+  gifLink?: string;
+  gifPreview?: string;
+  mainIconLink?: string;
+  iconLinks?: string[]; // Явно указываем, что это массив строк
+  [key: string]: unknown; // Позволяет добавлять другие поля с типом unknown
+}
+
+
+axios.interceptors.response.use((response) => {
+  const res = response.data;
+  const fieldsToParse = [
+    { key: 'title', name: 'title' },
+    { key: 'description', name: 'description' },
+    { key: 'gifLink', name: 'resVideo' },
+    { key: 'gifPreview', name: 'video' },
+    { key: 'mainIconLink', name: 'image' },
+    { key: 'iconLinks', isArray: true , name:"icon"} // Обрабатываем массив
+];
+
+// Функция для обработки одного объекта
+const parseObjectFields = (obj: ParsedObject) => {
+  fieldsToParse.forEach(({ key, name, isArray }) => {
+      if (key in obj) {
+          if (isArray) {
+              const items = obj[key];
+              if (Array.isArray(items)) {
+                  obj[key] = items.map((item) => tryJsonParse(item, 'link'));
+              }
+          } else {
+              if (typeof obj[key] === 'string') {
+                obj[key] = tryJsonParse(obj[key], name);
+            }
+          }
+      }
+  });
+};
+
+  // Проверка на наличие поля content
+  if (Array.isArray(res.content)) {
+      res.content.forEach(parseObjectFields); // Проходим по каждому объекту в массиве content
+  } else {
+      // Если content нет, обрабатываем сам объект
+      parseObjectFields(res);
+  }
+  response.data = res; 
+  return response; 
+});
 
 const Route = {
   GET_SERVICES: 'items/search/byCategory?categoryId=',
