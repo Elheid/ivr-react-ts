@@ -7,7 +7,6 @@ import { InfoCard } from "../../../../interfaces/CardsInterfaces";
 import LinkButtonComponent from "../../../ReturnButton";
 import Scrollbar from "../../../ScrollBar/ScrollBar";
 import InfoCardResultComponent from "./InfoCardResultComponent";
-import { getInfoCardsByServiceId } from "../../../../api/backendApi";
 import ModalStyle from "../../../../styles/modalStyle";
 import { useParams } from "react-router-dom";
 import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
@@ -43,7 +42,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
     const handleHide = () => setHidden(true);
     const handleShow = () => setHidden(false);
 
-    const {data: infoCardInfo,  error: infoError, isLoading: isInfoLoading } = useInfoCardsQuery({serviceId:serviceUrlId});
+    const {data: infoCardInfo, isLoading: isInfoLoading } = useInfoCardsQuery({serviceId:serviceUrlId});
 
 
 

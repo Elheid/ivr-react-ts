@@ -6,10 +6,9 @@ import { LoadMediaProvider } from "../../../contextProviders/LoadMediaProvider";
 import ManualStrpComponent from "./ManualStripComponent";
 import ServiceResultHeader from "./ServiceResultHeader";
 import { useParams } from "react-router-dom";
-import { getService } from "../../../api/backendApi";
 import { useEffect, useState } from "react";
 import AdminHeaderElements from "../../AdminUtils/AdminHeaderElements";
-import { useInfoCardsQuery, useServicesQuery } from "../../../hooks/useCategoriesQuery";
+import { useServicesQuery } from "../../../hooks/useCategoriesQuery";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 
@@ -44,15 +43,12 @@ const ServiceResultComponent = () => {
 
     // Convert serviceId to a number or set it to -1 if invalid
     const idNumberService = serviceId ? Number(serviceId) : -1;
-    const {data: servicesInfo,  error: servicesError, isLoading: isServicesLoading } = useServicesQuery({serviceId:idNumberService});
+    const {data: servicesInfo, isLoading: isServicesLoading } = useServicesQuery({serviceId:idNumberService});
 
-
-    const [isLoading, setIsLoading] = useState(true); // Add loading state
 
 
     // Fetch data using useEffect
     useEffect(() => {
-            setIsLoading(true); // Set isLoading to true before fetching
             const data = servicesInfo as ServiceData;
             setServiceData(data)
 

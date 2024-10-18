@@ -1,6 +1,5 @@
 import {  Alert, Container, Grid2 } from '@mui/material';
 import { CatalogCardComponent, ServiceCardComponent } from './ServiceCards/ServiceCardComponent'; // Импорт компонента
-import { getCategories, getServiceById, getServiceByTitle } from '../../../api/backendApi';
 import {  useEffect, useRef, useState } from 'react';
 import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
