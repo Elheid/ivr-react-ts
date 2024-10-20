@@ -186,7 +186,8 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = React
             <Card 
             className={ parentCategoryId !== 0 ? "sub-catalog-card" : "catalog-card"}
             catalog-id={id} 
-            hildren-count={childrens.toString()} 
+            children-count={childrens.toString()} 
+            parent-id={parentCategoryId}
             sx={cardStyle}>
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isLoading={isLoading} />
             </Card>

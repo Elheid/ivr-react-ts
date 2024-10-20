@@ -626,4 +626,7 @@ a.login-link{
 /*Admin modal*/
 div#card-form-container {
   background: white;
+  
+  max-height: 60vh;
+  overflow-y: auto;
 }

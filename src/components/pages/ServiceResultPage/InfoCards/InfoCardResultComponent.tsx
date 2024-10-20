@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import VideoComponent from "../../../VideoComponent";
-import insertBlocks from "../blockInsertion";
+import {insertBlocks} from "../blockInsertion";
 import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
 import { useParams } from "react-router-dom";
 
