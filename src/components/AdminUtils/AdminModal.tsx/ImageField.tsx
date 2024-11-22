@@ -1,49 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { Grid2, TextField } from '@mui/material';
 
-    interface ImageFieldProps {
-        registerName: string;
-        img?:string | null;
-    }
+interface ImageFieldProps extends Omit<React.ComponentProps<typeof TextField>, 'name'> {
+    registerName: string;
+    img?: string | null;
+}
 
-const ImageField = React.memo(({ registerName, img }:ImageFieldProps) => {
-    const { register, watch  } = useFormContext();
+const ImageField = React.memo(({ registerName, img, ...textFieldProps  }: ImageFieldProps) => {
+    const { register, watch } = useFormContext();
     const [imageSrc, setImageSrc] = useState<string>(''); // состояние для хранения ссылки на изображение
-    
+
 
     const currentValue = watch(registerName);
 
     useEffect(() => {
         if (currentValue) {
-        setImageSrc(currentValue); // обновляем ссылку на изображение при рендере и изменении
+            setImageSrc(currentValue); // обновляем ссылку на изображение при рендере и изменении
         }
-        if (currentValue !== img && img){
+        if (currentValue !== img && img) {
             setImageSrc(img); // обновляем ссылку на изображение при рендере и изменении
         }
     }, [currentValue]);
 
     return (
-        <>
-            <TextField
-                {...register(registerName)}
-                defaultValue={img|| ""}
-                label="Ссылка на изображение"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-            />
+        <Grid2 sx={{alignItems: "center;"}} container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
+            <Grid2 sx={{height:" fit-content;"}}>
+                <TextField
+                    {...register(registerName)}
+                    defaultValue={img || ""}
+                    label="Ссылка на изображение"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    {...textFieldProps}
+                />
+            </Grid2>
 
-            {/* Предварительный просмотр изображения */}
-            { (
+            {(
+                <Grid2>
                 <img
                     src={imageSrc}
                     alt="Предпросмотр"
                     style={{ marginTop: '16px', maxWidth: '100%', height: 'auto' }}
-                    onError={() => setImageSrc('')} // убираем изображение, если ссылка некорректна
+                    onError={() => setImageSrc('')} 
                 />
+                </Grid2>
             )}
-        </>
+        </Grid2>
     );
 });
 

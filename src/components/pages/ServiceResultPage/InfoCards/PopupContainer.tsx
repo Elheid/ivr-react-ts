@@ -100,7 +100,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                     <Scrollbar height="67vh" addArrowsButtons={false}>
                         {additionIds ?
                             <div className="popup-content">
-                                <Grid2 className={`info-cards list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
+                                <Grid2 className={`info-cards card-list list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
                                     {isInfoLoading ? <LoadingCompanent /> : infoCards.map((infoCard: InfoCard, index: number) => (
                                         <InfoCardComponent
                                             key={index} // Ensure unique key for each card

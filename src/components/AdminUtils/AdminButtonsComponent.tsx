@@ -1,13 +1,13 @@
 import trash from "../../assets/img/trash.svg"
 import edit from "../../assets/img/edit.svg"
 import { Button, Container } from "@mui/material";
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { CardType, FormType } from "../../contextProviders/formTypeProvider";
 
 
-const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e: React.MouseEvent<HTMLButtonElement>) => void }) => {
+const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e: MouseEvent) => void }) => {
     return (
         <Button
             className={`extended-button ${classes}`}
@@ -18,8 +18,11 @@ const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: str
     )
 }
 
+
+
 const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
     const { showAdminButtons } = useShowAdminButtons();
+
     const [openModal, setOpenModal] = useState(false);
 
 
@@ -33,10 +36,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
     const isClearLang = localStorage.getItem("language") === "clear-language";
     const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
 
-    const determineCardAndFormType = (element: HTMLDivElement) => {
-        const parentElement = element.parentNode as HTMLElement;
-
-        // Определение cardInFormType в зависимости от классов
+    const classificateFormByEl = (parentElement: HTMLElement, element: HTMLDivElement)=>{
         if (parentElement.classList.contains("catalog-card")) {
             const id = element.dataset.id;
             setCardId(Number(id) || -1);
@@ -62,27 +62,45 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             setParentCardId(Number(parentId) || -1);
             setCardInFormType(CardType.ADDITIONAL_INFO);
         }
+    }
+
+    const determineCardAndFormType = (element: HTMLDivElement) => {
+        //const parentElement = element.parentNode as HTMLElement;
+
+        // Определение cardInFormType в зависимости от классов
+        //classificateFormByEl(parentElement, element)
+
 
         // Определение formType
-        if (parentElement.classList.contains("card-to-add")) {
+        if (ref && typeof ref === "object" && ref !== null && "current" in ref){
+            const parentRefEl = ref.current ? ref.current.parentNode as HTMLElement : new HTMLDivElement;
+            classificateFormByEl(parentRefEl, element)
+        }
+        if (element.classList.contains("card-to-add")) {
             setFormType(FormType.CREATE);
         } else {
             setFormType(FormType.EDIT);
         }
     };
 
-    const onEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onEditClick = (e: MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setOpenModal(true);
-        
-        if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
-            const element = ref.current ? ref.current : new HTMLDivElement;
+
+        let element:HTMLDivElement;
+        const target = e.currentTarget;
+        if (target instanceof HTMLDivElement && target.tagName.toLowerCase() === 'div' && target.classList.contains('card-to-add')){
+            element = target;
+            determineCardAndFormType(element);
+        }
+        else if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
+            element = ref.current ? ref.current : new HTMLDivElement;
             determineCardAndFormType(element);
             //alert("Редактировать: " + element?.getAttribute("data-title"))
         }
     }
-    const onDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const onDeleteClick = (e: MouseEvent) => {
         e.stopPropagation();
         if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
             const element = ref.current;
@@ -95,15 +113,34 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         setOpenModal(false); // Закрываем модалку
     };
 
-    const handleSubmitModal = (event:React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
+    const handleSubmitModal = (event: React.FormEvent<HTMLFormElement>) => {
+        //event.preventDefault();
         event.stopPropagation();
         setOpenModal(false); // Закрываем модалку
-        
+        //console.log(event.currentTarget)
     };
 
+    useEffect(() => {
+        if (showAdminButtons) {
+            const cardAdd = document.querySelector(".card-to-add");
 
 
+            if (cardAdd) {
+                // Убедимся, что не добавляем несколько обработчиков
+                (cardAdd as HTMLButtonElement).onclick = null;
+                (cardAdd as HTMLButtonElement).onclick = onEditClick;  // Убираем предыдущие обработчики
+                //cardAdd.addEventListener("click", onEditClick);    // Добавляем новый обработчик
+            }
+
+            // Очистка обработчика при размонтировании компонента или изменении showAdminButtons
+            return () => {
+                if (cardAdd) {
+                    (cardAdd as HTMLButtonElement).onclick = null;
+                    //cardAdd.removeEventListener("click", onEditClick);
+                }
+            };
+        }
+    }, [showAdminButtons, onEditClick, ref, setOpenModal]);
 
     if (showAdminButtons) {
         return (
@@ -122,10 +159,11 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     cardInFormType={cardInFormType}
                     formType={formType}
                     open={openModal}
-                    handleClose={(e: React.MouseEvent)=>handleCloseModal(e)}
-                    handleSubmitModal={(e)=>handleSubmitModal(e)}
+                    handleClose={(e: React.MouseEvent) => handleCloseModal(e)}
+                    handleSubmitModal={(e) => handleSubmitModal(e)}
                 />}
             </>
+
         )
     }
     else return false;

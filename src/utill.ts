@@ -15,7 +15,7 @@ const navigateHandleClick = (withBaseUrl: boolean, paramState: string, navigate:
     navigate(newPath);
     // Здесь можно добавить дополнительную логику, если требуется
 };
-type TitlesMap = { [key: number]: string };
+export type TitlesMap = { [key: number]: string };
 
 const saveCategoriesTitles = (content: Service[] | Category[]) => {
     const obj: TitlesMap = {}; // Объект с числовыми ключами и строковыми значениями
@@ -32,16 +32,18 @@ const getLastParam = () => {
     return urlParts[urlParts.length - 1]; // Получаем последний элемент
 }
 
-const getCategoriesTitles = () => {
+
+const getCategoriesTitles = ():TitlesMap => {
     const titles = localStorage.getItem('titles');
     if (!titles) loadCategoriesTitles()
     const res = titles ? JSON.parse(titles) : {};
     return res;
 }
 
-const getCategoryTitleById = (id: number) => {
+const getCategoryTitleById = (id: number) :string | null=> {
     const titles = getCategoriesTitles();
-    return titles[id] || null; // Возвращает заголовок по id или null, если id нет в объекте
+    const res = titles[id];
+    return res || null; // Возвращает заголовок по id или null, если id нет в объекте
 };
 
 

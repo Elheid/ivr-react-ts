@@ -18,7 +18,7 @@ const AdminModal = ({
     formType: FormType;
     open: boolean;
     handleClose: (event: React.MouseEvent) => void;
-    handleSubmitModal: (event:React.MouseEvent<HTMLButtonElement>) => void,
+    handleSubmitModal: (event:React.FormEvent<HTMLFormElement>) => void,
     id:number,
     parentId?:number,
 }) => {
@@ -31,6 +31,7 @@ const AdminModal = ({
 
     return (
         <Container 
+        
         className="container-of-modal"
         onClick={handleContainerClick}
         onMouseDown={(e)=>{

@@ -1,16 +1,17 @@
 import { Box, TextField, Typography } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
-import { FormType } from '../../../contextProviders/formTypeProvider';
+import { CardType, FormType } from '../../../contextProviders/formTypeProvider';
 import ImageField from './ImageField';
 
-const BasePart = ({ formType }: { formType: FormType }) => {
+const BasePart = ({ formType, cardType }: { formType: FormType, cardType: "" | CardType, }) => {
     const { register } = useFormContext();
-    const isReadOnly = formType === FormType.EDIT &&  true;
+    const isReadOnly = formType === FormType.EDIT && true;
     return (
         <Box sx={{ mt: 2 }}>
             <Typography variant="h6">Базовые поля</Typography>
             <TextField
-                {...register('previewTitle')}
+                required
+                {...register('title')}
                 label="Заголовок превью"
                 variant="outlined"
                 fullWidth
@@ -28,14 +29,25 @@ const BasePart = ({ formType }: { formType: FormType }) => {
                 fullWidth
                 margin="normal"
             />*/}
-            <ImageField registerName={'imagePreview'}/>
+            <ImageField required registerName={'mainIconLink'} />
             <TextField
-                {...register('videoPreview')}
-                label="Ссылка на видео"
+                required
+                {...register('gifPreview')}
+                label="Ссылка на видео превью"
                 variant="outlined"
                 fullWidth
                 margin="normal"
             />
+            {(cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) &&
+            
+            <TextField
+                required
+                {...register('resVideo')}
+                label="Ссылка на видео объяснение"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+            />}
         </Box>
     );
 };

@@ -1,8 +1,10 @@
 import { CircularProgress } from "@mui/material"
 
-const LoadingCompanent = ()=>{
+const LoadingCompanent = ({className}:{className?:string})=>{
     return (
-        <div style={{     
+        <div
+        className={className}
+        style={{     
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

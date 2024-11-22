@@ -2,25 +2,32 @@ import React, { useEffect, useState } from 'react';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Select, MenuItem, InputLabel } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { FormType } from '../../../contextProviders/formTypeProvider';
+import { getCategoriesTitles, getCategoryTitleById, TitlesCategories } from '../../../utill';
 
 interface ParentChooseSectionProps {
     onChange: (type: string) => void;
     formType: FormType;
+    parentId:number;
 }
 
-const ParentChooseSection = ({ onChange, formType }: ParentChooseSectionProps) => {
+
+
+const ParentChooseSection = ({ onChange, formType, parentId }: ParentChooseSectionProps) => {
     const { register, watch, setValue } = useFormContext();
-    const [parentOptions, setParentOptions] = useState<{ value: string; label: string }[]>([]);
+    const [parentOptions, setParentOptions] = useState<{ key:number; label: string }[]>([]);
 
     const switchToTransferValue = watch("switchToTransfer", false); // по умолчанию false
-
+    const parentName = getCategoryTitleById(parentId) || "Error";
+    /*const titlesMap = getCategoriesTitles();
+    const allCategoriesNames =  titlesMap.filter((el)=> el.title !== parentName);
+    const parentOptionsMap = allCategoriesNames.map((el) => ({ value: el.id, label: el.title }));*/
     useEffect(() => {
+        const parent = { key:0, label: parentName };
         setParentOptions([
-            { value: '0', label: 'Card Title 1' },
-            { value: '1', label: 'Card Title 2' },
-            { value: '2', label: 'Card Title 3' },
+            parent,
+            //...parentOptionsMap
         ]);
-    }, []);
+    }, [parentName]);
 
     const handleTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value === 'true'; // Преобразуем строку в булево значение
@@ -63,7 +70,7 @@ const ParentChooseSection = ({ onChange, formType }: ParentChooseSectionProps) =
                 disabled={!switchToTransferValue}
                 >
                     {parentOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
+                        <MenuItem key={option.key} value={option.key}>
                             {option.label}
                         </MenuItem>
                     ))}

@@ -5,10 +5,12 @@ import { useCardSize } from '../../../contextProviders/CardSizeProvider';
 import { useCards } from '../../../contextProviders/CardsProvider';
 import {  useParams, useSearchParams } from 'react-router-dom';
 import { getLastParam, saveCategoriesTitles } from '../../../utill';
-import { LoadMediaProvider } from '../../../contextProviders/LoadMediaProvider';
+import { LoadMediaProvider, useLoadContext } from '../../../contextProviders/LoadMediaProvider';
 import { Category, Service } from '../../../interfaces/CardsInterfaces';
 import LoadingCompanent from '../../LoadingComponent';
 import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCategoriesQuery';
+
+import AddCardComponent from '../../AddCardComponent';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],
@@ -55,6 +57,7 @@ const ListComponent = () => {
 
     const { categoryId } = useParams<{ categoryId?: string }>();
     const { subCategoryId } = useParams<{ subCategoryId?: string }>();
+    
 
 
     //const queryParams = new URLSearchParams(location.search);
@@ -70,6 +73,31 @@ const ListComponent = () => {
     
     const {data: categoriesInfo,  error: categoriesError, isLoading: isCategoriesLoading} = useCategoriesQuery();
     const {data: servicesInfo,  error: servicesError, isLoading: isServicesLoading } = useServicesQuery({categoryId:idNumberCategory, search:query});
+    
+    const { areAllIconsLoaded, areAllVideosLoaded } = useLoadContext();
+    const loading =  (isSearching || (isServicesLoading || isCategoriesLoading) || !areAllIconsLoaded && !areAllVideosLoaded);
+    /*const [isHidden, setIsHidden] = useState<"hidden" | "">("hidden");
+    const [skeletonIsHidden, setSkeletonIsHidden] = useState<"hidden" | "">("");
+    const [isFirstTry, setIsFirstTry] = useState<boolean>(true);
+    useEffect(()=>{
+        const loading =  isFirstTry && (isSearching || (isServicesLoading || isCategoriesLoading) && !areAllIconsLoaded || !areAllVideosLoaded);
+        if (loading){
+            setIsHidden("hidden")
+            setSkeletonIsHidden("")
+        }
+        else{
+            if (isFirstTry){
+                setIsHidden("hidden")
+                setSkeletonIsHidden("")
+                setIsFirstTry(false)
+            }
+            else{
+                setIsHidden("")
+                setSkeletonIsHidden("hidden")
+            }
+        }
+    },[areAllIconsLoaded, areAllVideosLoaded, isSearching, isServicesLoading, isCategoriesLoading, isFirstTry])*/
+    
     useEffect(() => {
         const lastParam = Number(getLastParam());
         try {
@@ -117,24 +145,29 @@ const ListComponent = () => {
         }
     }, [idNumberCategory, idNumberSubCategory, query, setCategories, setServices, categoriesInfo, servicesInfo])
 
-    const loading = isSearching || (isServicesLoading || isCategoriesLoading);
+    //const loading = isSearching || (isServicesLoading || isCategoriesLoading) && !areAllIconsLoaded || !areAllVideosLoaded;
     if (categoriesError || servicesError){
         return <Alert severity="warning">
             {"Что-то пошло не так"}
         </Alert>
     }
-    if (loading){
-        return <LoadingCompanent />;
-    }
-    const smthWrong = <Alert severity="warning">
+    /*const smthWrong = <Alert severity="warning">
     {"Что-то пошло не так"}
-    </Alert>;
-    
+    </Alert>;*/
+
+
+    const isHidden = loading ? "hidden" : ""; // Состояние видимости элемента
+    //const skeletonIsHidden = !loading ? "hidden" : "";
+
+    if (loading){
+        return <LoadingCompanent />
+    }
     return (
-        <LoadMediaProvider>
-            <Grid2 container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
+        <>
+            <Grid2 className={`card-list ${isHidden}`} container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
                 {/*isSetLoading && <LoadingCompanent />*/}
-                {!categories ? smthWrong : !isSearching && categories.map((category, index) => (
+                <AddCardComponent size={size}></AddCardComponent>
+                {/*!categories ? smthWrong : */!isSearching && categories &&categories.map((category, index) => (
                     <CatalogCardComponent
                         key={index} // Ensure unique key for each card
                         id={category.id} // Assuming 'catalogId' exists in your data
@@ -149,7 +182,7 @@ const ListComponent = () => {
                     />
                 ))
                 }
-                {!services ? smthWrong : !isSearching && services.map((service, index) => (
+                {/*!services ? smthWrong :*/!isSearching && services && services.map((service, index) => (
                     <ServiceCardComponent
                         key={index} // Ensure unique key for each card
                         id={service.id} // Assuming 'catalogId' exists in your data
@@ -163,12 +196,13 @@ const ListComponent = () => {
                     />
                 ))}
             </Grid2>
-        </LoadMediaProvider>
+        </>
     );
 }
 
 const ServicesListComponent = () => {
     return (
+        <LoadMediaProvider>
         <Container
             sx={{
                 mt: "30px",
@@ -177,6 +211,7 @@ const ServicesListComponent = () => {
         >
             <ListComponent />
         </Container>
+        </LoadMediaProvider>
     );
 };
 

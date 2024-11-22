@@ -3,13 +3,13 @@ import Switch, { switchClasses } from "@mui/material/Switch";
 
 const pxToRem = (px: number, oneRemPx = 17) => `${px / oneRemPx}rem`;*/
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import edit from "../../assets/img/edit.svg"
 import eyeSVG from "../../assets/img/view.svg"
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider"
 
 const AdminButtonsSwitch = () => {
-    const {setShowAdminButtons} = useShowAdminButtons();
+    const { showAdminButtons ,setShowAdminButtons} = useShowAdminButtons();
     const checkboxRef = useRef<HTMLInputElement>(null);
 
 
@@ -22,6 +22,13 @@ const AdminButtonsSwitch = () => {
             console.log("Admin buttons shown");
         }
     };
+
+    useEffect(()=>{
+        if ( checkboxRef.current && showAdminButtons !== checkboxRef.current.checked){
+            checkboxRef.current.checked = showAdminButtons;
+        }
+    },[])
+
     return (
         <>
             <input 

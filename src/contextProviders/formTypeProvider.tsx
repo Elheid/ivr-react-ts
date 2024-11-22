@@ -10,6 +10,9 @@ enum CardType {
 enum FormType {
     EDIT = 'edit',
     CREATE = 'create',
+    VIDEO = 'video',
+    TITLE = 'title',
+    TEXT = 'text',
 }
 
 interface CardAndFromTypeContextProps {

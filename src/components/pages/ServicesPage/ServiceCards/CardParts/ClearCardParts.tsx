@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import arrowSVG from "../../../../../assets/img/arrow.svg";
 
 import styles from "../clearCard.module.css"
-import { useLoadContext } from '../../../../../contextProviders/LoadMediaProvider';
 import { addSubHeaderForQuery, tryJsonParse } from '../../../../../utill';
+import { Skeleton } from '@mui/material';
+import { useLoadContext } from '../../../../../contextProviders/LoadMediaProvider';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -40,23 +41,21 @@ const loadSVG = async (svgUrl: string, noColorize = false) => {
     }
 }
 
-const ClearCardIconComponent = ({ iconSrc, title, isService, id }: ClearCardIconComponentProps) => {
-    iconSrc = tryJsonParse(iconSrc, "image")
-    const [icon, setIcon] = useState<string>();
-    const { setIconLoaded } = useLoadContext();
+const ClearCardIconComponent = React.memo(({ iconSrc, title, isService, id }: ClearCardIconComponentProps) => {
+    iconSrc = tryJsonParse(iconSrc, "image");
+    const [icon, setIcon] = useState<string>(iconSrc);
+    const [isLoading, setIsLoading] = useState<boolean>(true); // Отслеживаем состояние загрузки
+
+    const { registerIcon, setIconLoaded } = useLoadContext(); // Состояние загрузки
 
     let noColorize = false;
-    if (title === "Консультация по СНИЛС") {
+    if (title === "Консультация по СНИЛС" || title === "Непригодность паспорта" ||
+        title === "Невозможность проставления отметок, а также невозможность изменения сведений о детях, не достигших 14-летнего возраста,отметки о которых ранее были внесены в паспорта родителей") {
         noColorize = true;
     }
-    if (title === "Непригодность паспорта") {
-        noColorize = true;
-    }
-    if (title === "Невозможность проставления отметок, а также невозможность изменения сведений о детях, не достигших 14-летнего возраста,отметки о которых ранее были внесены в паспорта родителей") {
-        noColorize = true;
-    }
+
     const serviceCard = !isService ? false : true;
-    const idServicesExceptions = [92, 91, 93, 89, 95, 121, 90]
+    const idServicesExceptions = [92, 91, 93, 89, 95, 121, 90];
     if (serviceCard) {
         const serviceId = id ? id : -1;
         const isException = idServicesExceptions.includes(serviceId);
@@ -65,23 +64,32 @@ const ClearCardIconComponent = ({ iconSrc, title, isService, id }: ClearCardIcon
         }
     }
 
-
     useEffect(() => {
+        const strId = (id || -1).toString();
+        registerIcon(strId)
         const fetchIcon = async () => {
             const iconUrl = await loadSVG(iconSrc, noColorize);
             if (iconUrl) {
-                await setIcon(iconUrl);
-                setIconLoaded(true)
+                setIcon(iconUrl);
+                setIsLoading(false); 
+                setIconLoaded(strId);
             }
         }
         fetchIcon();
-    }, [iconSrc, setIconLoaded])
+    }, [iconSrc, noColorize, registerIcon, setIconLoaded, id]);
+
+    const isHidden = isLoading ? "hidden" : ""; // Состояние видимости элемента
+    const skeletonIsHidden = !isLoading ? "hidden" : "";
+
     return (
         <div className={styles["icon-container"]}>
-            <img src={icon} alt="Icon" />
+            {<Skeleton  className={skeletonIsHidden} animation="wave" variant="rounded" height={"5vw"} />}
+                <img className={isHidden} src={icon} alt="Icon" />
         </div>
     );
-}
+});
+
+
 
 interface ClearCardHeaderProps {
     itemsCount?: number;

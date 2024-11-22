@@ -28,6 +28,9 @@
 .video-overlay {
     margin-bottom: 10px;
     overflow: hidden;
+    width: -moz-available;       /* WebKit игнор. */
+    width: -webkit-fill-available;  /* Mozilla игнор. */
+    width: fill-available;
 }
 
 video.gif {

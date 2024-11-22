@@ -58,7 +58,7 @@ button{
 
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .info-cards.list-of-cards.hidden{
@@ -545,7 +545,7 @@ button.extended-button{
   justify-content: center;
 }
 #card-form img{
-  width: 1.3vw;
+  width: 2.3vw;
 }
 
 /*Login register*/
@@ -626,7 +626,23 @@ a.login-link{
 /*Admin modal*/
 div#card-form-container {
   background: white;
-  
-  max-height: 60vh;
+  height: 60vh;
   overflow-y: auto;
+  width: 50vw;
 }
+
+/*Add card button*/
+.card-to-add{
+  position: relative;
+  background-color: var(--main-buttons-bg-color) !important;
+}/*
+.card-to-add::after{
+  content: "+";
+  color:white;
+  font-size:8rem;
+  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}*/
