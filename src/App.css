@@ -58,7 +58,7 @@ button{
 
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .info-cards.list-of-cards.hidden{
@@ -104,6 +104,22 @@ ol.MuiBreadcrumbs-ol.css-4pdmu4-MuiBreadcrumbs-ol {
 
 /*Header*/
 
+
+.brown-button{
+  background-color: var(--main-buttons-bg-color) !important;
+  border-radius: 30px !important;
+}
+
+
+
+.clear-language .bottom-button {
+  position: absolute !important;
+  bottom: 0;
+}
+
+.bottom-button{
+  width: max-content;
+}
 
 button.return-button, button.back-button, button.search-popup-button{
   background-color: var(--main-buttons-bg-color);
@@ -338,6 +354,8 @@ button#closePopup {
     width: 100%;
     border: 1px solid var(--main-border-color);
     border-radius: 20px !important;
+
+    position: relative;
 }
 .info-card .card-title{
   color:var(--main-title-text-color);
@@ -443,6 +461,14 @@ img.icons {
   text-align: left;
 }
 
+.popup-content {
+  height: inherit;
+  display: flex
+;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 
 /*Gestural modal */
 .search-modal{
@@ -545,7 +571,7 @@ button.extended-button{
   justify-content: center;
 }
 #card-form img{
-  width: 1.3vw;
+  width: 2.3vw;
 }
 
 /*Login register*/
@@ -626,4 +652,42 @@ a.login-link{
 /*Admin modal*/
 div#card-form-container {
   background: white;
+  height: 60vh;
+  overflow-y: auto;
+  width: 50vw;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/*Add card button*/
+.add-card-like-button{
+  position: relative;
+  background-color: var(--main-buttons-bg-color) !important;
+}
+
+.add-card-info{
+  position: relative;
+  background-color: #ffffff !important;
+  border:1px solid var(--main-border-color);
+}
+
+/*
+.card-to-add::after{
+  content: "+";
+  color:white;
+  font-size:8rem;
+  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}*/
+
+
+form#card-form {
+  flex: 1;
+  display: flex
+;
+  flex-direction: column;
 }

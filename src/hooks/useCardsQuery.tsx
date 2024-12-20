@@ -50,13 +50,20 @@ export const useServicesQuery = (playload:{categoryId?:number, serviceId?:number
 }
 
 
-export const useInfoCardsQuery = (playload:{serviceId:number}, options = {})=>{
+export const useInfoCardsQuery = (playload:{serviceId?:number, infoId?:number,}, options = {})=>{
     const query = useQuery({
         queryKey:['infoCards'],
         queryFn:async ()=>{
-            const data = await getInfoCardsByServiceId(playload.serviceId);
-            const content:InfoCard[] = data.content;
-            return content;
+            /*if (playload.infoId && playload.infoId !== -1){
+                const data = await getInfoById(playload.infoId);
+                const content:InfoCard = data;
+                return content;
+            }
+            else*/ if (playload.serviceId && playload.serviceId !== -1){
+                const data = await getInfoCardsByServiceId(playload.serviceId);
+                const content:InfoCard[] = data.content;
+                return content;
+            }
         },
         ...options
     })

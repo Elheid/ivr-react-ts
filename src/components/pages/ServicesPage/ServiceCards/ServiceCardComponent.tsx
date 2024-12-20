@@ -9,9 +9,9 @@ import { isAdmin, navigateHandleClick } from '../../../../utill';
 
 import clearStyles from "./clearCard.module.css"
 import gesturalStyles from './gesturalCard.module.css'
-import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
 import AdminButtonsComponent from '../../../AdminUtils/AdminButtonsComponent';
 import React, { useRef } from 'react';
+import { cardStyle, gridCardStyle } from '../../../../styles/cards';
 
 
 interface CardButtonTitleProps {
@@ -41,21 +41,21 @@ interface CardButtonMediaProps {
     mainIconLink: string;
 }
 
-const CardButtonMedia = ({ gifPreview, mainIconLink, isLoading, title, isService = false, id }: CardButtonMediaProps
+const CardButtonMedia = React.memo(({ gifPreview, mainIconLink, title, isService = false, id }: CardButtonMediaProps
     & {
-        isLoading?: boolean,
         title: string,
         isService?: boolean
         id?: number
     }) => {
-    const { iconLoaded, videoLoaded } = useLoadContext();
-
+    //const { iconLoaded, videoLoaded } = useLoadContext();
+    if(!id)
+        id = -1;
     return (
         localStorage.getItem("language") === "clear-language"
-            ? ((isLoading && iconLoaded ? (<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id} />) : <Skeleton animation="wave" variant="rounded"><ClearCardIconComponent title={title} iconSrc={mainIconLink} /></Skeleton>))
-            : (isLoading && videoLoaded ? <GesturalVideoComponent gifSrc={gifPreview} /> : <Skeleton animation="wave" variant="rounded"><GesturalVideoComponent gifSrc={gifPreview} /></Skeleton>)
+            ? (((<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id} />) ))
+            : ( <GesturalVideoComponent gifSrc={gifPreview} id={id}/> )
     );
-}
+});
 
 
 interface CardButtonProps extends CardTemplate {
@@ -63,7 +63,7 @@ interface CardButtonProps extends CardTemplate {
     childrenCategoryIds?: number[];
 }
 
-const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading, isService, id, isFromQuery=false }: CardButtonProps & { isLoading?: boolean, isService?: boolean, id?: number, isFromQuery?:boolean }) => {
+const CardButtonComponent = React.memo(({ gifPreview, mainIconLink, title, itemsInCategoryIds, childrenCategoryIds, isLoading, isService, id, isFromQuery=false }: CardButtonProps & { isLoading?: boolean, isService?: boolean, id?: number, isFromQuery?:boolean }) => {
     
     const cardType = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-card"] : gesturalStyles["gestural-card"];
     const cardButtonClass = localStorage.getItem("language") === "clear-language" ? clearStyles["clear-button-card"] : gesturalStyles["gestural-button-card"];
@@ -88,33 +88,17 @@ const CardButtonComponent = ({ gifPreview, mainIconLink, title, itemsInCategoryI
                 }}
                 className={cardButtonClass}
             >
-                <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} isLoading={isLoading} title={title} id={id} isService={isService} />
+                <CardButtonMedia mainIconLink={mainIconLink} gifPreview={gifPreview} title={title} id={id} isService={isService} />
                 <CardButtonTitle title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isFromQuery={isFromQuery} isLoading={isLoading} />
             </Button>
         </div>
     )
-}
-
-const gridCardStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-
-    borderRadius: "20px",
-    gridAutoRows: '1fr',
-    height: "inherit"
-};
-
-
-const cardStyle = {
-    borderRadius: "20px",
-    backgroundColor: "unset",
-    height: "100%"
-};
+});
 
 
 type ServiceCard = Omit<Service, "additionIds" | "description" | "gifLink" | "iconLinks">;
 
-const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean, isFromQuery: boolean }> = ({
+const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean, isFromQuery: boolean }> = React.memo(({
     id,
     categoryId,
     gifPreview,
@@ -148,7 +132,7 @@ const ServiceCardComponent: React.FC<ServiceCard & { isLoading?: boolean, isFrom
             </Card>
         </Grid2>
     );
-};
+});
 
 //type CategoryCard = Omit<Category, "childrenCategoryIds" | "parentCategoryId">;
 
@@ -176,7 +160,6 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = React
         destinationParams = { withBaseUrl: false, paramState: `/subCategories/${id}`, navigate, fromStart: false };
     }
 
-
     return (
         <Grid2
             size={size}
@@ -186,7 +169,8 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = React
             <Card 
             className={ parentCategoryId !== 0 ? "sub-catalog-card" : "catalog-card"}
             catalog-id={id} 
-            hildren-count={childrens.toString()} 
+            children-count={childrens.toString()} 
+            parent-id={parentCategoryId}
             sx={cardStyle}>
                 <CardButtonComponent id={id} gifPreview={gifPreview} mainIconLink={mainIconLink} title={title} itemsInCategoryIds={itemsInCategoryIds} childrenCategoryIds={childrenCategoryIds} isLoading={isLoading} />
             </Card>

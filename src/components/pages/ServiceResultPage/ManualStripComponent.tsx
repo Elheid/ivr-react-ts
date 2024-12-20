@@ -4,7 +4,7 @@ import { isAdmin, tryJsonParse } from "../../../utill";
 import VideoComponent from "../../VideoComponent";
 
 import PopupContainer from "./InfoCards/PopupContainer";
-import insertBlocks from "./blockInsertion";
+import {insertBlocks} from "./blockInsertion";
 import ServiceResultButtonsComponent from "../../AdminUtils/ServiceResultButtonsComponent";
 
 interface ManualStrpComponentProps {

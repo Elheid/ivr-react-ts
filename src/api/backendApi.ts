@@ -4,7 +4,7 @@ import { Category, Service } from "../interfaces/CardsInterfaces";
 import { saveCategoriesTitles, tryJsonParse } from "../utill";
 const BASE_URL = API_BACK_URL;
 
-axios.defaults.baseURL = BASE_URL;
+axios.defaults.baseURL = "" + BASE_URL;
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token") }` : undefined;
 
 interface ParsedObject {

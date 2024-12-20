@@ -5,33 +5,41 @@ import AdminFormPanel from "./AdminFormPanel";
 import { Box, Container, Modal } from "@mui/material";
 
 
+
 const AdminModal = ({
     cardInFormType,
     formType,
     open,
     handleClose,
-    handleSubmitModal,
+    //handleSubmitModal,
+    id,
+    parentId,
 }: {
     cardInFormType: CardType;
     formType: FormType;
     open: boolean;
-    handleClose: (event: React.MouseEvent) => void;
-    handleSubmitModal: (event:React.MouseEvent<HTMLButtonElement>) => void
+    handleClose: (event: Event) => void;
+    //handleSubmitModal: (event: Parameters <SubmitHandler<FormValues>> [1], data?:FormValues)=>void, //(event:React.FormEvent<HTMLFormElement>) => void,
+    id:number,
+    parentId?:number,
 }) => {
     const modalRef = useRef<HTMLDivElement>(null)
 
     const handleContainerClick = (e: React.MouseEvent) => {
         e.stopPropagation();
-        // Проверяем, был ли клик вне модального окна
-        if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-            handleClose(e); // Закрываем модалку, если клик вне
-        }
+        return;
     };
 
     return (
         <Container 
+        
         className="container-of-modal"
-        onClick={handleContainerClick}>
+        onClick={handleContainerClick}
+        onMouseDown={(e)=>{
+            if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+                handleClose(e as unknown as Event); // Закрываем модалку, если клик вне
+            }
+        }}>
             <Modal
                 open={open}
                 onClose={handleClose}
@@ -46,11 +54,13 @@ const AdminModal = ({
                 ref={modalRef}
                 > 
                     <AdminFormPanel 
+                        parentId={parentId}
+                        id={id}
                         openModal={open}
                         cardInFormType={cardInFormType} 
                         formType={formType} 
                         modalClose={handleClose} 
-                        handleSubmitModal={handleSubmitModal} 
+                        //handleSubmitModal={handleSubmitModal} 
                     />
                 </Box>
             </Modal>

@@ -2,8 +2,6 @@ import BreadCrumpsComponent from "../../BreadCrumps";
 import LinkButtonComponent from "../../ReturnButton";
 import homeButton from "../../../assets/img/home.svg"
 import { Container } from "@mui/material";
-import ServiceResultButtonsComponent from "../../AdminUtils/ServiceResultButtonsComponent";
-import { isAdmin } from "../../../utill";
 import { useRef } from "react";
 
 interface ServiceResultHeaderProps{
@@ -23,7 +21,7 @@ const ServiceResultHeader = ({title}:ServiceResultHeaderProps)=>{
             >
                 {title}
             </h3>
-            {isAdmin() && <ServiceResultButtonsComponent ref={titleRef} /> }
+            
             </>
 
             <LinkButtonComponent img={homeButton} description={"Меню"} />

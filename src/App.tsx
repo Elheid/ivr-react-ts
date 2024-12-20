@@ -15,8 +15,7 @@ import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
 import LogInPage from './components/pages/LogInAndSignIn/LogInPage.tsx';
 import ExitPage from './components/pages/LogInAndSignIn/ExitPage.tsx';
 import RegistrationPage from './components/pages/LogInAndSignIn/RegistrationPage.tsx';
-import AdminFormPanel from './components/AdminUtils/AdminModal.tsx/AdminFormPanel.tsx';
-import { CardAndFormTypeProvider, CardType, FormType } from './contextProviders/formTypeProvider.tsx';
+import { CardAndFormTypeProvider, } from './contextProviders/formTypeProvider.tsx';
 import { ShowAdminButtonsProvider } from './contextProviders/ShowAdminButtonsProvider.tsx';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Alert } from '@mui/material';
@@ -44,6 +43,22 @@ function App() {
     queryCache: queryCache,
   });
 
+
+    
+  /*const clearOldCache = async (cacheName: string) => {
+    const keys = await caches.keys();
+    for (const key of keys) {
+        if (key !== cacheName) {
+            await caches.delete(key); // Удаляем старые кэши
+        }
+    }
+  };*/
+  /*useEffect(() => {
+    const currentCacheName = 'svg-cache';
+    clearOldCache(currentCacheName);
+  }, []);*/
+
+
   return (
     <QueryClientProvider client={queryClient}>
     <ShowAdminButtonsProvider>
@@ -61,7 +76,6 @@ function App() {
             {/* Остальная часть приложения */}
         </div>
         <Routes>
-        <Route path="/modal" element={<AdminFormPanel cardInFormType={CardType.ADDITIONAL_INFO} formType={FormType.CREATE} openModal={true} modalClose={()=>alert("closed")} handleSubmitModal={()=> alert("submit")}/> } />
         <Route path="/registration" element={<RegistrationPage />} />
         <Route path="/login" element={<LogInPage />} />
         <Route path="/exit" element={<ExitPage />} />

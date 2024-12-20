@@ -61,6 +61,34 @@ const insertBlocks = (
     }
 };
 
+
+const getTextBlocks= (
+    textFromBd: string,
+    icons: IconLinks
+) => {
+    let textOfBlocks = extractSubstrings(textFromBd);
+
+    if (!textFromBd.includes("\n-")) {
+        textOfBlocks = extractSubstringsInfo(textFromBd);
+        const notZeroBlocks = textOfBlocks.filter(el => el !== "");
+        if (notZeroBlocks.length === 0 && textFromBd !== "") {
+            textOfBlocks = textFromBd.split("\n").map(block => "\n" + block);;
+        }
+    }
+
+    if (!textFromBd.includes("\\icon")) {
+            return [textOfBlocks.join('')];
+    } else {
+        const result = [];
+        for (let i = 0; i < textOfBlocks.length; i++) {
+        const text = textOfBlocks[i];
+        result.push(iconInsertion(text, icons))
+        }
+        return result;
+    }
+};
+
+
 // Функция для разделения текста на блоки
 const partingByBlocks = (blocksOfText: string[], icons: IconLinks): HTMLSpanElement[] => {
     const blocks: HTMLSpanElement[] = [];
@@ -107,4 +135,4 @@ const extractSubstringsInfo = (input: string): string[] => {
 };
 
 
-export default insertBlocks;
+export {insertBlocks, getTextBlocks};

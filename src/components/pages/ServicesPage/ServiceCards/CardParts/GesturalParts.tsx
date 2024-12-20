@@ -1,86 +1,60 @@
 //import { useEffect, useRef, useState } from "react";
 import arrowLargeSVG from "../../../../../assets/img/arrowLarge.svg"
-import { useLoadContext } from "../../../../../contextProviders/LoadMediaProvider";
 import VideoObserverComponent from "../../../../VideoObserverComponent";
 ///Gestural card components 
 
 import styles from '../gesturalCard.module.css'
 import { addSubHeaderForQuery, tryJsonParse } from "../../../../../utill";
-import { useEffect, useState } from "react";
-// Интерфейс для описания ошибки
-/*interface VideoError {
-    message: string;
-}
+import React, { useEffect, useState } from "react";
+import { Skeleton } from "@mui/material";
+import { useLoadContext } from "../../../../../contextProviders/LoadMediaProvider";
 
-// Настраиваемый хук для управления видеоплеером
-
-//Не помагает
-
-const useVideoHandleError = (videoUrl: string)=>{
-    const [error, setError] = useState<VideoError | null>(null); // Состояние ошибки
-    const videoRef = useRef<HTMLVideoElement>(null); // Ссылка на элемент видео
-    let retryCount = 0; // Счетчик попыток
-    const maxRetries = 3; // Максимальное количество попыток
-
-    // Эффект для обработки ошибки загрузки видео
-    useEffect(() => {
-        const handleError = (event: ErrorEvent) => {
-            const error = event.error as VideoError;
-            console.log(error)
-            if (error.message.includes('net::ERR_CACHE_OPERATION_NOT_SUPPORTED') && retryCount < maxRetries) {
-                retryCount++;
-                setTimeout(() => {
-                    videoRef.current!.src = videoUrl;
-                    videoRef.current!.load();
-                }, 1000 * retryCount); // Задержка между попытками
-            } else {
-                setError(error);
-            }
-        };
-
-        const videoElement = videoRef.current;
-        if (videoElement) {
-            videoElement.addEventListener('error', handleError);
-        }
-
-        // Очистка обработчика при размонтировании компонента
-        return () => {
-            if (videoElement) {
-                videoElement.removeEventListener('error', handleError);
-            }
-        };
-    }, [videoUrl]);
-
-    return { error, videoRef };
-}
-*/
 interface GesturalVideoComponentProps {
     gifSrc: string;
+    id:number;
 }
 
-const GesturalVideoComponent = ({ gifSrc }: GesturalVideoComponentProps) => {
-    //const { error, videoRef } = useVideoHandleError(gifSrc); // Замените URL на ваш
+
+const GesturalVideoComponent = React.memo(({ gifSrc, id }: GesturalVideoComponentProps) => {
     gifSrc = tryJsonParse(gifSrc, "video");
-    const { setVideoLoaded, videoLoaded } = useLoadContext();
-    console.log(videoLoaded)
+    const [isLoading, setIsLoading] = useState(true); // Состояние загрузки
+    const { registerVideo, setVideoLoaded } = useLoadContext(); // Состояние загрузки
+
+    const handleVideoCanPlay = () => {
+        //console.log("Видео готово к воспроизведению (onCanPlay)"); // Логируем событие onCanPlay
+        setIsLoading(false);
+        setVideoLoaded(id.toString());
+    };
+    useEffect(()=>{
+        registerVideo(id.toString());
+    },[id, registerVideo])
+
+    const isHidden = isLoading ? "hidden" : ""; // Состояние видимости элемента
+    const skeletonIsHidden = !isLoading ? "hidden" : "";
     return (
         <div className={styles["video-overlay"]}>
-            {/*error && <p>Ошибка загрузки видео: {error.message}</p>*/} 
-            <VideoObserverComponent
-                className={styles["gif"]}
-                src={gifSrc}
-                playsInline={true}
-                loop={true}
-                autoPlay={true}
-                muted={true}
-                onCanPlay={() => setVideoLoaded(true)}
-                onCanPlayThrough={() => setVideoLoaded(true)}
-                >
-
-            </VideoObserverComponent>
+                <Skeleton
+                className={`${skeletonIsHidden}`}
+                animation="wave"
+                variant="rectangular"
+                width="auto"
+                height="38vh"/>
+                <VideoObserverComponent
+                    className={`${styles["gif"]} ${isHidden}`}
+                    src={gifSrc}
+                    playsInline
+                    loop
+                    autoPlay
+                    muted
+                    preload="auto"
+                    onCanPlay={handleVideoCanPlay} // Когда видео готово для воспроизведения
+                />
         </div>
     );
-}
+});
+
+
+
 
 interface GesturalCardSubstrateComponentProps {
     title: string;
