@@ -9,7 +9,6 @@ import { isAdmin, navigateHandleClick } from '../../../../utill';
 
 import clearStyles from "./clearCard.module.css"
 import gesturalStyles from './gesturalCard.module.css'
-import { useLoadContext } from '../../../../contextProviders/LoadMediaProvider';
 import AdminButtonsComponent from '../../../AdminUtils/AdminButtonsComponent';
 import React, { useRef } from 'react';
 import { cardStyle, gridCardStyle } from '../../../../styles/cards';
@@ -49,7 +48,8 @@ const CardButtonMedia = React.memo(({ gifPreview, mainIconLink, title, isService
         id?: number
     }) => {
     //const { iconLoaded, videoLoaded } = useLoadContext();
-
+    if(!id)
+        id = -1;
     return (
         localStorage.getItem("language") === "clear-language"
             ? (((<ClearCardIconComponent iconSrc={mainIconLink} title={title} isService={isService} id={id} />) ))

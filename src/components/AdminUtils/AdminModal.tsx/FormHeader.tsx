@@ -8,7 +8,7 @@ interface FormHeaderProps {
 }
 
 const FormHeader = ({ onInstructionClick, formType, cardInFormType }:FormHeaderProps) => {
-    const titleTypePart = formType === FormType.EDIT ? "Редактирование ":  "Создание ";
+    const titleTypePart = formType !== FormType.CREATE ? "Редактирование ":  "Создание ";
     const titleCardPart = cardInFormType === CardType.SERVICE ? "услуги ":  
         cardInFormType === CardType.CATEGORY ? "категории" : 
         cardInFormType === CardType.SUB_CATEGORY ? "под категории" : "доп. инфы";

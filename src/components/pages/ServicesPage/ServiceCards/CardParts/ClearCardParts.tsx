@@ -6,6 +6,7 @@ import styles from "../clearCard.module.css"
 import { addSubHeaderForQuery, tryJsonParse } from '../../../../../utill';
 import { Skeleton } from '@mui/material';
 import { useLoadContext } from '../../../../../contextProviders/LoadMediaProvider';
+import { useIconsQuery } from '../../../../../hooks/useIconsQuery';
 
 /// Clear card components
 interface ClearCardIconComponentProps {
@@ -14,6 +15,8 @@ interface ClearCardIconComponentProps {
     isService?: boolean;
     id?: number;
 }
+
+/*
 const loadSVG = async (svgUrl: string, noColorize = false) => {
     try {
         const response = await fetch(svgUrl);
@@ -39,7 +42,50 @@ const loadSVG = async (svgUrl: string, noColorize = false) => {
     } catch (error) {
         console.error('Error loading or modifying SVG:', error);
     }
-}
+}*/
+
+const loadSVG = async (svgText: string, noColorize = false) => {
+    
+    /*const cacheKey = `${svgUrl}_${noColorize}`;
+    const cacheName = 'svg-cache';
+
+    // Открываем или создаем кэш
+    const cache = await caches.open(cacheName);
+
+    // Проверяем, есть ли ресурс в кеше
+    const cachedResponse = await cache.match(cacheKey);
+    if (cachedResponse) {
+        return cachedResponse.url; // Возвращаем URL из кеша
+    }*/
+
+    try {
+        //const response = await fetch(svgUrl);
+        //const svgText = await response.text();
+
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+
+        if (!noColorize) {
+            const fillElements = svgDoc.querySelectorAll('[fill]');
+            fillElements.forEach((el) => {
+                el.setAttribute('fill', '#ffffff');
+            });
+            svgDoc.documentElement.style.fill = 'white';
+        }
+
+        const blob = new Blob([svgDoc.documentElement.outerHTML], { type: 'image/svg+xml' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        // Сохраняем ресурс в кэш
+        //const responseToCache = new Response(blob, { headers: { 'Content-Type': 'image/svg+xml' } });
+        //cache.put(cacheKey, responseToCache);
+
+        return blobUrl;
+    } catch (error) {
+        console.error('Error loading or modifying SVG:', error);
+    }
+};
+
 
 const ClearCardIconComponent = React.memo(({ iconSrc, title, isService, id }: ClearCardIconComponentProps) => {
     iconSrc = tryJsonParse(iconSrc, "image");
@@ -63,23 +109,26 @@ const ClearCardIconComponent = React.memo(({ iconSrc, title, isService, id }: Cl
             noColorize = true;
         }
     }
-
+    const {data: svgInfo } = useIconsQuery({svgUrl:iconSrc});
+    const loadImage = useMemo(()=>loadSVG(svgInfo || "", noColorize),[svgInfo, noColorize])
     useEffect(() => {
         const strId = (id || -1).toString();
         registerIcon(strId)
         const fetchIcon = async () => {
-            const iconUrl = await loadSVG(iconSrc, noColorize);
-            if (iconUrl) {
+            const iconUrl = await loadImage;
+            if (iconUrl && svgInfo) {
                 setIcon(iconUrl);
                 setIsLoading(false); 
                 setIconLoaded(strId);
             }
         }
         fetchIcon();
-    }, [iconSrc, noColorize, registerIcon, setIconLoaded, id]);
+    }, [iconSrc, noColorize, registerIcon, setIconLoaded, id, loadImage, svgInfo]);
 
     const isHidden = isLoading ? "hidden" : ""; // Состояние видимости элемента
     const skeletonIsHidden = !isLoading ? "hidden" : "";
+
+
 
     return (
         <div className={styles["icon-container"]}>

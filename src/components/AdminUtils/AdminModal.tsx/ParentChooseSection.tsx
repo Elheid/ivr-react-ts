@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup, Typography, Select, MenuItem, InputLabel } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { FormType } from '../../../contextProviders/formTypeProvider';
-import { getCategoriesTitles, getCategoryTitleById, TitlesCategories } from '../../../utill';
+import { getCategoryTitleById } from '../../../utill';
 
 interface ParentChooseSectionProps {
     onChange: (type: string) => void;

@@ -62,6 +62,7 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
                 onClick={handleCardClick}
                 ref={infoCardRef}
             >
+                {isAdmin() && <AdminButtonsComponent ref={infoCardRef}/>}
                 <Button
                     sx={{
                         textTransform: 'none',
@@ -74,7 +75,6 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
                     }}
                     onClick={props.hideOnClick}
                 >
-                    {isAdmin() && <AdminButtonsComponent ref={infoCardRef}/>}
                     <InfoCardButtonMedia mainIconLink={icon} gifPreview={video} />
                     <div className="info-title-container">
                         <Typography className="card-title card-description" variant="h5" gutterBottom>{title}</Typography>

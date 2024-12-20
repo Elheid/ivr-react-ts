@@ -105,6 +105,22 @@ ol.MuiBreadcrumbs-ol.css-4pdmu4-MuiBreadcrumbs-ol {
 /*Header*/
 
 
+.brown-button{
+  background-color: var(--main-buttons-bg-color) !important;
+  border-radius: 30px !important;
+}
+
+
+
+.clear-language .bottom-button {
+  position: absolute !important;
+  bottom: 0;
+}
+
+.bottom-button{
+  width: max-content;
+}
+
 button.return-button, button.back-button, button.search-popup-button{
   background-color: var(--main-buttons-bg-color);
   border-radius: 30px;
@@ -338,6 +354,8 @@ button#closePopup {
     width: 100%;
     border: 1px solid var(--main-border-color);
     border-radius: 20px !important;
+
+    position: relative;
 }
 .info-card .card-title{
   color:var(--main-title-text-color);
@@ -441,6 +459,14 @@ img.icons {
   padding: 10px;
   gap: 10px;
   text-align: left;
+}
+
+.popup-content {
+  height: inherit;
+  display: flex
+;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 
@@ -629,13 +655,24 @@ div#card-form-container {
   height: 60vh;
   overflow-y: auto;
   width: 50vw;
+
+  display: flex;
+  flex-direction: column;
 }
 
 /*Add card button*/
-.card-to-add{
+.add-card-like-button{
   position: relative;
   background-color: var(--main-buttons-bg-color) !important;
-}/*
+}
+
+.add-card-info{
+  position: relative;
+  background-color: #ffffff !important;
+  border:1px solid var(--main-border-color);
+}
+
+/*
 .card-to-add::after{
   content: "+";
   color:white;
@@ -646,3 +683,11 @@ div#card-form-container {
   left: 50%;
   transform: translate(-50%, -50%);
 }*/
+
+
+form#card-form {
+  flex: 1;
+  display: flex
+;
+  flex-direction: column;
+}

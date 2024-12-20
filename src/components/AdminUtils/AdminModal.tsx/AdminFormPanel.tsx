@@ -1,18 +1,16 @@
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
-import { Box, Button, IconButton, TextField } from '@mui/material';
-import InstructionSection from './InstructionSection';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
+import { Box, Button } from '@mui/material';
 import FormHeader from './FormHeader';
 import ParentChooseSection from './ParentChooseSection';
 import ResultParts from './ResultParts';
 import BasePart from './BasePart';
 import { CardType, FormType, useCardAndFormType } from '../../../contextProviders/formTypeProvider';
 import { useEffect, useState } from 'react';
-import { useCategoriesQuery, useInfoCardsQuery, useServicesQuery } from '../../../hooks/useCategoriesQuery';
+import { useCategoriesQuery, useInfoCardsQuery, useServicesQuery } from '../../../hooks/useCardsQuery';
 import { Category, InfoCard, Service } from '../../../interfaces/CardsInterfaces';
 import { getTextBlocks } from '../../pages/ServiceResultPage/blockInsertion';
-import ModalStyle from '../../../styles/modalStyle';
-import LoadingCompanent from '../../LoadingComponent';
 import { MandatoryForm } from './MandatoryForm';
+import { FormValues } from '../../../interfaces/FormValuesInterface';
 
 
 const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) => {
@@ -121,23 +119,12 @@ const getDefaultValues = (type: CardType): FormValues => {
 };
 
 
-interface FormValues {
-  switchToTransfer: boolean;
-  title: string;
-  mainIconLink: string;
-  gifPreview: string;
-  parentId?: number; // если это поле может отсутствовать
-  resVideo?: string; // если это поле может отсутствовать
-  descriptionParts?: string[]; // если это поле может отсутствовать
-  iconLinks?: string[]; // если это поле может отсутствовать
-}
-
-const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, handleSubmitModal, openModal }:
-  {
+const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*handleSubmitModal,*/ openModal }:
+  { 
     cardInFormType: CardType,
     formType: FormType,
-    modalClose: (event: React.MouseEvent<HTMLButtonElement>) => void,
-    handleSubmitModal: (event: React.FormEvent<HTMLFormElement>) => void,
+    modalClose: (event: Event) => void,
+    //handleSubmitModal: (event: Parameters <SubmitHandler<FormValues>> [1]) => void,
     openModal: boolean,
     id: number,
     parentId?: number,
@@ -162,7 +149,8 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
   );
 
 
-  const buttonSubmitName = formType === FormType.EDIT ? 'Редактировать' : 'Создать' + " карточку";
+  const clippedFormType = formType === FormType.TEXT || formType === FormType.VIDEO || formType === FormType.TITLE;
+  const buttonSubmitName = formType === FormType.EDIT || clippedFormType ? 'Редактировать' : 'Создать' + " карточку";
 
   const handleTransferChange = (value: string) => {
     // Если "Да", скрываем части
@@ -173,13 +161,15 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
     defaultValues: getDefaultValues(cardInFormType),
   });
 
-  const onSubmit = (data: any, e: React.FormEvent<HTMLFormElement>) => {
-    handleSubmitModal(e);
+  const onSubmit:SubmitHandler<FormValues> = (data, e) => {
+    if (e)
+      modalClose(e as unknown as Event);
+      //handleSubmitModal(e);
     console.log("Form Data:", data);
   };
 
   let neededData: Category[] | Service | InfoCard[] | undefined;
-  if (formType === FormType.EDIT) {
+  if (formType === FormType.EDIT || clippedFormType) {
     if (cardInFormType === CardType.CATEGORY || cardInFormType === CardType.SUB_CATEGORY) {
       neededData = categoriesInfo;
     } else if (cardInFormType === CardType.SERVICE) {
@@ -194,7 +184,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
   //console.log(parentId)
   useEffect(() => {
     // Логика выбора данных в зависимости от типа карточки
-    if (formType === FormType.EDIT) {
+    if (formType === FormType.EDIT || clippedFormType) {
       let data: Category | Service | InfoCard | undefined;
 
       if (cardInFormType === CardType.CATEGORY || cardInFormType === CardType.SUB_CATEGORY) {
@@ -205,18 +195,21 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
         if (Array.isArray(infoCardInfo)) {
           // Если это массив, ищем объект по id
           data = infoCardInfo.find((info) => id === info.id);
+          if (!data){
+            data = infoCardInfo.find((info) => id === info.itemId);
+          }
         }
       }
 
       setCardType(cardInFormType);
-      if (formType === FormType.EDIT) {
+      if (formType === FormType.EDIT || clippedFormType) {
         if (data) {
           methods.reset(FillFormWithData(cardInFormType, data));
         }
       }
     }
 
-  }, [cardInFormType, formType, openModal, methods, id, categoriesInfo, infoCardInfo, serviceInfo, setCardType]);
+  }, [cardInFormType, formType, openModal, methods, id, categoriesInfo, infoCardInfo, serviceInfo, setCardType, clippedFormType]);
 
   return (
     <MandatoryForm
@@ -225,14 +218,13 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
       showInstruction={showInstruction}
       setShowInstruction={setShowInstruction}
       formType={formType}
-      buttonSubmitName={buttonSubmitName}
     >
       <FormProvider {...methods}>
-        <form id="card-form" onSubmit={methods.handleSubmit(onSubmit)}>
+        <form id="card-form" onSubmit={methods.handleSubmit((data, e)=> onSubmit(data, e))}>
           <FormHeader cardInFormType={cardInFormType} formType={formType} onInstructionClick={() => setShowInstruction(true)} />
 
           {/* Секция выбора типа карточки */}
-          {(cardType == CardType.SERVICE || cardType == CardType.SUB_CATEGORY) &&
+          { (cardType == CardType.SERVICE || cardType == CardType.SUB_CATEGORY) && !clippedFormType &&
             <Box display="flex" gap={2} flexWrap="wrap">
               <ParentChooseSection parentId={parentId || -1} formType={formType} onChange={handleTransferChange} />
             </Box>
@@ -242,15 +234,17 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, ha
 
           {/* Рендеринг секции BasePart для всех типов, кроме additional-info */}
           {!hideParts && <BasePart cardType={(cardType)} formType={formType} />}
+          
+
 
           {/* Рендеринг секции ResultParts только для additional-info и service */}
-          {!hideParts && (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) &&
+          {!hideParts && (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) && (formType !== FormType.TITLE && formType !== FormType.VIDEO) &&
             <ResultParts
               descriptionParts={methods.getValues("descriptionParts")}
               iconLinks={methods.getValues("iconLinks")}
             />
           }
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button type="submit" variant="contained" color="primary" className={"brown-button"}sx={{ mt: 2, marginTop:"auto" }}>
             {buttonSubmitName}
           </Button>
         </form>

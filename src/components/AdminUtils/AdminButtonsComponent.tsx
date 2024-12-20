@@ -1,17 +1,17 @@
 import trash from "../../assets/img/trash.svg"
 import edit from "../../assets/img/edit.svg"
 import { Button, Container } from "@mui/material";
-import React, { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { CardType, FormType } from "../../contextProviders/formTypeProvider";
 
 
-const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e: MouseEvent) => void }) => {
+const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e:MouseEvent) => void }) => {
     return (
         <Button
             className={`extended-button ${classes}`}
-            onClick={(e) => handleClick(e)}
+            onClick={(e) => handleClick(e as unknown as MouseEvent)}
         >
             <img src={img} />
         </Button>
@@ -83,7 +83,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         }
     };
 
-    const onEditClick = (e: MouseEvent) => {
+    const onEditClick = useCallback((e: MouseEvent) => {
         e.stopPropagation();
         e.preventDefault();
         setOpenModal(true);
@@ -99,7 +99,8 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             determineCardAndFormType(element);
             //alert("Редактировать: " + element?.getAttribute("data-title"))
         }
-    }
+    },[])
+
     const onDeleteClick = (e: MouseEvent) => {
         e.stopPropagation();
         if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
@@ -107,18 +108,21 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             alert("Удалить: " + element?.getAttribute("data-title"))
         }
     }
-    const handleCloseModal = (event: React.MouseEvent) => {
+    const handleCloseModal = (event: Event) => {
         event.preventDefault();
         event.stopPropagation();
         setOpenModal(false); // Закрываем модалку
     };
 
-    const handleSubmitModal = (event: React.FormEvent<HTMLFormElement>) => {
-        //event.preventDefault();
-        event.stopPropagation();
+    /*const handleSubmitModal: SubmitHandler<FormValues> = (data, event):void => {
+        console.log(data)
+        if (event) {
+            // event.preventDefault(); // Если нужно предотвратить поведение
+            event.stopPropagation();
+        }
         setOpenModal(false); // Закрываем модалку
-        //console.log(event.currentTarget)
-    };
+        // console.log(event?.currentTarget);
+    };*/
 
     useEffect(() => {
         if (showAdminButtons) {
@@ -153,14 +157,14 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     <AdminButton img={trash} classes={"delete-button"} handleClick={onDeleteClick} />
                 </Container>
 
-                {openModal && <AdminModal
+                {<AdminModal
                     parentId={parentCardId}
                     id={cardId}
                     cardInFormType={cardInFormType}
                     formType={formType}
                     open={openModal}
-                    handleClose={(e: React.MouseEvent) => handleCloseModal(e)}
-                    handleSubmitModal={(e) => handleSubmitModal(e)}
+                    handleClose={(e) => handleCloseModal(e)}
+                    //handleSubmitModal={handleSubmitModal}
                 />}
             </>
 

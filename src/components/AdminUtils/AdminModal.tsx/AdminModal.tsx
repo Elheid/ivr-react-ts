@@ -5,20 +5,21 @@ import AdminFormPanel from "./AdminFormPanel";
 import { Box, Container, Modal } from "@mui/material";
 
 
+
 const AdminModal = ({
     cardInFormType,
     formType,
     open,
     handleClose,
-    handleSubmitModal,
+    //handleSubmitModal,
     id,
     parentId,
 }: {
     cardInFormType: CardType;
     formType: FormType;
     open: boolean;
-    handleClose: (event: React.MouseEvent) => void;
-    handleSubmitModal: (event:React.FormEvent<HTMLFormElement>) => void,
+    handleClose: (event: Event) => void;
+    //handleSubmitModal: (event: Parameters <SubmitHandler<FormValues>> [1], data?:FormValues)=>void, //(event:React.FormEvent<HTMLFormElement>) => void,
     id:number,
     parentId?:number,
 }) => {
@@ -36,7 +37,7 @@ const AdminModal = ({
         onClick={handleContainerClick}
         onMouseDown={(e)=>{
             if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-                handleClose(e); // Закрываем модалку, если клик вне
+                handleClose(e as unknown as Event); // Закрываем модалку, если клик вне
             }
         }}>
             <Modal
@@ -59,7 +60,7 @@ const AdminModal = ({
                         cardInFormType={cardInFormType} 
                         formType={formType} 
                         modalClose={handleClose} 
-                        handleSubmitModal={handleSubmitModal} 
+                        //handleSubmitModal={handleSubmitModal} 
                     />
                 </Box>
             </Modal>

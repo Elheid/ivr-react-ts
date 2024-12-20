@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useContext, useEffect, useCallback } from 'react';
+import { createContext, useState, ReactNode, useContext, useCallback } from 'react';
 /*
 // Определяем типы для контекста
 interface LoadContextProps {

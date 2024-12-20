@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import breadMiniSVG from "../assets/img/breadMini.svg"
 import { Breadcrumbs } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getCategoryTitleById } from "../utill";
+import { getCategoryTitleById, myFunctionWithDelay } from "../utill";
 
 
 interface BreadCrumpComponentProps {
@@ -70,27 +70,43 @@ const BreadCrumpsComponent = () => {
         };
 
         window.addEventListener('resize', handleResize);
+        window.addEventListener("DOMContentLoaded", handleResize);
+        window.addEventListener("breadcrumps-update", handleResize)
 
         updateFontSize(); // Вызов функции при монтировании компонента
 
         prevBreadcrumbsLength.current = breadcrumbs.length;
         return () => {
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener("DOMContentLoaded", handleResize);
+            window.removeEventListener("breadcrumps-update", handleResize)
         };
     }, [breadcrumbs, fontSize, MIN_FONT_SIZE]);
 
 
     useEffect(() => {
+        const eventBreadUpdate = new CustomEvent("breadcrumps-update")
         const updateBreadcrumbs = async () => {
+            window.dispatchEvent(eventBreadUpdate);
             const paths = location.pathname.split('/').filter(x => x); // Разделение пути по "/"
             const searchParams = new URLSearchParams(location.search);
             const newBreadcrumbs: BreadCrumpComponentProps[] = [];
             const storageOfBreadCrumbs = localStorage.getItem("breadcrumbs");
-            if (paths.includes("result")) setBreadcrumbs(
+            if (paths.includes("result")){
+                setBreadcrumbs(
                 JSON.parse(
                     storageOfBreadCrumbs !== null
                         ? storageOfBreadCrumbs
                         : "Error"))
+                        
+                const title = document.querySelector(".res-title")?.textContent || "Error";
+                const newBreadCrumbElement:BreadCrumpComponentProps = ({
+                    destination: location.pathname,
+                    content: title,
+                });
+                setBreadcrumbs((prevBreadcrumbs) => [...prevBreadcrumbs, newBreadCrumbElement]);
+                myFunctionWithDelay(()=>window.dispatchEvent(eventBreadUpdate), 100);
+            } 
             else {
                 newBreadcrumbs.push({ destination: '/', content: 'Главное меню' });
 
@@ -130,6 +146,7 @@ const BreadCrumpsComponent = () => {
                     });
                 }
                 setBreadcrumbs(newBreadcrumbs);
+                window.dispatchEvent(eventBreadUpdate);
                 localStorage.setItem("breadcrumbs", JSON.stringify(newBreadcrumbs))
             }
         };
@@ -146,7 +163,7 @@ const BreadCrumpsComponent = () => {
         return () => {
             window.removeEventListener('popstate', handlePopState);
         };
-    }, [location]);
+    }, [location, categoryIdFromUrl, subCategoryIdFromUrl]);
 
     return (
         <div ref={breadcrumbContainerRef}>

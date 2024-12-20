@@ -8,7 +8,7 @@ import ServiceResultHeader from "./ServiceResultHeader";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AdminHeaderElements from "../../AdminUtils/AdminHeaderElements";
-import { useServicesQuery } from "../../../hooks/useCategoriesQuery";
+import { useServicesQuery } from "../../../hooks/useCardsQuery";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 

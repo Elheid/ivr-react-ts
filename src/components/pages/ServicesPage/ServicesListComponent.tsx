@@ -8,7 +8,7 @@ import { getLastParam, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider, useLoadContext } from '../../../contextProviders/LoadMediaProvider';
 import { Category, Service } from '../../../interfaces/CardsInterfaces';
 import LoadingCompanent from '../../LoadingComponent';
-import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCategoriesQuery';
+import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCardsQuery';
 
 import AddCardComponent from '../../AddCardComponent';
 
@@ -181,8 +181,8 @@ const ListComponent = () => {
                         childrenCategoryIds={category.childrenCategoryIds}
                     />
                 ))
-                }
-                {/*!services ? smthWrong :*/!isSearching && services && services.map((service, index) => (
+                }   
+                {/*!services ? smthWrong :!isSearching &&*/ services && services.map((service, index) => (
                     <ServiceCardComponent
                         key={index} // Ensure unique key for each card
                         id={service.id} // Assuming 'catalogId' exists in your data

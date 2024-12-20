@@ -1,5 +1,5 @@
 import { Box, Container, Grid2, IconButton, Modal, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import infoButton from "../../../../assets/img/info.svg"
 import ImageButton from "../../../ImageButtonComponent";
 import InfoCardComponent from "./InfoCardComponent";
@@ -9,8 +9,11 @@ import Scrollbar from "../../../ScrollBar/ScrollBar";
 import InfoCardResultComponent from "./InfoCardResultComponent";
 import ModalStyle from "../../../../styles/modalStyle";
 import { useParams } from "react-router-dom";
-import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
+import { useInfoCardsQuery } from "../../../../hooks/useCardsQuery";
 import LoadingCompanent from "../../../LoadingComponent";
+import { isAdmin } from "../../../../utill";
+import ServiceResultButtonsComponent from "../../../AdminUtils/ServiceResultButtonsComponent";
+import AddCardComponent from "../../../AddCardComponent";
 
 /*
 const infoCard: InfoCard = {
@@ -32,6 +35,10 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
     const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
     const [isHidden, setHidden] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState<number>();
+    const defaultTitle = "Дополнительная информация";
+    const [title, setTitle] = useState(defaultTitle);
+
+    const titleRef = useRef<HTMLSpanElement>(null);
 
     const { serviceId } = useParams<{ serviceId?: string }>();
     const serviceUrlId = serviceId ? Number(serviceId) : -1;
@@ -44,7 +51,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
 
     const {data: infoCardInfo, isLoading: isInfoLoading } = useInfoCardsQuery({serviceId:serviceUrlId});
 
-
+    
 
     useEffect(() => {
         if (open) {
@@ -55,6 +62,12 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
             //console.log(additionIds)
         }
     }, [open]);
+
+    useEffect(() => {
+        if (!isHidden) {
+            setTitle(defaultTitle)
+        }
+    }, [isHidden]);
 
     useEffect(() => {
         const handleInfoCardOpen = (event: Event) => {
@@ -92,7 +105,8 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
             >
                 <Box sx={ModalStyle} className={"info-modal popup"}>
                     <div className="popup-header">
-                        <Typography className="popup-title title" variant="h4" gutterBottom>Дополнительная информация</Typography>
+                        <Typography className="popup-title title" variant="h4" gutterBottom ref={titleRef}>{title}</Typography>
+                        {isAdmin() && isHidden && <ServiceResultButtonsComponent extendedClass={"to-info-card"} ref={titleRef} />}
                         <IconButton className="close-info" id="closePopup" onClick={handleClose}>
                             &#x2716;
                         </IconButton>
@@ -101,6 +115,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                         {additionIds ?
                             <div className="popup-content">
                                 <Grid2 className={`info-cards card-list list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
+                                    <AddCardComponent buttonColorClass="add-card-info" addColor="black" size={6}></AddCardComponent>
                                     {isInfoLoading ? <LoadingCompanent /> : infoCards.map((infoCard: InfoCard, index: number) => (
                                         <InfoCardComponent
                                             key={index} // Ensure unique key for each card
@@ -117,11 +132,13 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                                 </Grid2>
                                 <div className={`additional-info-res ${!isHidden && open ? "hidden" : ""}`}>
                                     <Container>
-                                        <InfoCardResultComponent id={selectedCardId} />
-                                        <LinkButtonComponent onClick={handleShow} />
+                                        <InfoCardResultComponent setTitle={setTitle} id={selectedCardId} />
+                                        
                                     </Container>
                                 </div>
+                                <LinkButtonComponent classes={`return-button bottom-button ${!isHidden && open ? "hidden" : ""}`} onClick={handleShow} />
                             </div>
+                            
                         :
                         <Typography variant="h4" gutterBottom>Дополнительной информации нет</Typography>
                         }

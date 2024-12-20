@@ -40,10 +40,10 @@ const getCategoriesTitles = ():TitlesMap => {
     return res;
 }
 
-const getCategoryTitleById = (id: number) :string | null=> {
+const getCategoryTitleById = (id: number) :string=> {
     const titles = getCategoriesTitles();
     const res = titles[id];
-    return res || null; // Возвращает заголовок по id или null, если id нет в объекте
+    return res || ""; // Возвращает заголовок по id или null, если id нет в объекте
 };
 
 

@@ -1,8 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import VideoComponent from "../../../VideoComponent";
 import {insertBlocks} from "../blockInsertion";
-import { useInfoCardsQuery } from "../../../../hooks/useCategoriesQuery";
+import { useInfoCardsQuery } from "../../../../hooks/useCardsQuery";
 import { useParams } from "react-router-dom";
+import ServiceResultButtonsComponent from "../../../AdminUtils/ServiceResultButtonsComponent";
+import { isAdmin } from "../../../../utill";
 
 interface InfoStrpComponentProps {
     id?:number;
@@ -13,8 +15,10 @@ interface InfoStrpComponentProps {
 
 
 
-const InfoCardResultComponent = ({ id }: {id?:number}) => {
+const InfoCardResultComponent = ({ setTitle, id }: {setTitle:React.Dispatch<React.SetStateAction<string>>;id?:number}) => {
     const textRef = useRef<HTMLPreElement>(null);
+
+    const vidRef = useRef<HTMLVideoElement>(null);
     const [cardDetails, setCardDetails] = useState<InfoStrpComponentProps | null>(null);
 
     const cardId = id ? id : -1;
@@ -31,8 +35,11 @@ const InfoCardResultComponent = ({ id }: {id?:number}) => {
 
     useLayoutEffect(() => {
         const infoCard = infoCardInfo?.filter((card)=>card.id === cardId)[0]
+        if (infoCard?.title)
+            //console.log(infoCard?.title)
+            setTitle(infoCard?.title)
         setCardDetails(infoCard as InfoStrpComponentProps)
-    }, [cardId, infoCardInfo]);
+    }, [cardId, infoCardInfo, setTitle]);
 
     if (!cardId) return null;
 
@@ -40,8 +47,14 @@ const InfoCardResultComponent = ({ id }: {id?:number}) => {
         <>
         {!isInfoLoading &&
         (<div className="manual-strp info-manual">
-            {!cardType && <VideoComponent class={"instruct-video"} gifSrc={cardDetails?.gifLink || ""}></VideoComponent>}
+            {!cardType && 
+            <>
+            {isAdmin() &&<ServiceResultButtonsComponent extendedClass={"to-info-card"} ref={vidRef} />}
+            <VideoComponent ref={vidRef} class={"instruct-video"} gifSrc={cardDetails?.gifLink || ""}></VideoComponent>
+            </>
+            }
             <div className="manual">
+                {isAdmin() &&<ServiceResultButtonsComponent extendedClass={"to-info-card"} ref={textRef} />}
                 <pre ref={textRef} className="manual-text result-text">
                 </pre>
             </div>
