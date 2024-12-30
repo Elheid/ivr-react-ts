@@ -1,8 +1,39 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import breadMiniSVG from "../assets/img/breadMini.svg"
-import { Breadcrumbs } from "@mui/material";
+import { Breadcrumbs, Button, Menu, MenuItem } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getCategoryTitleById, getLastParam, myFunctionWithDelay } from "../utill";
+import { getCategoryTitleById, myFunctionWithDelay } from "../utill";
+import { myButtonStyle } from "../styles/myColoredButton";
+
+
+const STORAGE_KEY = 'categoriesIds'; // Ключ для localStorage
+
+// Функция для сохранения Set<string> в localStorage
+const saveCategoriesToStorage = (categoriesSet: Set<string>) => {
+    const categoriesArray = Array.from(categoriesSet);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(categoriesArray));
+};
+
+
+// Функция для восстановления Set<string> из localStorage
+const loadCategoriesFromStorage = (): Set<string> => {
+    const storedData = localStorage.getItem(STORAGE_KEY);
+    if (storedData) {
+        try {
+            const categoriesArray = JSON.parse(storedData)
+            if (Array.isArray(categoriesArray)) {
+                return new Set(categoriesArray)
+            } else {
+                console.error('Invalid data in localStorage')
+                return new Set()
+            }
+        } catch (error) {
+            console.error('Error parsing data from localStorage:', error);
+            return new Set()
+        }
+    }
+    return new Set();
+};
 
 
 interface BreadCrumpComponentProps {
@@ -83,6 +114,12 @@ const BreadCrumpsComponent = () => {
         };
     }, [breadcrumbs, fontSize, MIN_FONT_SIZE]);
 
+    const categoriesIdsRef = useRef<Set<string>>(new Set<string>());
+
+    useEffect(() => {
+        const savedCategories = loadCategoriesFromStorage()
+        categoriesIdsRef.current = savedCategories
+    }, [])
 
     useEffect(() => {
         const eventBreadUpdate = new CustomEvent("breadcrumps-update")
@@ -112,24 +149,30 @@ const BreadCrumpsComponent = () => {
 
                 let accumulatedPath = '';
 
+
                 for (const path of paths) {
                     accumulatedPath += `/${path}`;
                     const destination = accumulatedPath;
 
+                    const isChooseCatPath = decodeURIComponent(path) === "services" || decodeURIComponent(path) === "subCategories";
+
                     let title: string = "Error";
                     const categoryId = categoryIdFromUrl//searchParams.get("categoryId") || categoryIdFromUrl;
                     const subCategoryId = subCategoryIdFromUrl//searchParams.get("subCategoryId");
-                    const lastParam = Number(getLastParam());
-                    if (categoryId || subCategoryId) {
-                        if (categoryId && subCategoryId) title = getCategoryTitleById(lastParam)
-                        else if (categoryId) title = getCategoryTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
-                        else if (subCategoryId) title = getCategoryTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
+                    if (categoryId) categoriesIdsRef.current.add(categoryId)
+                    if (subCategoryId) categoriesIdsRef.current.add(subCategoryId)
+                    //const lastParam = Number(getLastParam());
+                    if ((categoryId || subCategoryId) && !isChooseCatPath) {
+                        /*if (categoryId && subCategoryId) title = getCategoryTitleById(lastParam)
+                        else*/ if (categoryId && categoryId === path) title = getCategoryTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
+                        else if (subCategoryId && subCategoryId === path) title = getCategoryTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
+                        else if (categoriesIdsRef.current.has(path)) title = getCategoryTitleById(Number(path))
                     }
 
                     // Добавляем хлебные крошки для каждого сегмента
                     newBreadcrumbs.push({
                         destination: decodeURIComponent(path) === "subCategories" ? "/services" : destination,
-                        content: decodeURIComponent(path) === "services" || decodeURIComponent(path) === "subCategories" ? 'Выбор категорий' : title
+                        content: isChooseCatPath ? 'Выбор категорий' : title
                     });
                 };
 
@@ -150,6 +193,7 @@ const BreadCrumpsComponent = () => {
                 setBreadcrumbs(newBreadcrumbs);
                 window.dispatchEvent(eventBreadUpdate);
                 localStorage.setItem("breadcrumbs", JSON.stringify(newBreadcrumbs))
+                saveCategoriesToStorage(categoriesIdsRef.current)
             }
         };
 
@@ -170,7 +214,7 @@ const BreadCrumpsComponent = () => {
 
 
     /*Добавление выпадающего списка*/
-    /*
+
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const open = Boolean(anchorEl);
 
@@ -183,8 +227,9 @@ const BreadCrumpsComponent = () => {
     };
 
     // Ограничиваем отображение крошек
-       const renderBreadcrumbs = () => {
-        if (breadcrumbs.length <= 5) {
+    const renderBreadcrumbs = () => {
+        if (breadcrumbs.length <= 4) {
+            // Если крошек 4 или меньше, отображаем все
             return breadcrumbs.map((breadcrumb, index) => (
                 <div key={index} className="breadcrumb-item">
                     <Link to={breadcrumb.destination}>
@@ -195,19 +240,25 @@ const BreadCrumpsComponent = () => {
         }
 
         const first = breadcrumbs[0];
+        const second = breadcrumbs[1];
         const last = breadcrumbs[breadcrumbs.length - 1];
-        const hiddenBreadcrumbs = breadcrumbs.slice(1, -1);
+        const hiddenBreadcrumbs = breadcrumbs.slice(2, -1); // Скрываем всё между второй и последней
 
-        return (
-            <>
-                <div className="breadcrumb-item">
-                    <Link to={first.destination}>
-                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{first.content}</span>
-                    </Link>
-                </div>
-                <IconButton color="primary" size="small" onClick={handleClick}>
-                    <MoreHorizIcon />
-                </IconButton>
+        return [
+            <div className="breadcrumb-item">
+                <Link to={first.destination}>
+                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{first.content}</span>
+                </Link>
+            </div>,
+            <div className="breadcrumb-item">
+                <Link to={second.destination}>
+                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{second.content}</span>
+                </Link>
+            </div>,
+            <div className="breadcrumb-item">
+                <Button sx={myButtonStyle} size="small" onClick={handleClick}>
+                    <span style={{ color: "white" }}>etc</span>
+                </Button>
                 <Menu
                     anchorEl={anchorEl}
                     open={open}
@@ -226,13 +277,15 @@ const BreadCrumpsComponent = () => {
                         </MenuItem>
                     ))}
                 </Menu>
-                <div className="breadcrumb-item">
-                    <Link to={last.destination}>
-                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{last.content}</span>
-                    </Link>
-                </div>
-            </>
-        );
+            </div>,
+
+            <div className="breadcrumb-item">
+                <Link to={last.destination}>
+                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{last.content}</span>
+                </Link>
+            </div>,
+
+        ];
     };
 
     return (
@@ -252,26 +305,22 @@ const BreadCrumpsComponent = () => {
             </Breadcrumbs>
         </div>
     );
-};
 
-export default BreadCrumpsComponent;
-    */
-    return (
-        <div ref={breadcrumbContainerRef}>
-            <Breadcrumbs
-                className="header-list"
-                aria-label="breadcrumb"
-                sx={{
-                    width: '100%',
-                    flexWrap: "nowrap",
-                    whiteSpace: 'nowrap', // Хлебные крошки не будут переноситься
-                    overflow: 'hidden',   // Скрываем излишки
-                }}
-                separator={<img className={arrowClasses} src={arrowImg} alt="arrow-svg" />}
-            >
-                
-                {/*<BreadCrumpComponent  destination={"/"} class={"prev-page"} content={"Главное меню"}/>
-            <BreadCrumpComponent  destination={"/services"} class={"current-page"} content={"Выбор категорий"}/>*/}
+    /*Старый список */
+    /*
+        return (
+            <div ref={breadcrumbContainerRef}>
+                <Breadcrumbs
+                    className="header-list"
+                    aria-label="breadcrumb"
+                    sx={{
+                        width: '100%',
+                        flexWrap: "nowrap",
+                        whiteSpace: 'nowrap', // Хлебные крошки не будут переноситься
+                        overflow: 'hidden',   // Скрываем излишки
+                    }}
+                    separator={<img className={arrowClasses} src={arrowImg} alt="arrow-svg" />}
+                >
                 {breadcrumbs.map((breadcrumb, index) => (
                     <div key={index} className={"breadcrumb-item page"}>
                         <Link aria-current="page" to={breadcrumb.destination}>
@@ -285,7 +334,7 @@ export default BreadCrumpsComponent;
         </div>
 
     );
-}
-
+    */
+};
 
 export default BreadCrumpsComponent;

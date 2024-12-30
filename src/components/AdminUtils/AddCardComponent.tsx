@@ -7,7 +7,7 @@ import { useEffect} from "react";
 
 import { createPortal } from "react-dom";
 import AdminModal from "./AdminModal.tsx/AdminModal";
-import { usePageStateContext } from "../../contextProviders/pageState";
+import { usePageStateContext } from "../../contextProviders/PageState";
 import { useCardFormModal } from "../../hooks/useAdminModalParams";
 
 const AddCardComponent = ({size, buttonColorClass, addColor}:{size:number, buttonColorClass?:string, addColor?:string})=>{

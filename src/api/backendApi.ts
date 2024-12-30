@@ -87,11 +87,11 @@ const uploadData = async <T>(route: string, data: T) => {
 const uploadSetId = async (route: string) => {
   const res = await axios.put(route);
   return res;
-};
+};/*
 const uploadDataSetId = async <T>(route: string, data: T) => {
   const res = await axios.post(route, data);
   return res;
-};
+};*/
 const uploadDataPutId = async <T>(route: string, data: T) => {
   const res = await axios.put(route, data);
   return res;
