@@ -257,7 +257,7 @@ const BreadCrumpsComponent = () => {
             </div>,
             <div className="breadcrumb-item">
                 <Button sx={myButtonStyle} size="small" onClick={handleClick}>
-                    <span style={{ color: "white" }}>etc</span>
+                    <span style={{ color: "white" }}>Еще</span>
                 </Button>
                 <Menu
                     anchorEl={anchorEl}
