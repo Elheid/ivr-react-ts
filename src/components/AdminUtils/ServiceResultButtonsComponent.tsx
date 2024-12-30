@@ -100,6 +100,7 @@ const ServiceResultButtonsComponent = forwardRef<HTMLElement, ServiceResultButto
             formType={formType}
             open={openModal}
             handleClose={(e: Event) => handleCloseModal(e)}
+            showCardTypeChange={false}
             //handleSubmitModal={handleSubmitModal}
         />, document.body)}
 

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { getCategories, getInfoCardsByServiceId, getService, getServiceById, getServiceByTitle } from "../api/backendApi"
 import { Category, InfoCard, Service } from "../interfaces/CardsInterfaces";
-import { usePageStateContext } from "../contextProviders/pageState";
+
 
 
 export const useCategoriesQuery = (options = {})=>{

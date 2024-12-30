@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AdminHeaderElements from "../../AdminUtils/AdminHeaderElements";
 import { useServicesQuery } from "../../../hooks/useCardsQuery";
-import { usePageStateContext } from "../../../contextProviders/pageState";
+import { usePageStateContext } from "../../../contextProviders/PageState";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 

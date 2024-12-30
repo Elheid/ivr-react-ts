@@ -19,10 +19,9 @@ import { CardAndFormTypeProvider, } from './contextProviders/formTypeProvider.ts
 import { ShowAdminButtonsProvider } from './contextProviders/ShowAdminButtonsProvider.tsx';
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Alert } from '@mui/material';
-import { PageStateProvider } from './contextProviders/pageState.tsx';
+import { PageStateProvider } from './contextProviders/PageState.tsx';
 import axios from "axios";
 import { tryJsonParse } from './utill.ts';
-import { RecursiveRoutes } from './components/RecursiveRoutes.tsx';
 
 function App() {
 

@@ -11,7 +11,7 @@ import LoadingCompanent from '../../LoadingComponent';
 import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCardsQuery';
 
 import AddCardComponent from '../../AdminUtils/AddCardComponent';
-import { usePageStateContext } from '../../../contextProviders/pageState';
+import { usePageStateContext } from '../../../contextProviders/PageState';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],

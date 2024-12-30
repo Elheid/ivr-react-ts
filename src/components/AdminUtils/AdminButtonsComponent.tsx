@@ -1,11 +1,9 @@
 import trash from "../../assets/img/trash.svg"
 import edit from "../../assets/img/edit.svg"
 import { Button, Container } from "@mui/material";
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef } from "react";
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 import AdminModal from "./AdminModal.tsx/AdminModal";
-import { CardType, FormType } from "../../contextProviders/formTypeProvider";
-import { deleteCard } from "../../api/backendApi";
 import { useCardFormModal } from "../../hooks/useAdminModalParams";
 
 
@@ -204,6 +202,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     formType={formType}
                     open={openModal}
                     handleClose={(e) => handleCloseModal(e)}
+                    showCardTypeChange={false}
                     //handleSubmitModal={handleSubmitModal}
                 />}
             </>
