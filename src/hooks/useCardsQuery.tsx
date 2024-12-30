@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import { getCategories, getInfoCardsByServiceId, getService, getServiceById, getServiceByTitle } from "../api/backendApi"
 import { Category, InfoCard, Service } from "../interfaces/CardsInterfaces";
+import { usePageStateContext } from "../contextProviders/pageState";
+
 
 export const useCategoriesQuery = (options = {})=>{
+
     const query = useQuery({
         queryKey:['categories'],
         queryFn:async ()=>{
@@ -16,6 +19,8 @@ export const useCategoriesQuery = (options = {})=>{
 }
 
 export const useServicesQuery = (playload:{categoryId?:number, serviceId?:number ,search?:string}, options = {})=>{
+
+
         const isEnabled = 
         playload.categoryId !== -1 
         || playload.categoryId !== undefined 
@@ -40,8 +45,12 @@ export const useServicesQuery = (playload:{categoryId?:number, serviceId?:number
                     return [];
                 }
                 const data = await getServiceById(playload.categoryId!);
-                const content:Service[] = data.content;
-                return content;
+                    if (data !== ""){
+                        const content:Service[] = data.content;
+                        return content;
+                    }
+                    else
+                        return [];
             },
             enabled: isEnabled,
             ...options
@@ -51,6 +60,7 @@ export const useServicesQuery = (playload:{categoryId?:number, serviceId?:number
 
 
 export const useInfoCardsQuery = (playload:{serviceId?:number, infoId?:number,}, options = {})=>{
+
     const query = useQuery({
         queryKey:['infoCards'],
         queryFn:async ()=>{

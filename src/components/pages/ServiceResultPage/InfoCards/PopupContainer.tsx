@@ -13,7 +13,9 @@ import { useInfoCardsQuery } from "../../../../hooks/useCardsQuery";
 import LoadingCompanent from "../../../LoadingComponent";
 import { isAdmin } from "../../../../utill";
 import ServiceResultButtonsComponent from "../../../AdminUtils/ServiceResultButtonsComponent";
-import AddCardComponent from "../../../AddCardComponent";
+import AddCardComponent from "../../../AdminUtils/AddCardComponent";
+import { usePageStateContext } from "../../../../contextProviders/pageState";
+import { useShowAdminButtons } from "../../../../contextProviders/ShowAdminButtonsProvider";
 
 /*
 const infoCard: InfoCard = {
@@ -31,6 +33,9 @@ const infoCard: InfoCard = {
 
 
 const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) => {
+    const { showAdminButtons} = useShowAdminButtons();
+
+
     const [open, setOpen] = useState(false);
     const [infoCards, setInfoCards] = useState<InfoCard[]>([]);
     const [isHidden, setHidden] = useState(false);
@@ -51,9 +56,10 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
 
     const {data: infoCardInfo, isLoading: isInfoLoading } = useInfoCardsQuery({serviceId:serviceUrlId});
 
-    
+    const {setState } = usePageStateContext();
 
     useEffect(() => {
+        setState("info")
         if (open) {
             const fillInfoArray = async()=>{
                 setInfoCards(infoCardInfo || []);
@@ -112,7 +118,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                         </IconButton>
                     </div>
                     <Scrollbar height="67vh" addArrowsButtons={false}>
-                        {additionIds ?
+                        {additionIds || showAdminButtons ?
                             <div className="popup-content">
                                 <Grid2 className={`info-cards card-list list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
                                     <AddCardComponent buttonColorClass="add-card-info" addColor="black" size={6}></AddCardComponent>

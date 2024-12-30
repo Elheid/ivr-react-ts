@@ -10,7 +10,8 @@ import { Category, Service } from '../../../interfaces/CardsInterfaces';
 import LoadingCompanent from '../../LoadingComponent';
 import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCardsQuery';
 
-import AddCardComponent from '../../AddCardComponent';
+import AddCardComponent from '../../AdminUtils/AddCardComponent';
+import { usePageStateContext } from '../../../contextProviders/pageState';
 
 interface GroupsOfCategories{
         rootWithNotSub: Category[],
@@ -44,6 +45,9 @@ const categorizeCategories = (categories: Category[] | undefined): GroupsOfCateg
 };
 
 const ListComponent = () => {
+
+    const {setState } = usePageStateContext();
+
     const { categories, setCategories, services, setServices } = useCards();
     const { size } = useCardSize();
 
@@ -71,7 +75,7 @@ const ListComponent = () => {
     const query = quetyFromUrl ?? '';
 
     
-    const {data: categoriesInfo,  error: categoriesError, isLoading: isCategoriesLoading} = useCategoriesQuery();
+    const {data: categoriesInfo,  error: categoriesError, isLoading: isCategoriesLoading, refetch} = useCategoriesQuery();
     const {data: servicesInfo,  error: servicesError, isLoading: isServicesLoading } = useServicesQuery({categoryId:idNumberCategory, search:query});
     
     const { areAllIconsLoaded, areAllVideosLoaded } = useLoadContext();
@@ -101,27 +105,34 @@ const ListComponent = () => {
     useEffect(() => {
         const lastParam = Number(getLastParam());
         try {
-            if (idNumberCategory !== -1 && idNumberCategory === lastParam) {
-                setServices(servicesInfo as Service[]);
-            }
-            if (idNumberSubCategory !== -1 && idNumberSubCategory === lastParam )
+            const lastParent = categoriesInfo?.filter((el)=> el.id === lastParam)
+            if (idNumberSubCategory !== -1 && (idNumberSubCategory === lastParam || idNumberCategory === lastParam) && lastParent &&  lastParent?.[0].childrenCategoryIds.length > 0)
             {
+                setState("sub-categories")
+                console.log("sub-categories")
                 if (gruopsOfCategoties.current) 
                 {
                     const allSubCategories = [...gruopsOfCategoties.current.subWithNotChild, 
                         ...gruopsOfCategoties.current.subWithChild];
-                    const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
+                    const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === lastParam)
                     setCategories(subCategoriesToShow);
                 }
                 else{
                     saveCategoriesTitles(categoriesInfo || []);
+                    if(!categoriesInfo)
+                        refetch()
                     gruopsOfCategoties.current = categorizeCategories(categoriesInfo);
                     const allSubCategories = [...gruopsOfCategoties.current.subWithNotChild, 
                         ...gruopsOfCategoties.current.subWithChild];
                     const subCategoriesToShow = allSubCategories.filter((el)=> el.parentCategoryId === idNumberSubCategory)
                     setCategories(subCategoriesToShow);
                 }
-            } 
+            }
+            else if (idNumberCategory !== -1 && idNumberCategory === lastParam) {
+                setState("services")
+                console.log("services")
+                setServices(servicesInfo as Service[]);
+            }
             if (query !== '') {
                 setServices([])
                 setCategories([]);
@@ -131,6 +142,8 @@ const ListComponent = () => {
                     
             }
             if (idNumberCategory === -1 && idNumberSubCategory === -1 && query === "") {
+                setState("categories")
+                console.log("categories")
                     saveCategoriesTitles(categoriesInfo || []);
                     gruopsOfCategoties.current = categorizeCategories(categoriesInfo);
                     setCategories([...gruopsOfCategoties.current.rootWithNotSub, 
@@ -159,14 +172,17 @@ const ListComponent = () => {
     const isHidden = loading ? "hidden" : ""; // Состояние видимости элемента
     //const skeletonIsHidden = !loading ? "hidden" : "";
 
+    
     if (loading){
         return <LoadingCompanent />
     }
+
+
     return (
         <>
             <Grid2 className={`card-list ${isHidden}`} container rowSpacing={6} columnSpacing={{ xs: 9, sm: 9, md: 9 }}>
                 {/*isSetLoading && <LoadingCompanent />*/}
-                <AddCardComponent size={size}></AddCardComponent>
+                <AddCardComponent size={size} ></AddCardComponent>
                 {/*!categories ? smthWrong : */!isSearching && categories &&categories.map((category, index) => (
                     <CatalogCardComponent
                         key={index} // Ensure unique key for each card
@@ -179,6 +195,7 @@ const ListComponent = () => {
                         isLoading={!isCategoriesLoading}
                         parentCategoryId={category.parentCategoryId}
                         childrenCategoryIds={category.childrenCategoryIds}
+                        
                     />
                 ))
                 }   

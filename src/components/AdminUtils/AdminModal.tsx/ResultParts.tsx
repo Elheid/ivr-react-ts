@@ -49,6 +49,7 @@ const ResultParts = ({ descriptionParts, iconLinks }: { descriptionParts: string
     const icons = iconLinks ? iconLinks : []
     const parts = descriptionParts ? descriptionParts : []
 
+
     useEffect(() => {
         // Установите значения для descriptionParts
         const resParts: DescriptionPart[] = parts.map((text, index) => {
@@ -56,7 +57,11 @@ const ResultParts = ({ descriptionParts, iconLinks }: { descriptionParts: string
             return ({ text, icon })
         }
         );
-        setDescriptionParts(resParts);
+        if (resParts.length === 0){
+            setDescriptionParts([{text: '', icon: ''}]);
+        }
+        else
+            setDescriptionParts(resParts);
         /*setDescriptionParts([
             { text: '' },
             { text: '' },

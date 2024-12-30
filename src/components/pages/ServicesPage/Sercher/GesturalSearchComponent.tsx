@@ -8,7 +8,7 @@ const GesturalSearchComponent = ({onClick} : {onClick: ()=> void})  => {
         <Button 
         onClick={onClick}
         id="showPopup" 
-        className={`${styles["showPopup"]} hidden`} 
+        className={`${styles["showPopup"]}`} 
         type="button" 
         sx={{ 
             textTransform: 'none',

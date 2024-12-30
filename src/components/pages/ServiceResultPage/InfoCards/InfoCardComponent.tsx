@@ -64,6 +64,7 @@ const InfoCardComponent = (props: InfoCardPropsNew) => {
             >
                 {isAdmin() && <AdminButtonsComponent ref={infoCardRef}/>}
                 <Button
+                    info-id={props.id}
                     sx={{
                         textTransform: 'none',
                         fontWeight: "400",

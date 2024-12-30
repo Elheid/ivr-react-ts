@@ -155,7 +155,7 @@ const CatalogCardComponent: React.FC<Category & { isLoading?: boolean }> = React
     if (parentCategoryId !== 0) {
         console.log()
     }
-    if (childrenCategoryIds.length > 0) {
+    if (childrenCategoryIds.length > 0 && parentCategoryId === 0) {
         childrens = childrenCategoryIds.length;
         destinationParams = { withBaseUrl: false, paramState: `/subCategories/${id}`, navigate, fromStart: false };
     }

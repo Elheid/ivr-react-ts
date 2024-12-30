@@ -24,7 +24,7 @@ const ManualStrpComponent = ({ gifLink, description, iconLinks, additionIds }: M
 
 
     const cardType = localStorage.getItem("language") === "clear-language" ;
-    const insertBlocksMemo = useCallback(()=>insertBlocks(textRef, description, iconLinks),[description, iconLinks])
+    const insertBlocksMemo = useCallback(()=>insertBlocks(textRef, description, iconLinks.filter(str => str !== "")),[description, iconLinks])
     useEffect(() => {
         insertBlocksMemo();
     }, [insertBlocksMemo]);

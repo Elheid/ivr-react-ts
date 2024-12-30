@@ -1,5 +1,6 @@
 export interface FormValues {
     switchToTransfer: boolean;
+    id:number,
     title: string;
     mainIconLink: string;
     gifPreview: string;
@@ -7,4 +8,4 @@ export interface FormValues {
     resVideo?: string; // если это поле может отсутствовать
     descriptionParts?: string[]; // если это поле может отсутствовать
     iconLinks?: string[]; // если это поле может отсутствовать
-  }
+}

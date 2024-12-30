@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import AdminHeaderElements from "../../AdminUtils/AdminHeaderElements";
 import { useServicesQuery } from "../../../hooks/useCardsQuery";
+import { usePageStateContext } from "../../../contextProviders/pageState";
 //import { InfoCard } from "../../interfaces/CardsInterfaces";
 
 
@@ -46,9 +47,10 @@ const ServiceResultComponent = () => {
     const {data: servicesInfo, isLoading: isServicesLoading } = useServicesQuery({serviceId:idNumberService});
 
 
-
+    const {setState } = usePageStateContext();
     // Fetch data using useEffect
     useEffect(() => {
+        setState("services")
             const data = servicesInfo as ServiceData;
             setServiceData(data)
 

@@ -1,62 +1,15 @@
 import axios, { AxiosError } from "axios";
 import { API_BACK_URL } from "../assets/data/constants";
-import { Category, Service } from "../interfaces/CardsInterfaces";
-import { saveCategoriesTitles, tryJsonParse } from "../utill";
+import { Category, InfoCard, Service } from "../interfaces/CardsInterfaces";
+import { myFunctionWithDelay, saveCategoriesTitles } from "../utill";
+import { CardType } from "../contextProviders/formTypeProvider";
+import { FormValues } from "../interfaces/FormValuesInterface";
+
 const BASE_URL = API_BACK_URL;
 
 axios.defaults.baseURL = "" + BASE_URL;
 axios.defaults.headers.common['Authorization'] = localStorage.getItem("token") ? `Bearer ${localStorage.getItem("token") }` : undefined;
 
-interface ParsedObject {
-  title?: string;
-  description?: string;
-  gifLink?: string;
-  gifPreview?: string;
-  mainIconLink?: string;
-  iconLinks?: string[]; // Явно указываем, что это массив строк
-  [key: string]: unknown; // Позволяет добавлять другие поля с типом unknown
-}
-
-
-axios.interceptors.response.use((response) => {
-  const res = response.data;
-  const fieldsToParse = [
-    { key: 'title', name: 'title' },
-    { key: 'description', name: 'description' },
-    { key: 'gifLink', name: 'resVideo' },
-    { key: 'gifPreview', name: 'video' },
-    { key: 'mainIconLink', name: 'image' },
-    { key: 'iconLinks', isArray: true , name:"icon"} // Обрабатываем массив
-];
-
-// Функция для обработки одного объекта
-const parseObjectFields = (obj: ParsedObject) => {
-  fieldsToParse.forEach(({ key, name, isArray }) => {
-      if (key in obj) {
-          if (isArray) {
-              const items = obj[key];
-              if (Array.isArray(items)) {
-                  obj[key] = items.map((item) => tryJsonParse(item, 'link'));
-              }
-          } else {
-              if (typeof obj[key] === 'string') {
-                obj[key] = tryJsonParse(obj[key], name);
-            }
-          }
-      }
-  });
-};
-
-  // Проверка на наличие поля content
-  if (Array.isArray(res.content)) {
-      res.content.forEach(parseObjectFields); // Проходим по каждому объекту в массиве content
-  } else {
-      // Если content нет, обрабатываем сам объект
-      parseObjectFields(res);
-  }
-  response.data = res; 
-  return response; 
-});
 
 const Route = {
   GET_SERVICES: 'items/search/byCategory?categoryId=',
@@ -100,9 +53,11 @@ const refreshToken = async() => {
     const error = err as AxiosError
     localStorage.removeItem('token');
     localStorage.removeItem('refresh-token');
-    alert("Время истекло, перезайдите в аккаунт " + error.message);
+    alert("Время истекло, перезайдите в аккаунт" + error.message);
+    
+    myFunctionWithDelay(()=> window.location.reload(), 200)
 
-    throw new Error(error.message);
+    //throw new Error(error.message);
   }
 };
 
@@ -125,7 +80,22 @@ const login = async(username: string, password: string) => {
   }
 };
 
-
+const uploadData = async <T>(route: string, data: T) => {
+  const res = await axios.post(route, data);
+  return res;
+};
+const uploadSetId = async (route: string) => {
+  const res = await axios.put(route);
+  return res;
+};
+const uploadDataSetId = async <T>(route: string, data: T) => {
+  const res = await axios.post(route, data);
+  return res;
+};
+const uploadDataPutId = async <T>(route: string, data: T) => {
+  const res = await axios.put(route, data);
+  return res;
+};
 
 const getCategories= () => load(Route.CATEGORIES);
 const getService= (id : number) => loadByValue(Route.SERVICES, id);
@@ -150,10 +120,172 @@ const loadCategoriesTitles = async() => {
   saveCategoriesTitles(data.content);
 };
 
+//Admin
+
+const createCategory = (data: Category)=> uploadData('categories', data)
+const setCategoryParent = (id:number, parentId:number)=> uploadSetId(`categories/${id}/parent/set/${parentId}` )
+
+
+const createService = (data: Service)=> uploadData('items', data)
+const addServiceCategory = (id:number, parentId:number)=> uploadSetId(`/items/${id}/category/add/${parentId}`)
+const addServiceIcon = (id:number, data:object) => uploadDataPutId(`/items/${id}/icon/add`, data)
+
+
+const createAddition = (data: InfoCard)=> uploadData('additions', data)
+const addAdditionIcon = (id:number, data:object) => uploadDataPutId(`/additions/${id}/icon/add`, data) 
+
+const deleteCard = async(type: CardType, id:number)=>{
+  if (type === CardType.CATEGORY || type === CardType.SUB_CATEGORY)
+    await axios.delete(`categories/${id}`)
+  if (type === CardType.SERVICE)
+    await axios.delete(`items/${id}`)
+  if (type === CardType.ADDITIONAL_INFO)
+    await axios.delete(`additions/${id}`)
+  window.location.reload();
+}
+
+
+const assembleDescription = (textParts: string[]): string => {
+  let description = '';
+  const pattern = /<img.*?alt="([^"]+)".*?>/g;
+
+  textParts.forEach((text) => {
+    // Проверяем, есть ли тег <img> в тексте
+    if (pattern.test(text)) {
+      // Если тег <img> есть, заменяем его
+      const updatedText = text.replace(pattern, (_, alt) => `\n\\icon${alt}`);
+      if (text.startsWith("\n- ")) {
+        description += updatedText;
+      } else if (text.startsWith("- ")) {
+        description += "\n" + updatedText;
+      } else {
+        description += "\n- " + updatedText;
+      }
+    } else {
+      // Если тега <img> нет, добавляем текст без изменений
+      description += text + '\n';
+    }
+  });
+
+  return description;
+};
+
+
+const setIdAndAddIcons = async (type:CardType, id:number, iconLinks:string[]) => {
+  for (const link of iconLinks) {
+      const data = { link };
+      if (type === CardType.SERVICE) {
+          await addServiceIcon(id, data);
+      }
+      if (type === CardType.ADDITIONAL_INFO) {
+          await addAdditionIcon(id, data);
+      }
+  }
+}
+
+const getDescriptionAndIcons = (parts:string[], iconLinks:string[])=>{
+  const newDesc:string[] = [];
+  let count = 0;
+  parts.forEach((part, id)=>{
+    let icon:string;
+    if (iconLinks && iconLinks[id] !== "") {
+      icon = `<img src=${iconLinks[id]} alt="${count}">`;
+      count++;
+    }
+    else icon = '';
+    newDesc[id] = (part + icon);
+  })
+  const description = assembleDescription(newDesc || []);
+  const icons = iconLinks ? iconLinks.filter(str => str !== "") : [];
+  return {description, icons};
+}
+
+const createCard = async (type:string, data: FormValues, parentId:number) => {
+  const category:string = CardType.CATEGORY;
+  const subCategory:string = CardType.SUB_CATEGORY;
+  const service:string = CardType.SERVICE;
+  const info:string = CardType.ADDITIONAL_INFO;
+  const actions = {
+      [category]: async () => {
+          const caregoryData:Category = {
+            id: data.id, 
+            gifPreview: data.gifPreview,
+            mainIconLink: data.mainIconLink,
+            title: data.title,
+            itemsInCategoryIds: [],
+            childrenCategoryIds: [],
+            parentCategoryId: 0,
+          }
+          await createCategory(caregoryData);
+      },
+      [subCategory]: async () => {
+        const subCaregoryData:Category = {
+          id: data.id, 
+          gifPreview: data.gifPreview,
+          mainIconLink: data.mainIconLink,
+          title: data.title,
+          itemsInCategoryIds: [],
+          childrenCategoryIds: [],
+          parentCategoryId: parentId
+        }
+        const dataOfAdded = await createCategory(subCaregoryData);
+        await setCategoryParent(dataOfAdded.data.id, parentId)
+
+      },
+      [service]: async () => {
+        //const newDesc:string[] = [];
+        const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
+        //const icons = data.iconLinks ? data.iconLinks.filter(str => str !== "") : [];
+        const serviceData:Service = {
+          id: data.id, 
+          gifPreview: data.gifPreview,
+          mainIconLink: data.mainIconLink,
+          title: data.title,
+          categoryId: parentId,
+          additionIds: [],
+          description:description,
+          gifLink:data.resVideo || "",
+          iconLinks:icons,
+        }
+          const dataOfAdded = await createService(serviceData);
+          await addServiceCategory(dataOfAdded.data.id, parentId);
+          await setIdAndAddIcons(service as CardType, dataOfAdded.data.id, serviceData.iconLinks);
+
+          console.log("done")
+
+      },
+      [info]: async () => {
+
+          const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
+
+          const infoData:InfoCard = {
+          id: data.id, 
+          gifPreview: data.gifPreview,
+          mainIconLink: data.mainIconLink,
+          title: data.title,
+          itemId: parentId,
+          description:description,
+          gifLink:data.resVideo || "",
+          iconLinks:icons,
+        }
+        const dataOfAdded = await createAddition(infoData);
+          await setIdAndAddIcons(info as CardType, dataOfAdded.data.id, infoData.iconLinks);
+      }
+  };
+  if (actions[type]) {
+      await actions[type]();
+      //window.location.reload();
+  } else {
+      console.log("Ошибка с созданием запроса добавления");
+  }
+};
+
+
 
 
 export {getCategories, getService, getServiceById, 
 getInfoById, getServiceByTitle, getCategoryNameById, 
 loadCategoriesTitles, getInfoCardsByServiceId, logIn, fetchAndRefreshToken,
 
+createCategory, setCategoryParent, deleteCard, createCard
 }

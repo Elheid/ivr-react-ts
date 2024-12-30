@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import breadMiniSVG from "../assets/img/breadMini.svg"
 import { Breadcrumbs } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { getCategoryTitleById, myFunctionWithDelay } from "../utill";
+import { getCategoryTitleById, getLastParam, myFunctionWithDelay } from "../utill";
 
 
 interface BreadCrumpComponentProps {
@@ -92,21 +92,21 @@ const BreadCrumpsComponent = () => {
             const searchParams = new URLSearchParams(location.search);
             const newBreadcrumbs: BreadCrumpComponentProps[] = [];
             const storageOfBreadCrumbs = localStorage.getItem("breadcrumbs");
-            if (paths.includes("result")){
+            if (paths.includes("result")) {
                 setBreadcrumbs(
-                JSON.parse(
-                    storageOfBreadCrumbs !== null
-                        ? storageOfBreadCrumbs
-                        : "Error"))
-                        
+                    JSON.parse(
+                        storageOfBreadCrumbs !== null
+                            ? storageOfBreadCrumbs
+                            : "Error"))
+
                 const title = document.querySelector(".res-title")?.textContent || "Error";
-                const newBreadCrumbElement:BreadCrumpComponentProps = ({
+                const newBreadCrumbElement: BreadCrumpComponentProps = ({
                     destination: location.pathname,
                     content: title,
                 });
                 setBreadcrumbs((prevBreadcrumbs) => [...prevBreadcrumbs, newBreadCrumbElement]);
-                myFunctionWithDelay(()=>window.dispatchEvent(eventBreadUpdate), 100);
-            } 
+                myFunctionWithDelay(() => window.dispatchEvent(eventBreadUpdate), 100);
+            }
             else {
                 newBreadcrumbs.push({ destination: '/', content: 'Главное меню' });
 
@@ -119,9 +119,11 @@ const BreadCrumpsComponent = () => {
                     let title: string = "Error";
                     const categoryId = categoryIdFromUrl//searchParams.get("categoryId") || categoryIdFromUrl;
                     const subCategoryId = subCategoryIdFromUrl//searchParams.get("subCategoryId");
+                    const lastParam = Number(getLastParam());
                     if (categoryId || subCategoryId) {
-                        if (categoryId) title = getCategoryTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
-                        if (subCategoryId) title = getCategoryTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
+                        if (categoryId && subCategoryId) title = getCategoryTitleById(lastParam)
+                        else if (categoryId) title = getCategoryTitleById(Number(categoryId));//await getCategoryNameById(Number(categoryId));
+                        else if (subCategoryId) title = getCategoryTitleById(Number(subCategoryId))//`Подкатегория ${subCategoryId}`;
                     }
 
                     // Добавляем хлебные крошки для каждого сегмента
@@ -165,6 +167,95 @@ const BreadCrumpsComponent = () => {
         };
     }, [location, categoryIdFromUrl, subCategoryIdFromUrl]);
 
+
+
+    /*Добавление выпадающего списка*/
+    /*
+    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+    const open = Boolean(anchorEl);
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    // Ограничиваем отображение крошек
+       const renderBreadcrumbs = () => {
+        if (breadcrumbs.length <= 5) {
+            return breadcrumbs.map((breadcrumb, index) => (
+                <div key={index} className="breadcrumb-item">
+                    <Link to={breadcrumb.destination}>
+                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{breadcrumb.content}</span>
+                    </Link>
+                </div>
+            ));
+        }
+
+        const first = breadcrumbs[0];
+        const last = breadcrumbs[breadcrumbs.length - 1];
+        const hiddenBreadcrumbs = breadcrumbs.slice(1, -1);
+
+        return (
+            <>
+                <div className="breadcrumb-item">
+                    <Link to={first.destination}>
+                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{first.content}</span>
+                    </Link>
+                </div>
+                <IconButton color="primary" size="small" onClick={handleClick}>
+                    <MoreHorizIcon />
+                </IconButton>
+                <Menu
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="hidden-breadcrumbs-menu"
+                >
+                    {hiddenBreadcrumbs.map((breadcrumb, index) => (
+                        <MenuItem
+                            key={index}
+                            onClick={() => {
+                                handleClose();
+                                window.location.href = breadcrumb.destination;
+                            }}
+                        >
+                            {breadcrumb.content}
+                        </MenuItem>
+                    ))}
+                </Menu>
+                <div className="breadcrumb-item">
+                    <Link to={last.destination}>
+                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{last.content}</span>
+                    </Link>
+                </div>
+            </>
+        );
+    };
+
+    return (
+        <div ref={breadcrumbContainerRef}>
+            <Breadcrumbs
+                className="header-list"
+                aria-label="breadcrumb"
+                sx={{
+                    width: '100%',
+                    flexWrap: "nowrap",
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                }}
+                separator={<img className={arrowClasses} src={arrowImg} alt="arrow-svg" />}
+            >
+                {renderBreadcrumbs()}
+            </Breadcrumbs>
+        </div>
+    );
+};
+
+export default BreadCrumpsComponent;
+    */
     return (
         <div ref={breadcrumbContainerRef}>
             <Breadcrumbs
@@ -178,6 +269,7 @@ const BreadCrumpsComponent = () => {
                 }}
                 separator={<img className={arrowClasses} src={arrowImg} alt="arrow-svg" />}
             >
+                
                 {/*<BreadCrumpComponent  destination={"/"} class={"prev-page"} content={"Главное меню"}/>
             <BreadCrumpComponent  destination={"/services"} class={"current-page"} content={"Выбор категорий"}/>*/}
                 {breadcrumbs.map((breadcrumb, index) => (

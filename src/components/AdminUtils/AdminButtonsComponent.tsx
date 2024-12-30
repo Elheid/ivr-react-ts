@@ -1,10 +1,12 @@
 import trash from "../../assets/img/trash.svg"
 import edit from "../../assets/img/edit.svg"
 import { Button, Container } from "@mui/material";
-import { forwardRef, useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { CardType, FormType } from "../../contextProviders/formTypeProvider";
+import { deleteCard } from "../../api/backendApi";
+import { useCardFormModal } from "../../hooks/useAdminModalParams";
 
 
 const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e:MouseEvent) => void }) => {
@@ -23,7 +25,7 @@ const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: str
 const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
     const { showAdminButtons } = useShowAdminButtons();
 
-    const [openModal, setOpenModal] = useState(false);
+    /*const [openModal, setOpenModal] = useState(false);
 
 
     const [cardInFormType, setCardInFormType] = useState<CardType>(CardType.CATEGORY); // Состояние для типа карточки
@@ -32,6 +34,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
     const [cardId, setCardId] = useState<number>(-1);
     const [parentCardId, setParentCardId] = useState<number>(-1);
 
+    const cardType = useRef<string>("");
 
     const isClearLang = localStorage.getItem("language") === "clear-language";
     const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
@@ -42,12 +45,14 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             setCardId(Number(id) || -1);
             setParentCardId(-1);
             setCardInFormType(CardType.CATEGORY);
+            cardType.current = CardType.CATEGORY;
         } else if (parentElement.classList.contains("service-card")) {
             const id = element.dataset.id;
             const parentId = parentElement.getAttribute("parent-catalog-id");
             setParentCardId(Number(parentId) || -1);
             setCardId(Number(id) || -1);
             setCardInFormType(CardType.SERVICE);
+            cardType.current = CardType.SERVICE;
         } else if (parentElement.classList.contains("sub-catalog-card")) {
             //const parentOfParent = parentElement.parentNode as HTMLElement
             const parentId = parentElement.getAttribute("parent-id");
@@ -55,12 +60,14 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             const id = element.dataset.id;
             setCardId(Number(id) || -1);
             setCardInFormType(CardType.SUB_CATEGORY);
+            cardType.current = CardType.SUB_CATEGORY;
         } else if (parentElement.classList.contains("info-card")) {
             const id = element.getAttribute("info-id");
             const parentId = element.getAttribute("item-id");
             setCardId(Number(id) || -1);
             setParentCardId(Number(parentId) || -1);
             setCardInFormType(CardType.ADDITIONAL_INFO);
+            cardType.current = CardType.ADDITIONAL_INFO;
         }
     }
 
@@ -99,20 +106,38 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
             determineCardAndFormType(element);
             //alert("Редактировать: " + element?.getAttribute("data-title"))
         }
-    },[])
+    },[ref])
+
 
     const onDeleteClick = (e: MouseEvent) => {
         e.stopPropagation();
         if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
-            const element = ref.current;
-            alert("Удалить: " + element?.getAttribute("data-title"))
+            const element = ref.current ? ref.current : new HTMLDivElement;
+            determineCardAndFormType(element);
+            const title = element?.getAttribute("data-title");
+            const id = element?.getAttribute("data-id");
+            if (confirm(`Вы действительно хотите удалить ${cardType.current} ${title}?`)) {
+                // Запрашиваем ввод текста для подтверждения
+                const input = prompt('Для подтверждения удаления введите название удаляемого объекта:');
+                if (input === title) {
+                    const type = cardType.current as CardType;
+                    deleteCard(type,Number(id))
+                    console.log("Элемент " + title + " удалён");
+                } else {
+                    alert("Неверное слово. Удаление отменено.");
+                    console.log("Удаление отменено");
+                }
+            }else {
+                // Если пользователь отменил, ничего не делаем
+                console.log("Удаление отменено");
+            }
         }
     }
     const handleCloseModal = (event: Event) => {
         event.preventDefault();
         event.stopPropagation();
         setOpenModal(false); // Закрываем модалку
-    };
+    };*/
 
     /*const handleSubmitModal: SubmitHandler<FormValues> = (data, event):void => {
         console.log(data)
@@ -123,11 +148,12 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         setOpenModal(false); // Закрываем модалку
         // console.log(event?.currentTarget);
     };*/
-
+    /*const url =  window.location.href;
     useEffect(() => {
         if (showAdminButtons) {
             const cardAdd = document.querySelector(".card-to-add");
-
+            if (url)
+                console.log("add-button: ", url)
 
             if (cardAdd) {
                 // Убедимся, что не добавляем несколько обработчиков
@@ -144,7 +170,21 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                 }
             };
         }
-    }, [showAdminButtons, onEditClick, ref, setOpenModal]);
+    }, [showAdminButtons, onEditClick, ref, setOpenModal, url]);*/
+
+    const {
+        openModal,
+        cardInFormType,
+        formType,
+        onEditClick,
+        handleCloseModal,
+        parentCardId,
+        cardId,
+        onDeleteClick
+    } = useCardFormModal("edit", ref);
+
+    const isClearLang = localStorage.getItem("language") === "clear-language";
+    const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
 
     if (showAdminButtons) {
         return (

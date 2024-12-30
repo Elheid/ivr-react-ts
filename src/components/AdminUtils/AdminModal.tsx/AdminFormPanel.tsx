@@ -11,6 +11,8 @@ import { Category, InfoCard, Service } from '../../../interfaces/CardsInterfaces
 import { getTextBlocks } from '../../pages/ServiceResultPage/blockInsertion';
 import { MandatoryForm } from './MandatoryForm';
 import { FormValues } from '../../../interfaces/FormValuesInterface';
+import { createCard } from '../../../api/backendApi';
+import RadioButtons from '../../RadioGroup';
 
 
 const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) => {
@@ -19,6 +21,7 @@ const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) =
     case CardType.CATEGORY:
       return {
         switchToTransfer: false,
+        id:data.id,
         title: data.title,
         mainIconLink: data.mainIconLink,
         gifPreview: data.gifPreview,
@@ -27,9 +30,12 @@ const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) =
     case CardType.SERVICE:
       data = data as Service;
       descriptions = getTextBlocks(data.description, data.iconLinks);
+      if (descriptions.length === 0)
+        descriptions = [""]
       //console.log(descriptions);
       return {
         switchToTransfer: false,
+        id:data.id,
         title: data.title,
         mainIconLink: data.mainIconLink,
         gifPreview: data.gifPreview,
@@ -40,6 +46,7 @@ const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) =
     case CardType.SUB_CATEGORY:
       return {
         switchToTransfer: false,
+        id:data.id,
         title: data.title,
         mainIconLink: data.mainIconLink,
         gifPreview: data.gifPreview,
@@ -50,6 +57,7 @@ const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) =
       descriptions = getTextBlocks(data.description, data.iconLinks);
       return {
         switchToTransfer: false,
+        id:data.id,
         title: data.title,
         mainIconLink: data.mainIconLink,
         gifPreview: data.gifPreview,
@@ -60,6 +68,7 @@ const FillFormWithData = (type: CardType, data: Category | Service | InfoCard) =
     default:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
@@ -73,6 +82,7 @@ const getDefaultValues = (type: CardType): FormValues => {
     case CardType.CATEGORY:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
@@ -81,17 +91,19 @@ const getDefaultValues = (type: CardType): FormValues => {
     case CardType.SERVICE:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
         parentId: 0,
         resVideo: "",
-        descriptionParts: [],
+        descriptionParts: [""],
         iconLinks: [""],
       };
     case CardType.SUB_CATEGORY:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
@@ -100,17 +112,19 @@ const getDefaultValues = (type: CardType): FormValues => {
     case CardType.ADDITIONAL_INFO:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
         parentId: 0,
         resVideo: "",
-        descriptionParts: [],
+        descriptionParts: [""],
         iconLinks: [""]
       };
     default:
       return {
         switchToTransfer: false,
+        id:-1,
         title: "",
         mainIconLink: "",
         gifPreview: "",
@@ -119,13 +133,16 @@ const getDefaultValues = (type: CardType): FormValues => {
 };
 
 
-const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*handleSubmitModal,*/ openModal }:
+const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*handleSubmitModal,*/
+  handleChangeCardType, openModal, showCardTypeChange }:
   { 
     cardInFormType: CardType,
     formType: FormType,
     modalClose: (event: Event) => void,
     //handleSubmitModal: (event: Parameters <SubmitHandler<FormValues>> [1]) => void,
+    handleChangeCardType:()=>void,
     openModal: boolean,
+    showCardTypeChange:boolean,
     id: number,
     parentId?: number,
   }) => {
@@ -152,6 +169,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
   const clippedFormType = formType === FormType.TEXT || formType === FormType.VIDEO || formType === FormType.TITLE;
   const buttonSubmitName = formType === FormType.EDIT || clippedFormType ? 'Редактировать' : 'Создать' + " карточку";
 
+  
   const handleTransferChange = (value: string) => {
     // Если "Да", скрываем части
     setHideParts(value === 'true');
@@ -161,11 +179,30 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
     defaultValues: getDefaultValues(cardInFormType),
   });
 
+
+
   const onSubmit:SubmitHandler<FormValues> = (data, e) => {
     if (e)
       modalClose(e as unknown as Event);
       //handleSubmitModal(e);
+
+    
     console.log("Form Data:", data);
+
+    const dataToSend: FormValues = data;
+
+    /*if(data.descriptionParts && data.iconLinks){
+      const description = assembleDescription(data.descriptionParts);
+      console.log("result parts - description:", description)
+    }*/
+      if (formType === FormType.EDIT){
+        console.log("Not implemented yet")
+      }
+      if (formType === FormType.CREATE){
+        createCard(cardInFormType, dataToSend, parentId || -1);
+      }
+
+
   };
 
   let neededData: Category[] | Service | InfoCard[] | undefined;
@@ -183,6 +220,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
 
   //console.log(parentId)
   useEffect(() => {
+    setCardType(cardInFormType);
     // Логика выбора данных в зависимости от типа карточки
     if (formType === FormType.EDIT || clippedFormType) {
       let data: Category | Service | InfoCard | undefined;
@@ -201,7 +239,6 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
         }
       }
 
-      setCardType(cardInFormType);
       if (formType === FormType.EDIT || clippedFormType) {
         if (data) {
           methods.reset(FillFormWithData(cardInFormType, data));
@@ -230,7 +267,10 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
             </Box>
           }
 
-
+          {showCardTypeChange &&<RadioButtons 
+          onChange={handleChangeCardType} 
+          labels={["Услуга", "Подкатегория"]} 
+          values={["services", "sub-category"]} />}
 
           {/* Рендеринг секции BasePart для всех типов, кроме additional-info */}
           {!hideParts && <BasePart cardType={(cardType)} formType={formType} />}
@@ -238,7 +278,9 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
 
 
           {/* Рендеринг секции ResultParts только для additional-info и service */}
-          {!hideParts && (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) && (formType !== FormType.TITLE && formType !== FormType.VIDEO) &&
+          {!hideParts && 
+          (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) && 
+          (formType !== FormType.TITLE && formType !== FormType.VIDEO) &&
             <ResultParts
               descriptionParts={methods.getValues("descriptionParts")}
               iconLinks={methods.getValues("iconLinks")}
