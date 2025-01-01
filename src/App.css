@@ -692,3 +692,12 @@ form#card-form {
 ;
   flex-direction: column;
 }
+
+
+.css-vl6bb4-MuiBackdrop-root-MuiModal-backdrop{
+  z-index: 10;
+}
+
+.MuiMenu-paper{
+  z-index: 50;
+}

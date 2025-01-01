@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { API_BACK_URL } from "../assets/data/constants";
 import { Category, InfoCard, Service } from "../interfaces/CardsInterfaces";
-import { myFunctionWithDelay, saveCategoriesTitles } from "../utill";
+import { changeDataInCardData, myFunctionWithDelay, saveCategoriesTitles } from "../utill";
 import { CardType } from "../contextProviders/formTypeProvider";
 import { FormValues } from "../interfaces/FormValuesInterface";
 
@@ -145,30 +145,6 @@ const deleteCard = async(type: CardType, id:number)=>{
 }
 
 
-const assembleDescription = (textParts: string[]): string => {
-  let description = '';
-  const pattern = /<img.*?alt="([^"]+)".*?>/g;
-
-  textParts.forEach((text) => {
-    // Проверяем, есть ли тег <img> в тексте
-    if (pattern.test(text)) {
-      // Если тег <img> есть, заменяем его
-      const updatedText = text.replace(pattern, (_, alt) => `\n\\icon${alt}`);
-      if (text.startsWith("\n- ")) {
-        description += updatedText;
-      } else if (text.startsWith("- ")) {
-        description += "\n" + updatedText;
-      } else {
-        description += "\n- " + updatedText;
-      }
-    } else {
-      // Если тега <img> нет, добавляем текст без изменений
-      description += text + '\n';
-    }
-  });
-
-  return description;
-};
 
 
 const setIdAndAddIcons = async (type:CardType, id:number, iconLinks:string[]) => {
@@ -183,22 +159,6 @@ const setIdAndAddIcons = async (type:CardType, id:number, iconLinks:string[]) =>
   }
 }
 
-const getDescriptionAndIcons = (parts:string[], iconLinks:string[])=>{
-  const newDesc:string[] = [];
-  let count = 0;
-  parts.forEach((part, id)=>{
-    let icon:string;
-    if (iconLinks && iconLinks[id] !== "") {
-      icon = `<img src=${iconLinks[id]} alt="${count}">`;
-      count++;
-    }
-    else icon = '';
-    newDesc[id] = (part + icon);
-  })
-  const description = assembleDescription(newDesc || []);
-  const icons = iconLinks ? iconLinks.filter(str => str !== "") : [];
-  return {description, icons};
-}
 
 const createCard = async (type:string, data: FormValues, parentId:number) => {
   const category:string = CardType.CATEGORY;
@@ -207,7 +167,7 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
   const info:string = CardType.ADDITIONAL_INFO;
   const actions = {
       [category]: async () => {
-          const caregoryData:Category = {
+          /*const caregoryData:Category = {
             id: data.id, 
             gifPreview: data.gifPreview,
             mainIconLink: data.mainIconLink,
@@ -215,11 +175,12 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
             itemsInCategoryIds: [],
             childrenCategoryIds: [],
             parentCategoryId: 0,
-          }
+          }*/
+          const caregoryData =  changeDataInCardData(type as CardType, data, parentId) as Category;
           await createCategory(caregoryData);
       },
       [subCategory]: async () => {
-        const subCaregoryData:Category = {
+        /*const subCaregoryData:Category = {
           id: data.id, 
           gifPreview: data.gifPreview,
           mainIconLink: data.mainIconLink,
@@ -227,14 +188,15 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
           itemsInCategoryIds: [],
           childrenCategoryIds: [],
           parentCategoryId: parentId
-        }
+        }*/
+        const subCaregoryData =  changeDataInCardData(type as CardType, data, parentId) as Category;
         const dataOfAdded = await createCategory(subCaregoryData);
         await setCategoryParent(dataOfAdded.data.id, parentId)
 
       },
       [service]: async () => {
         //const newDesc:string[] = [];
-        const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
+        /*const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
         //const icons = data.iconLinks ? data.iconLinks.filter(str => str !== "") : [];
         const serviceData:Service = {
           id: data.id, 
@@ -246,7 +208,8 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
           description:description,
           gifLink:data.resVideo || "",
           iconLinks:icons,
-        }
+        }*/
+          const serviceData =  changeDataInCardData(type as CardType, data, parentId) as Service;
           const dataOfAdded = await createService(serviceData);
           await addServiceCategory(dataOfAdded.data.id, parentId);
           await setIdAndAddIcons(service as CardType, dataOfAdded.data.id, serviceData.iconLinks);
@@ -256,7 +219,7 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
       },
       [info]: async () => {
 
-          const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
+          /*const {description, icons} = getDescriptionAndIcons(data.descriptionParts || [],data.iconLinks || [])
 
           const infoData:InfoCard = {
           id: data.id, 
@@ -267,9 +230,10 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
           description:description,
           gifLink:data.resVideo || "",
           iconLinks:icons,
-        }
+        }*/
+        const infoData =  changeDataInCardData(type as CardType, data, parentId) as InfoCard;
         const dataOfAdded = await createAddition(infoData);
-          await setIdAndAddIcons(info as CardType, dataOfAdded.data.id, infoData.iconLinks);
+        await setIdAndAddIcons(info as CardType, dataOfAdded.data.id, infoData.iconLinks);
       }
   };
   if (actions[type]) {
@@ -281,11 +245,80 @@ const createCard = async (type:string, data: FormValues, parentId:number) => {
 };
 
 
+const sendChangedFields = (fieldsNames:string[], cardInFormType:CardType,  dataToSend:FormValues)=>{
+  const serviceOrInfoCard = (cardInFormType === CardType.ADDITIONAL_INFO || cardInFormType === CardType.SERVICE);
+  for(const name of fieldsNames){
+    if (name === "title" && cardInFormType === CardType.ADDITIONAL_INFO){
+      console.log("заглушка для запроса смены title")
+    }
+    if (name === "mainIconLink"){
+      console.log("заглушка для запроса смены mainIconLink")
+    }
+    if (name === "gifPreview"){
+      console.log("заглушка для запроса смены gifPreview")
+    }
+    if (name === "resVideo" && serviceOrInfoCard){
+      console.log("заглушка для запроса смены resVideo || gifLink")
+    }
+    if (((name === "descriptionParts" || name === "description") || name === "iconLinks")  && serviceOrInfoCard){
+      console.log("заглушка для запроса смены description и iconLinks")
+    }
+    if (name === "switchToTransfer" && cardInFormType !== CardType.CATEGORY){
+      console.log("заглушка для запроса переноса в другую категорию с id ", dataToSend.parentId)
+    }
+  }
+}
+
+const editCard = (cardInFormType:CardType, dataToSend:FormValues,  
+  dirtyFields:string[], parentId:number)=>{
+    dataToSend.parentId = parentId
+    //console.log(parentId)
+    sendChangedFields(dirtyFields, cardInFormType, dataToSend);
+    /*let caregoryData:Category;
+
+
+    let subCategory:Category;
+
+
+    let service: Service;
+
+
+    let infoCard:InfoCard;
+
+    let diffFields = dirtyFields;
+    switch(cardInFormType){
+      case "category":
+
+        sendChangedFields(diffFields, cardInFormType, dataToSend);
+
+        console.log(diffFields)
+        break;
+      case "subCategory":
+        subCategory =  changeDataInCardData(cardInFormType, dataToSend, parentId) as Category;
+        sendChangedFields(diffFields, cardInFormType, dataToSend);
+
+        console.log(diffFields)
+        break;
+      case "service":
+        service =  changeDataInCardData(cardInFormType, dataToSend, parentId) as Service;
+        sendChangedFields(diffFields, cardInFormType, dataToSend);
+
+        console.log(diffFields)
+        break;
+      case "additional-info":
+        infoCard =  changeDataInCardData(cardInFormType, dataToSend, parentId) as InfoCard;
+        sendChangedFields(diffFields, cardInFormType, dataToSend);
+        console.log(diffFields)
+        break;
+    }*/
+
+}
+
 
 
 export {getCategories, getService, getServiceById, 
 getInfoById, getServiceByTitle, getCategoryNameById, 
 loadCategoriesTitles, getInfoCardsByServiceId, logIn, fetchAndRefreshToken,
 
-createCategory, setCategoryParent, deleteCard, createCard
+createCategory, setCategoryParent, deleteCard, createCard, editCard
 }

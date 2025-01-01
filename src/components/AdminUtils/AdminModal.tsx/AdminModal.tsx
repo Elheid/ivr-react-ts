@@ -47,26 +47,34 @@ const AdminModal = ({
 
     return (
         <Container 
-        
-        className="container-of-modal"
         onClick={handleContainerClick}
+        className="container-of-modal"
         onMouseDown={(e)=>{
-            if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+            if (modalRef.current && !modalRef.current.contains(e.target as Node) ) {
+                if (
+                    e.target instanceof HTMLElement &&
+                    (e.target.className.includes('MuiModal-backdrop') || e.target.className.includes('MuiMenuItem-root'))
+                ) {
+                    return;
+                }
                 handleClose(e as unknown as Event); // Закрываем модалку, если клик вне
             }
         }}>
             <Modal
+                ref={modalRef}
+                onClick={handleContainerClick}
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
                 <Box 
+                onClick={handleContainerClick}
                 sx={{
                     width: "fit-content;",
                     margin: "0 auto;",
                 }}
-                ref={modalRef}
+                
                 > 
                     <AdminFormPanel 
                         parentId={parentId}

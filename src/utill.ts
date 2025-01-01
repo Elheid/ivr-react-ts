@@ -1,6 +1,8 @@
 import { NavigateFunction } from "react-router-dom";
 import { loadCategoriesTitles } from "./api/backendApi";
-import { Category, Service } from "./interfaces/CardsInterfaces";
+import { Category, InfoCard, Service } from "./interfaces/CardsInterfaces";
+import { CardType } from "./contextProviders/formTypeProvider";
+import { FormValues } from "./interfaces/FormValuesInterface";
 
 const checkUndefined = <T>(value: T): boolean => {
     return typeof value === 'undefined';
@@ -15,7 +17,8 @@ const navigateHandleClick = (withBaseUrl: boolean, paramState: string, navigate:
     navigate(newPath);
     // Здесь можно добавить дополнительную логику, если требуется
 };
-export type TitlesMap = { [key: number]: string };
+/*
+export type TitlesMap = { [key: number]: string};
 
 const saveCategoriesTitles = (content: Service[] | Category[]) => {
     const obj: TitlesMap = {}; // Объект с числовыми ключами и строковыми значениями
@@ -27,24 +30,56 @@ const saveCategoriesTitles = (content: Service[] | Category[]) => {
     localStorage.setItem('titles', JSON.stringify(obj));
 }
 
-const getLastParam = () => {
-    const urlParts = window.location.pathname.split('/');
-    return urlParts[urlParts.length - 1]; // Получаем последний элемент
-}
-
-
-const getCategoriesTitles = ():TitlesMap => {
+const getCategoriesTitles = (): TitlesMap => {
     const titles = localStorage.getItem('titles');
     if (!titles) loadCategoriesTitles()
     const res = titles ? JSON.parse(titles) : {};
     return res;
 }
 
-const getCategoryTitleById = (id: number) :string=> {
+const getCategoryTitleById = (id: number): string => {
     const titles = getCategoriesTitles();
     const res = titles[id];
     return res || ""; // Возвращает заголовок по id или null, если id нет в объекте
 };
+
+*/
+
+export type TitlesMap = { [key: number]: { title: string; isSubCategory: boolean } };
+
+const saveCategoriesTitles = (content: Service[] | Category[]) => {
+    const obj: TitlesMap = {}; // Объект с числовыми ключами и объектами со строковыми значениями и необязательным флагом
+
+    content.forEach((el: Category | Service) => {
+        obj[el.id] = {
+            title: el.title,
+            isSubCategory: 'parentCategoryId' in el ? el.parentCategoryId !== 0 : false,
+        }; // Используем id как ключ, добавляем флаг isSubCategory
+    });
+
+    localStorage.setItem('titles', JSON.stringify(obj));
+};
+
+const getCategoriesTitles = (): TitlesMap => {
+    const titles = localStorage.getItem('titles');
+    if (!titles) loadCategoriesTitles();
+    const res: TitlesMap = titles ? JSON.parse(titles) : {};
+    return res;
+};
+
+const getCategoryTitleById = (id: number): string => {
+    const titles = getCategoriesTitles();
+    const res = titles[id];
+    return res?.title || ""; // Возвращает заголовок по id или пустую строку, если id нет в объекте
+};
+
+
+
+const getLastParam = () => {
+    const urlParts = window.location.pathname.split('/');
+    return urlParts[urlParts.length - 1]; // Получаем последний элемент
+}
+
 
 
 const myFunctionWithDelay = (callback: () => void, delay: number) => {
@@ -98,7 +133,7 @@ const addSubHeaderForQuery = (title: string, isFromQuery: boolean, setSubTitle: 
     }
 }
 
-const isAdmin = ()=>{
+const isAdmin = () => {
     return localStorage.getItem("token");
 }
 
@@ -111,7 +146,132 @@ const getParamFromURL = () => {
 }
 
 
+const compareObj = (
+    dataToSend: Category | Service | InfoCard,
+    prevData: Category | Service | InfoCard
+) => {
+    const diffFields: string[] = [];
+
+    if (dataToSend.title !== prevData.title) diffFields.push("title");
+    if (dataToSend.mainIconLink !== prevData.mainIconLink) diffFields.push("mainIconLink");
+    if (dataToSend.gifPreview !== prevData.gifPreview) diffFields.push("gifPreview");
+
+    // Проверка для объектов Service или InfoCard
+    if ("gifLink" in prevData && "gifLink" in dataToSend) {
+        if (dataToSend.gifLink !== prevData.gifLink) diffFields.push("gifLink");
+    }
+
+    if ("description" in prevData && "description" in dataToSend) {
+        if (dataToSend.description !== prevData.description) diffFields.push("description");
+    }
+
+    if ("iconLinks" in prevData && "iconLinks" in dataToSend) {
+        if (dataToSend.iconLinks !== prevData.iconLinks) {
+            diffFields.push("iconLinks");
+        }
+    }
+
+    return diffFields;
+};
+
+
+const assembleDescription = (textParts: string[]): string => {
+    let description = '';
+    const pattern = /<img.*?alt="([^"]+)".*?>/g;
+
+    textParts.forEach((text) => {
+        // Проверяем, есть ли тег <img> в тексте
+        if (pattern.test(text)) {
+            // Если тег <img> есть, заменяем его
+            const updatedText = text.replace(pattern, (_, alt) => `\n\\icon${alt}`);
+            if (text.startsWith("\n- ")) {
+                description += updatedText;
+            } else if (text.startsWith("- ")) {
+                description += "\n" + updatedText;
+            } else {
+                description += "\n- " + updatedText;
+            }
+        } else {
+            // Если тега <img> нет, добавляем текст без изменений
+            description += text + '\n';
+        }
+    });
+
+    return description;
+};
+
+
+const getDescriptionAndIcons = (parts: string[], iconLinks: string[]) => {
+    const newDesc: string[] = [];
+    let count = 0;
+    parts.forEach((part, id) => {
+        let icon: string;
+        if (iconLinks && iconLinks[id] !== "") {
+            icon = `<img src=${iconLinks[id]} alt="${count}">`;
+            count++;
+        }
+        else icon = '';
+        newDesc[id] = (part + icon);
+    })
+    const description = assembleDescription(newDesc || []);
+    const icons = iconLinks ? iconLinks.filter(str => str !== "") : [];
+    return { description, icons };
+}
+
+const changeDataInCardData = (cardInFormType: CardType, data: FormValues, parentId: number) => {
+    const caregoryData: Category = {
+        id: data.id,
+        gifPreview: data.gifPreview,
+        mainIconLink: data.mainIconLink,
+        title: data.title,
+        itemsInCategoryIds: [],
+        childrenCategoryIds: [],
+        parentCategoryId: 0,
+    }
+    const subCaregoryData: Category = {
+        id: data.id,
+        gifPreview: data.gifPreview,
+        mainIconLink: data.mainIconLink,
+        title: data.title,
+        itemsInCategoryIds: [],
+        childrenCategoryIds: [],
+        parentCategoryId: parentId
+    }
+    const { description, icons } = getDescriptionAndIcons(data.descriptionParts || [], data.iconLinks || [])
+    const serviceData: Service = {
+        id: data.id,
+        gifPreview: data.gifPreview,
+        mainIconLink: data.mainIconLink,
+        title: data.title,
+        categoryId: parentId,
+        additionIds: [],
+        description: description,
+        gifLink: data.resVideo || "",
+        iconLinks: icons,
+    }
+    const infoData: InfoCard = {
+        id: data.id,
+        gifPreview: data.gifPreview,
+        mainIconLink: data.mainIconLink,
+        title: data.title,
+        itemId: parentId,
+        description: description,
+        gifLink: data.resVideo || "",
+        iconLinks: icons,
+    }
+    if (cardInFormType === CardType.CATEGORY)
+        return caregoryData
+    if (cardInFormType === CardType.SUB_CATEGORY)
+        return subCaregoryData
+    if (cardInFormType === CardType.SERVICE)
+        return serviceData
+    if (cardInFormType === CardType.ADDITIONAL_INFO)
+        return infoData;
+}
+
+
 export {
     checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
-    saveCategoriesTitles, getCategoriesTitles, getCategoryTitleById, myFunctionWithDelay, getLastParam, addSubHeaderForQuery
+    saveCategoriesTitles, getCategoriesTitles, getCategoryTitleById, myFunctionWithDelay, getLastParam, addSubHeaderForQuery,
+    compareObj, changeDataInCardData,
 }

@@ -11,7 +11,7 @@ import { Category, InfoCard, Service } from '../../../interfaces/CardsInterfaces
 import { getTextBlocks } from '../../pages/ServiceResultPage/blockInsertion';
 import { MandatoryForm } from './MandatoryForm';
 import { FormValues } from '../../../interfaces/FormValuesInterface';
-import { createCard } from '../../../api/backendApi';
+import { createCard, editCard } from '../../../api/backendApi';
 import RadioButtons from '../../RadioGroup';
 
 
@@ -166,6 +166,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
   );
 
 
+
   const clippedFormType = formType === FormType.TEXT || formType === FormType.VIDEO || formType === FormType.TITLE;
   const buttonSubmitName = formType === FormType.EDIT || clippedFormType ? 'Редактировать' : 'Создать' + " карточку";
 
@@ -179,24 +180,39 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
     defaultValues: getDefaultValues(cardInFormType),
   });
 
-
-
-  const onSubmit:SubmitHandler<FormValues> = (data, e) => {
+  const onSubmit:SubmitHandler<FormValues> = (formData, e) => {
     if (e)
       modalClose(e as unknown as Event);
       //handleSubmitModal(e);
 
     
-    console.log("Form Data:", data);
+    console.log("Form Data:", formData);
 
-    const dataToSend: FormValues = data;
+    const dataToSend: FormValues = formData;
 
     /*if(data.descriptionParts && data.iconLinks){
       const description = assembleDescription(data.descriptionParts);
       console.log("result parts - description:", description)
     }*/
       if (formType === FormType.EDIT){
-        console.log("Not implemented yet")
+        //console.log("Not implemented yet")
+        //const data = methods.getValues()
+        //if (data)
+        const isBooleanAndHasTrueArray = (value: boolean[] | boolean): boolean=> {
+          return Array.isArray(value) && value.every(item => typeof item === 'boolean') && value.some(item => item === true);
+        
+        }
+        const dataStats = (methods.formState.touchedFields);
+        const dirtyFields = Object.keys(dataStats).filter(
+          key => {
+            const value = dataStats[key as keyof typeof dataStats];
+            if (value && Array.isArray(value))
+              return isBooleanAndHasTrueArray(value)
+            return value === true
+          }
+        );
+        editCard(cardInFormType, dataToSend, dirtyFields, parentId || -1);
+        //else console.log("some error")
       }
       if (formType === FormType.CREATE){
         createCard(cardInFormType, dataToSend, parentId || -1);
@@ -216,15 +232,13 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
     }
   }
 
-
-
   //console.log(parentId)
   useEffect(() => {
     setCardType(cardInFormType);
     // Логика выбора данных в зависимости от типа карточки
     if (formType === FormType.EDIT || clippedFormType) {
+  
       let data: Category | Service | InfoCard | undefined;
-
       if (cardInFormType === CardType.CATEGORY || cardInFormType === CardType.SUB_CATEGORY) {
         data = categoriesInfo?.find((category) => id === category.id);
       } else if (cardInFormType === CardType.SERVICE) {
