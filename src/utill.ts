@@ -27,7 +27,7 @@ const saveCategoriesTitles = (content: Service[] | Category[]) => {
     content.forEach((el: Category | Service) => {
         obj[el.id] = {
             title: el.title,
-            isSubCategory: 'parentCategoryId' in el ? el.parentCategoryId !== 0 : false,
+            isSubCategory: 'parentCategoryId' in el ? el.parentCategoryId !== 0 || el.childrenCategoryIds.length !== 0  : false,
         }; // Используем id как ключ, добавляем флаг isSubCategory
     });
 

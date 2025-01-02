@@ -31,6 +31,7 @@ const ParentChooseSection = ({ myOnChange, formType, parentId }: ParentChooseSec
     //const parentName = getEveryTitle[parentId]
 
     // Функция для преобразования TitlesMap в массив Category
+
     const transformTitlesMapToArray = (titlesMap: TitlesMap): Parent[] => {
         const withNoSub = Object.entries(titlesMap).filter(([_, label]) => !label.isSubCategory);
         return withNoSub.map(([key, label]) => ({
@@ -40,6 +41,7 @@ const ParentChooseSection = ({ myOnChange, formType, parentId }: ParentChooseSec
     }
 
     const getEveryTitleMap = getCategoriesTitles();
+
     const getEveryTitle: Parent[] = transformTitlesMapToArray(getEveryTitleMap);
     const parentName = getEveryTitleMap[parentId]
     const parentNameCategory: Parent | undefined = getEveryTitle.find(item => item.key === parentId)
@@ -83,9 +85,11 @@ const ParentChooseSection = ({ myOnChange, formType, parentId }: ParentChooseSec
         setSelectValue(id);
         setValue("switchToTransfer", id)
     };
+    const isSubCat =  typeof parentNameCategory == "undefined" && !parentNameCategory;
+    const showTransfer = formType === FormType.CREATE || isSubCat;
     return (
         <Box>
-            <div className={formType === FormType.CREATE ? 'hidden' : ''}>
+            <div className={showTransfer ? 'hidden' : ''}>
                 <Typography variant="subtitle1">Переместить карточку</Typography>
                 <FormControl component="fieldset">
                     <RadioGroup
