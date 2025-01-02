@@ -16,8 +16,9 @@ const LoginPage = () => {
 
     const onSubmit: SubmitHandler<LoginFormInputs> = async(data) => {
         console.log('Login successful', data);
-        logIn(data.username, data.password).then(()=> navigate(-1))
-        
+        await logIn(data.username, data.password)
+        navigate(-1);
+        window.location.reload();
     };
 
     return (
