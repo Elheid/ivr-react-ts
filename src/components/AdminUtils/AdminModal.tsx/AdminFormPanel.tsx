@@ -210,7 +210,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
                     variant="contained" 
                     color="primary" 
                     className={"brown-button"} 
-                    sx={{ mt: 2, marginTop: "auto", position:"absolute", bottom:"0", width:"90%" }}>
+                    sx={{ mt: 2, marginTop: "auto", position:"absolute", bottom:"0", width:"90%", zIndex:100 }}>
                         {buttonSubmitName}
                     </Button>
                 </form>
