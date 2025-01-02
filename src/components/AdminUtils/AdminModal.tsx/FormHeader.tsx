@@ -14,7 +14,12 @@ const FormHeader = ({ onInstructionClick, formType, cardInFormType }:FormHeaderP
         cardInFormType === CardType.SUB_CATEGORY ? "под категории" : "доп. инфы";
 
     return (
-        <div className="form-header">
+        <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom:"15px"
+        }} className="form-header">
             <Typography variant='h3' className="form-title">{titleTypePart + titleCardPart}</Typography>
             <div className="instruction-button" onClick={onInstructionClick}>
                 <IconButton >

@@ -17,33 +17,7 @@ const navigateHandleClick = (withBaseUrl: boolean, paramState: string, navigate:
     navigate(newPath);
     // Здесь можно добавить дополнительную логику, если требуется
 };
-/*
-export type TitlesMap = { [key: number]: string};
 
-const saveCategoriesTitles = (content: Service[] | Category[]) => {
-    const obj: TitlesMap = {}; // Объект с числовыми ключами и строковыми значениями
-
-    content.forEach((el: Category | Service) => {
-        obj[el.id] = el.title; // Используем id как ключ
-    });
-
-    localStorage.setItem('titles', JSON.stringify(obj));
-}
-
-const getCategoriesTitles = (): TitlesMap => {
-    const titles = localStorage.getItem('titles');
-    if (!titles) loadCategoriesTitles()
-    const res = titles ? JSON.parse(titles) : {};
-    return res;
-}
-
-const getCategoryTitleById = (id: number): string => {
-    const titles = getCategoriesTitles();
-    const res = titles[id];
-    return res || ""; // Возвращает заголовок по id или null, если id нет в объекте
-};
-
-*/
 
 export type TitlesMap = { [key: number]: { title: string; isSubCategory: boolean } };
 
@@ -177,13 +151,14 @@ const compareObj = (
 
 const assembleDescription = (textParts: string[]): string => {
     let description = '';
-    const pattern = /<img.*?alt="([^"]+)".*?>/g;
+    //const pattern = /<img.*?alt="([^"]+)".*?>/g;
 
     textParts.forEach((text) => {
         // Проверяем, есть ли тег <img> в тексте
-        if (pattern.test(text)) {
+        //if (pattern.test(text)) {
+        if (text.indexOf("\n\\icon") > 0){
             // Если тег <img> есть, заменяем его
-            const updatedText = text.replace(pattern, (_, alt) => `\n\\icon${alt}`);
+            const updatedText = text//.replace(pattern, (_, alt) => `\n\\icon${alt}`);
             if (text.startsWith("\n- ")) {
                 description += updatedText;
             } else if (text.startsWith("- ")) {
@@ -206,8 +181,13 @@ const getDescriptionAndIcons = (parts: string[], iconLinks: string[]) => {
     let count = 0;
     parts.forEach((part, id) => {
         let icon: string;
+        //const s = iconLinks[id] !== "" ? part.includes(iconLinks[id]) : false;
         if (iconLinks && iconLinks[id] !== "") {
-            icon = `<img src=${iconLinks[id]} alt="${count}">`;
+            const parting = part.split("<img")
+            if (parting.length > 1){
+                part = parting[0]
+            }
+            icon = `\n\\icon${count}`//`<img src=${iconLinks[id]} alt="${count}">`;
             count++;
         }
         else icon = '';
@@ -273,5 +253,5 @@ const changeDataInCardData = (cardInFormType: CardType, data: FormValues, parent
 export {
     checkUndefined, getCellNameById, getParamFromURL, isAdmin, tryJsonParse, getCurState, idCreator, navigateHandleClick,
     saveCategoriesTitles, getCategoriesTitles, getCategoryTitleById, myFunctionWithDelay, getLastParam, addSubHeaderForQuery,
-    compareObj, changeDataInCardData,
+    compareObj, changeDataInCardData, getDescriptionAndIcons
 }

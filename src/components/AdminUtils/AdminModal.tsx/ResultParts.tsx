@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, TextField, Typography } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
-import ImageField from './ImageField';
+import ImageField from './CustomFields/ImageField';
 import ImageButton from '../../ImageButtonComponent';
+import Scrollbar from '../../ScrollBar/ScrollBar';
 
 interface DescriptionPart {
     text: string;
@@ -10,8 +11,8 @@ interface DescriptionPart {
 }
 
 const DescriptionPartComponent = ({ text, index }: { text: string; index: number }) => {
-    const { register } = useFormContext();
-    const [value, setValue] = useState<string>("")
+    const { register, setValue } = useFormContext();
+    const [value, setTextValue] = useState<string>("")
 
 
     const imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
@@ -19,24 +20,25 @@ const DescriptionPartComponent = ({ text, index }: { text: string; index: number
     const imgSrc = match ? match[1] : null;
 
 
-    useEffect(()=>{
-    const imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
-    const parts =  text.split(imgRegex)[0];
-    setValue(parts);
+    useEffect(() => {
+        const imgRegex = /<img[^>]+src="([^">]+)"[^>]*>/g;
+        const parts = text.split(imgRegex)[0];
+        setTextValue(parts);
+        if (imgSrc && imgSrc !== "") setValue(`iconLinks.${index}`, imgSrc);
 
-    },[text])
+    }, [text])
 
     return (
         <Container>
             <TextField
-                
+                InputLabelProps={{ shrink: true }}
                 {...register(`descriptionParts.${index}`)}
-                label={`Описание ${index + 1}`} 
+                label={`Описание ${index + 1}`}
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                value={value} 
-                onChange={(e) => setValue(e.target.value)}
+                value={value}
+                onChange={(e) => setTextValue(e.target.value)}
             />
             {<ImageField registerName={`iconLinks.${index}`} img={imgSrc} />}
         </Container>
@@ -57,8 +59,8 @@ const ResultParts = ({ descriptionParts, iconLinks }: { descriptionParts: string
             return ({ text, icon })
         }
         );
-        if (resParts.length === 0){
-            setDescriptionParts([{text: '', icon: ''}]);
+        if (resParts.length === 0) {
+            setDescriptionParts([{ text: '', icon: '' }]);
         }
         else
             setDescriptionParts(resParts);
@@ -71,13 +73,15 @@ const ResultParts = ({ descriptionParts, iconLinks }: { descriptionParts: string
 
     return (
         <Box sx={{ mt: 2 }}>
-            <Typography variant="h6">Описание</Typography>
-            {descriptionPartsNode.map((part, index) => (
-                <DescriptionPartComponent key={index} text={part.text} index={index} />
-            ))}
-            <ImageButton onClick={()=>setDescriptionParts((prevParts)=>[...prevParts, {text: '', icon: ''}])}>
-                +
-            </ImageButton>
+            <Scrollbar alginRight={true} height="60vh" addArrowsButtons={false}>
+                <Typography variant="h6">Описание</Typography>
+                {descriptionPartsNode.map((part, index) => (
+                    <DescriptionPartComponent key={index} text={part.text} index={index} />
+                ))}
+                <ImageButton sx={{ fontSize: "2vw", mb: "60px" }} onClick={() => setDescriptionParts((prevParts) => [...prevParts, { text: '', icon: '' }])}>
+                    +
+                </ImageButton>
+            </Scrollbar>
         </Box>
     );
 };

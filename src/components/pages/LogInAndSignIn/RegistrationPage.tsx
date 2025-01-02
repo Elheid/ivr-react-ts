@@ -3,9 +3,9 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
 import TextFieldForLogin from './TextFieldForLogin';
 import PasswordField from './PasswordField';
+import { signIn } from '../../../api/backendApi';
 
 // Интерфейс формы регистрации
 interface RegistrationFormInputs {
@@ -17,7 +17,7 @@ interface RegistrationFormInputs {
 }
 
 const RegistrationPage: React.FC = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -30,8 +30,10 @@ const RegistrationPage: React.FC = () => {
 
   const onSubmit: SubmitHandler<RegistrationFormInputs> = (data) => {
     console.log('Registration successful', data);
-    localStorage.setItem('user', JSON.stringify(data));
-    navigate('/login');
+    //localStorage.setItem('user', JSON.stringify(data));
+    const response = signIn(data);
+    console.log(response)
+    //navigate('/login');
   };
 
   return (

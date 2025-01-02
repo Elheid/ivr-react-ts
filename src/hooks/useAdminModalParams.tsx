@@ -2,23 +2,24 @@ import { useState, useRef, useCallback } from "react";
 import { CardType, FormType } from "../contextProviders/formTypeProvider";
 import { usePageStateContext } from "../contextProviders/PageState"
 import { deleteCard } from "../api/backendApi";
-import { useParams } from "react-router-dom";
+import { getLastParam } from "../utill";
 
-export const useCardFormModal = (type: "edit"|"add", ref?: React.ForwardedRef<HTMLDivElement> ) => {
+export const useCardFormModal = (type: "edit"|"add", setLoader: React.Dispatch<React.SetStateAction<boolean>>, ref?: React.ForwardedRef<HTMLDivElement> ) => {
     const [openModal, setOpenModal] = useState(false);
     const [cardInFormType, setCardInFormType] = useState<CardType>(CardType.CATEGORY);
     const [formType, setFormType] = useState<FormType>(FormType.CREATE);
     const [cardId, setCardId] = useState<number>(-1);
     const [parentCardId, setParentCardId] = useState<number>(-1);
 
-    const { categoryId } = useParams<{ categoryId?: string }>();
-    const { subCategoryId } = useParams<{ subCategoryId?: string }>();
+    //const { categoryId } = useParams<{ categoryId?: string }>();
+    //const { subCategoryId } = useParams<{ subCategoryId?: string }>();
 
-    const { serviceId } = useParams<{ serviceId?: string }>();
+    //const { serviceId } = useParams<{ serviceId?: string }>();
 
 
 
-    const parentId = Number(categoryId) || Number(subCategoryId) || Number(serviceId) || -1;
+    const parentId = Number(getLastParam())//Number(categoryId) || Number(subCategoryId) || Number(serviceId) || -1;
+
 
     const cardType = useRef<string>("");
 
@@ -34,8 +35,7 @@ export const useCardFormModal = (type: "edit"|"add", ref?: React.ForwardedRef<HT
 
             if (curState.current === "categories"){
     
-                //setCardId(Number(id) || -1);
-                setParentCardId(parentId);
+                setParentCardId(Number(getLastParam()));
                 
                 console.log("is this categories state& - ", state)
                 setCardInFormType(CardType.CATEGORY);
@@ -43,21 +43,15 @@ export const useCardFormModal = (type: "edit"|"add", ref?: React.ForwardedRef<HT
             }
             if (curState.current === "sub-categories"){
     
-                /*const parentId = parentElement.getAttribute("parent-id");
-                setParentCardId(Number(parentId) || -1);
-                const id = element.dataset.id;
-                setCardId(Number(id) || -1);*/
 
     
-                setParentCardId(parentId);
+                setParentCardId(Number(getLastParam()));
 
                 setCardInFormType(CardType.SUB_CATEGORY);
                 cardType.current = CardType.SUB_CATEGORY;
             }
             if(curState.current === "services"){
     
-                /*setParentCardId(Number(parentId) || -1);
-                setCardId(Number(id) || -1);*/
                 const listOfCards = document.querySelector(".card-list")
                 const children = listOfCards?.children
                 if (children && children.length === 1 && children[0].classList.contains("add-card-like-button") ){
@@ -66,14 +60,13 @@ export const useCardFormModal = (type: "edit"|"add", ref?: React.ForwardedRef<HT
                     showCardTypeChange.current = (true)
                 }
     
-                setParentCardId(parentId);
+                setParentCardId(Number(getLastParam()));
 
                 setCardInFormType(CardType.SERVICE);
                 cardType.current = CardType.SERVICE;
             }
             if(curState.current === "info"){
-                /*setCardId(Number(id) || -1);
-                setParentCardId(Number(parentId) || -1);*/
+
     
                 setParentCardId(parentId);
                 setCardInFormType(CardType.ADDITIONAL_INFO);
@@ -172,7 +165,7 @@ export const useCardFormModal = (type: "edit"|"add", ref?: React.ForwardedRef<HT
                 const input = prompt('Для подтверждения удаления введите название удаляемого объекта:');
                 if (input === title) {
                     const type = cardType.current as CardType;
-                    deleteCard(type,Number(id))
+                    deleteCard(type,Number(id), setLoader)
                     console.log("Элемент " + title + " удалён");
                 } else {
                     alert("Неверное слово. Удаление отменено.");

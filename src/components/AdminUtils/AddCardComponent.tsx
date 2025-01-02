@@ -9,6 +9,7 @@ import { createPortal } from "react-dom";
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { usePageStateContext } from "../../contextProviders/PageState";
 import { useCardFormModal } from "../../hooks/useAdminModalParams";
+import { useLoader } from "../../contextProviders/LoaderProvider";
 
 const AddCardComponent = ({size, buttonColorClass, addColor}:{size:number, buttonColorClass?:string, addColor?:string})=>{
     const { showAdminButtons }  = useShowAdminButtons();
@@ -18,6 +19,8 @@ const AddCardComponent = ({size, buttonColorClass, addColor}:{size:number, butto
     if(!addColor)
         addColor = "white";
     const {state } = usePageStateContext();
+
+    const { setLoader } = useLoader();
 
     const {
         openModal,
@@ -29,7 +32,7 @@ const AddCardComponent = ({size, buttonColorClass, addColor}:{size:number, butto
         cardId,
         curState,
         showCardTypeChange
-    } = useCardFormModal("add");
+    } = useCardFormModal("add", setLoader);
 
     useEffect(() => {
         console.log("State changed:", state);

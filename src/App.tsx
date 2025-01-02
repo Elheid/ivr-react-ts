@@ -8,7 +8,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MainPageComponent from './components/pages/MainPage/MainPageComponent.tsx'
 import InstructionComponent from './components/pages/InstructionPage/Instruction.tsx';
 import ServicesComponent from './components/pages/ServicesPage/Services.tsx';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ServiceResultComponent from './components/pages/ServiceResultPage/ServiceResultComponent.tsx';
 import HomeReturnerComponent from './components/HomeReturnerComponent.tsx';
 import { DEFAULT_GO_HOME_TIMER } from './assets/data/constants.ts';
@@ -22,6 +22,8 @@ import { Alert } from '@mui/material';
 import { PageStateProvider } from './contextProviders/PageState.tsx';
 import axios from "axios";
 import { tryJsonParse } from './utill.ts';
+import LoadingCompanent from './components/LoadingComponent.tsx';
+import { useLoader } from './contextProviders/LoaderProvider.tsx';
 
 function App() {
 
@@ -97,6 +99,8 @@ function App() {
 
   const [error, setError] = useState<string | null>(null);
 
+  const { loader } = useLoader();
+
   const queryCache = new QueryCache({
     onError: (error, query) => {
       if (error?.message === '["infoCards"] data is undefined'
@@ -115,24 +119,22 @@ function App() {
     queryCache: queryCache,
   });
 
+  const [refresh, setRefresh] = useState(0);
 
+  const handleRefresh = () => {
+    setRefresh((prev) => prev + 1); // Обновляем состояние
+  };
 
-  /*const clearOldCache = async (cacheName: string) => {
-    const keys = await caches.keys();
-    for (const key of keys) {
-        if (key !== cacheName) {
-            await caches.delete(key); // Удаляем старые кэши
-        }
+  useEffect(()=>{
+    if(!loader){
+      handleRefresh()
     }
-  };*/
-  /*useEffect(() => {
-    const currentCacheName = 'svg-cache';
-    clearOldCache(currentCacheName);
-  }, []);*/
+  },[loader] )
 
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <div  key={refresh}>
+<QueryClientProvider client={queryClient}>
       <ShowAdminButtonsProvider>
         <PageStateProvider>
           <CardAndFormTypeProvider>
@@ -146,6 +148,14 @@ function App() {
                       {error}
                     </Alert>
                   )}
+
+                  {loader &&
+                    <LoadingCompanent styles={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',}}/>
+                  }
                   {/* Остальная часть приложения */}
                 </div>
                 <Routes>
@@ -172,6 +182,7 @@ function App() {
         </PageStateProvider>
       </ShowAdminButtonsProvider>
     </QueryClientProvider>
+    </div>
   );
 }
 

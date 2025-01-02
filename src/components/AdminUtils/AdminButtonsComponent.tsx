@@ -6,6 +6,7 @@ import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProv
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { useCardFormModal } from "../../hooks/useAdminModalParams";
 import { createPortal } from "react-dom";
+import { useLoader } from "../../contextProviders/LoaderProvider";
 
 
 const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e:MouseEvent) => void }) => {
@@ -22,6 +23,9 @@ const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: str
 
 
 const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
+
+    const { setLoader } = useLoader();
+    
     const { showAdminButtons } = useShowAdminButtons();
 
     const {
@@ -33,10 +37,12 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         parentCardId,
         cardId,
         onDeleteClick
-    } = useCardFormModal("edit", ref);
+    } = useCardFormModal("edit", setLoader,ref);
 
     const isClearLang = localStorage.getItem("language") === "clear-language";
     const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
+
+
 
     if (showAdminButtons) {
         return (

@@ -1,5 +1,5 @@
 export interface FormValues {
-    switchToTransfer: boolean;
+    switchToTransfer: number;
     id:number,
     title: string;
     mainIconLink: string;

@@ -6,6 +6,16 @@
     position: relative;
 }
 
+.custom-scrollbars__container_in_end {
+    border-radius: 12px;
+    display: grid;
+    grid-template: auto / 1fr 50px;
+    overflow: hidden;
+    position: relative;
+    justify-items: end;
+}
+
+
 .custom-scrollbars__content {
     -ms-overflow-style: none;
     overflow: auto;
@@ -17,6 +27,9 @@
     display: none;
 }
 
+.custom-scrollbars__scrollbar_without-buttons{
+    width: fit-content;
+}
 .custom-scrollbars__scrollbar {
     display: grid;
     gap: 1rem;

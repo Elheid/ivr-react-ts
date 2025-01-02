@@ -1,7 +1,8 @@
 import { Box, TextField, Typography } from '@mui/material';
 import { useFormContext } from 'react-hook-form';
 import { CardType, FormType } from '../../../contextProviders/formTypeProvider';
-import ImageField from './ImageField';
+import ImageField from './CustomFields/ImageField';
+import { VideoField } from './CustomFields/VideoField';
 
 const BasePart = ({ formType, cardType }: { formType: FormType, cardType: "" | CardType, }) => {
     const { register } = useFormContext();
@@ -37,22 +38,24 @@ const BasePart = ({ formType, cardType }: { formType: FormType, cardType: "" | C
             return (
                 <Box sx={{ mt: 2 }}>
                 <Typography variant="h6">Базовые поля</Typography>
-                <TextField
+                {/*<TextField
                 required
                 {...register('resVideo')}
                 label="Ссылка на видео объяснение"
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                />
+                />*/}
+                <VideoField registerName='resVideo' />
                 </Box>
             )
     }
     
     return (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, mb:"80px" }}>
             <Typography variant="h6">Базовые поля</Typography>
             <TextField
+                InputLabelProps={{ shrink: true }}
                 required
                 {...register('title')}
                 label="Заголовок превью"
@@ -65,6 +68,7 @@ const BasePart = ({ formType, cardType }: { formType: FormType, cardType: "" | C
                     },
                 }}
             />
+            <hr className='horizontal-divider' />
             {/*<TextField
                 {...register('imagePreview')}
                 label="Ссылка на изображение"
@@ -75,26 +79,32 @@ const BasePart = ({ formType, cardType }: { formType: FormType, cardType: "" | C
             {
                 <>
                 <ImageField required registerName={'mainIconLink'} />
-                <TextField
+                {/*<TextField
                     required
                     {...register('gifPreview')}
                     label="Ссылка на видео превью"
                     variant="outlined"
                     fullWidth
                     margin="normal"
-                />
+                />*/}
+                <VideoField registerName='gifPreview' />
                 </>
             }
             
+
             {(cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) &&
-            <TextField
+            <> 
+            {/*<TextField
                 required
                 {...register('resVideo')}
                 label="Ссылка на видео объяснение"
                 variant="outlined"
                 fullWidth
                 margin="normal"
-            />}
+                />*/}
+            <VideoField registerName='resVideo' />
+            </>
+            }
         </Box>
     );
 };

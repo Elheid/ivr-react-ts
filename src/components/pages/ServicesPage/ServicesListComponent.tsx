@@ -7,7 +7,7 @@ import {  useParams, useSearchParams } from 'react-router-dom';
 import { getLastParam, saveCategoriesTitles } from '../../../utill';
 import { LoadMediaProvider, useLoadContext } from '../../../contextProviders/LoadMediaProvider';
 import { Category, Service } from '../../../interfaces/CardsInterfaces';
-import LoadingCompanent from '../../LoadingComponent';
+import LoadingComponent from '../../LoadingComponent';
 import { useCategoriesQuery, useServicesQuery } from '../../../hooks/useCardsQuery';
 
 import AddCardComponent from '../../AdminUtils/AddCardComponent';
@@ -174,7 +174,7 @@ const ListComponent = () => {
 
     
     if (loading){
-        return <LoadingCompanent />
+        return <LoadingComponent />
     }
 
 
