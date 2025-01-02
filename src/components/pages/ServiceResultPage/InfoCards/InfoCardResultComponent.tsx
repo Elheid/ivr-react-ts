@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import VideoComponent from "../../../VideoComponent";
 import {insertBlocks} from "../blockInsertion";
 import { useInfoCardsQuery } from "../../../../hooks/useCardsQuery";
@@ -15,7 +15,7 @@ interface InfoStrpComponentProps {
 
 
 
-const InfoCardResultComponent = ({ setTitle, id }: {setTitle:React.Dispatch<React.SetStateAction<string>>;id?:number}) => {
+const InfoCardResultComponent = ({ setTitle, id, changeTitle }: {setTitle:React.Dispatch<React.SetStateAction<string>>;id?:number, changeTitle:boolean}) => {
     const textRef = useRef<HTMLPreElement>(null);
 
     const vidRef = useRef<HTMLVideoElement>(null);
@@ -33,13 +33,13 @@ const InfoCardResultComponent = ({ setTitle, id }: {setTitle:React.Dispatch<Reac
             insertBlocks(textRef, cardDetails.description, cardDetails.iconLinks);
     }, [cardDetails]);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const infoCard = infoCardInfo?.filter((card)=>card.id === cardId)[0]
         if (infoCard?.title)
             //console.log(infoCard?.title)
-            setTitle(infoCard?.title)
+            if (changeTitle) setTitle(infoCard?.title)
         setCardDetails(infoCard as InfoStrpComponentProps)
-    }, [cardId, infoCardInfo, setTitle]);
+    }, [cardId, infoCardInfo, setTitle, changeTitle]);
 
     if (!cardId) return null;
 

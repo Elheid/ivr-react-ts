@@ -1,0 +1,53 @@
+.upload-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.upload-button.uploaded {
+    background-color: #28a745; /* Зеленый цвет */
+    color: white;
+}
+
+.upload-status {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    width: 24px;
+    position: relative;
+}
+
+.loader {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #007bff;
+    border-radius: 50%;
+    width: 24px;
+    height: 12px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.checkmark {
+    color: #28a745; /* Зеленая галочка */
+    font-size: 24px;
+    line-height: 24px;
+}

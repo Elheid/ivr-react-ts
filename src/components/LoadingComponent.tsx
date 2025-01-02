@@ -1,6 +1,6 @@
 import { CircularProgress } from "@mui/material"
 
-const LoadingCompanent = ({className}:{className?:string})=>{
+const LoadingCompanent = ({className, styles}:{className?:string, styles?:object})=>{
     return (
         <div
         className={className}
@@ -10,6 +10,8 @@ const LoadingCompanent = ({className}:{className?:string})=>{
             alignItems: "center",
             height: "60vh",
             margin: "0 auto ",
+            zIndex:999,
+            ...styles
             }}>
             <CircularProgress size={80} className="brown-loader"/>
         </div>)

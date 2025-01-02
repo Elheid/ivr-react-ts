@@ -10,12 +10,13 @@ import InfoCardResultComponent from "./InfoCardResultComponent";
 import ModalStyle from "../../../../styles/modalStyle";
 import { useParams } from "react-router-dom";
 import { useInfoCardsQuery } from "../../../../hooks/useCardsQuery";
-import LoadingCompanent from "../../../LoadingComponent";
+import LoadingComponent from "../../../LoadingComponent";
 import { isAdmin } from "../../../../utill";
 import ServiceResultButtonsComponent from "../../../AdminUtils/ServiceResultButtonsComponent";
 import AddCardComponent from "../../../AdminUtils/AddCardComponent";
 import { usePageStateContext } from "../../../../contextProviders/PageState";
 import { useShowAdminButtons } from "../../../../contextProviders/ShowAdminButtonsProvider";
+import { useLoader } from "../../../../contextProviders/LoaderProvider";
 
 /*
 const infoCard: InfoCard = {
@@ -70,10 +71,10 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
     }, [open]);
 
     useEffect(() => {
-        if (!isHidden) {
+        if (!isHidden && open) {
             setTitle(defaultTitle)
         }
-    }, [isHidden]);
+    }, [isHidden, open]);
 
     useEffect(() => {
         const handleInfoCardOpen = (event: Event) => {
@@ -88,6 +89,8 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
             window.removeEventListener('infoCardOpen', handleInfoCardOpen);
         };
     }, []);
+
+    const { loader } = useLoader();
 
     return (
         <div className="modal-container">
@@ -117,12 +120,12 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                             &#x2716;
                         </IconButton>
                     </div>
-                    <Scrollbar height="67vh" addArrowsButtons={false}>
+                    <Scrollbar alginRight={false} height="67vh" addArrowsButtons={false}>
                         {additionIds || showAdminButtons ?
                             <div className="popup-content">
                                 <Grid2 className={`info-cards card-list list-of-cards ${isHidden && open ? "hidden" : ""}`} container rowSpacing={6} columnSpacing={{ xs: 6, sm: 6, md: 6 }}>
                                     <AddCardComponent buttonColorClass="add-card-info" addColor="black" size={6}></AddCardComponent>
-                                    {isInfoLoading ? <LoadingCompanent /> : infoCards.map((infoCard: InfoCard, index: number) => (
+                                    {isInfoLoading || loader ? <LoadingComponent /> : infoCards.map((infoCard: InfoCard, index: number) => (
                                         <InfoCardComponent
                                             key={index} // Ensure unique key for each card
                                             itemId={infoCard.itemId}
@@ -138,7 +141,7 @@ const PopupContainer = React.memo(({ additionIds }: { additionIds: number[] }) =
                                 </Grid2>
                                 <div className={`additional-info-res ${!isHidden && open ? "hidden" : ""}`}>
                                     <Container>
-                                        <InfoCardResultComponent setTitle={setTitle} id={selectedCardId} />
+                                        <InfoCardResultComponent changeTitle={isHidden} setTitle={setTitle} id={selectedCardId} />
                                         
                                     </Container>
                                 </div>

@@ -5,6 +5,8 @@ import { forwardRef } from "react";
 import { useShowAdminButtons } from "../../contextProviders/ShowAdminButtonsProvider";
 import AdminModal from "./AdminModal.tsx/AdminModal";
 import { useCardFormModal } from "../../hooks/useAdminModalParams";
+import { createPortal } from "react-dom";
+import { useLoader } from "../../contextProviders/LoaderProvider";
 
 
 const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: string, handleClick: (e:MouseEvent) => void }) => {
@@ -21,154 +23,10 @@ const AdminButton = ({ img, classes, handleClick }: { img: string, classes?: str
 
 
 const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
+
+    const { setLoader } = useLoader();
+    
     const { showAdminButtons } = useShowAdminButtons();
-
-    /*const [openModal, setOpenModal] = useState(false);
-
-
-    const [cardInFormType, setCardInFormType] = useState<CardType>(CardType.CATEGORY); // Состояние для типа карточки
-    const [formType, setFormType] = useState<FormType>(FormType.CREATE); // Состояние для типа формы
-
-    const [cardId, setCardId] = useState<number>(-1);
-    const [parentCardId, setParentCardId] = useState<number>(-1);
-
-    const cardType = useRef<string>("");
-
-    const isClearLang = localStorage.getItem("language") === "clear-language";
-    const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
-
-    const classificateFormByEl = (parentElement: HTMLElement, element: HTMLDivElement)=>{
-        if (parentElement.classList.contains("catalog-card")) {
-            const id = element.dataset.id;
-            setCardId(Number(id) || -1);
-            setParentCardId(-1);
-            setCardInFormType(CardType.CATEGORY);
-            cardType.current = CardType.CATEGORY;
-        } else if (parentElement.classList.contains("service-card")) {
-            const id = element.dataset.id;
-            const parentId = parentElement.getAttribute("parent-catalog-id");
-            setParentCardId(Number(parentId) || -1);
-            setCardId(Number(id) || -1);
-            setCardInFormType(CardType.SERVICE);
-            cardType.current = CardType.SERVICE;
-        } else if (parentElement.classList.contains("sub-catalog-card")) {
-            //const parentOfParent = parentElement.parentNode as HTMLElement
-            const parentId = parentElement.getAttribute("parent-id");
-            setParentCardId(Number(parentId) || -1);
-            const id = element.dataset.id;
-            setCardId(Number(id) || -1);
-            setCardInFormType(CardType.SUB_CATEGORY);
-            cardType.current = CardType.SUB_CATEGORY;
-        } else if (parentElement.classList.contains("info-card")) {
-            const id = element.getAttribute("info-id");
-            const parentId = element.getAttribute("item-id");
-            setCardId(Number(id) || -1);
-            setParentCardId(Number(parentId) || -1);
-            setCardInFormType(CardType.ADDITIONAL_INFO);
-            cardType.current = CardType.ADDITIONAL_INFO;
-        }
-    }
-
-    const determineCardAndFormType = (element: HTMLDivElement) => {
-        //const parentElement = element.parentNode as HTMLElement;
-
-        // Определение cardInFormType в зависимости от классов
-        //classificateFormByEl(parentElement, element)
-
-
-        // Определение formType
-        if (ref && typeof ref === "object" && ref !== null && "current" in ref){
-            const parentRefEl = ref.current ? ref.current.parentNode as HTMLElement : new HTMLDivElement;
-            classificateFormByEl(parentRefEl, element)
-        }
-        if (element.classList.contains("card-to-add")) {
-            setFormType(FormType.CREATE);
-        } else {
-            setFormType(FormType.EDIT);
-        }
-    };
-
-    const onEditClick = useCallback((e: MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-        setOpenModal(true);
-
-        let element:HTMLDivElement;
-        const target = e.currentTarget;
-        if (target instanceof HTMLDivElement && target.tagName.toLowerCase() === 'div' && target.classList.contains('card-to-add')){
-            element = target;
-            determineCardAndFormType(element);
-        }
-        else if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
-            element = ref.current ? ref.current : new HTMLDivElement;
-            determineCardAndFormType(element);
-            //alert("Редактировать: " + element?.getAttribute("data-title"))
-        }
-    },[ref])
-
-
-    const onDeleteClick = (e: MouseEvent) => {
-        e.stopPropagation();
-        if (ref && typeof ref === "object" && ref !== null && "current" in ref) {
-            const element = ref.current ? ref.current : new HTMLDivElement;
-            determineCardAndFormType(element);
-            const title = element?.getAttribute("data-title");
-            const id = element?.getAttribute("data-id");
-            if (confirm(`Вы действительно хотите удалить ${cardType.current} ${title}?`)) {
-                // Запрашиваем ввод текста для подтверждения
-                const input = prompt('Для подтверждения удаления введите название удаляемого объекта:');
-                if (input === title) {
-                    const type = cardType.current as CardType;
-                    deleteCard(type,Number(id))
-                    console.log("Элемент " + title + " удалён");
-                } else {
-                    alert("Неверное слово. Удаление отменено.");
-                    console.log("Удаление отменено");
-                }
-            }else {
-                // Если пользователь отменил, ничего не делаем
-                console.log("Удаление отменено");
-            }
-        }
-    }
-    const handleCloseModal = (event: Event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        setOpenModal(false); // Закрываем модалку
-    };*/
-
-    /*const handleSubmitModal: SubmitHandler<FormValues> = (data, event):void => {
-        console.log(data)
-        if (event) {
-            // event.preventDefault(); // Если нужно предотвратить поведение
-            event.stopPropagation();
-        }
-        setOpenModal(false); // Закрываем модалку
-        // console.log(event?.currentTarget);
-    };*/
-    /*const url =  window.location.href;
-    useEffect(() => {
-        if (showAdminButtons) {
-            const cardAdd = document.querySelector(".card-to-add");
-            if (url)
-                console.log("add-button: ", url)
-
-            if (cardAdd) {
-                // Убедимся, что не добавляем несколько обработчиков
-                (cardAdd as HTMLButtonElement).onclick = null;
-                (cardAdd as HTMLButtonElement).onclick = onEditClick;  // Убираем предыдущие обработчики
-                //cardAdd.addEventListener("click", onEditClick);    // Добавляем новый обработчик
-            }
-
-            // Очистка обработчика при размонтировании компонента или изменении showAdminButtons
-            return () => {
-                if (cardAdd) {
-                    (cardAdd as HTMLButtonElement).onclick = null;
-                    //cardAdd.removeEventListener("click", onEditClick);
-                }
-            };
-        }
-    }, [showAdminButtons, onEditClick, ref, setOpenModal, url]);*/
 
     const {
         openModal,
@@ -179,10 +37,12 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
         parentCardId,
         cardId,
         onDeleteClick
-    } = useCardFormModal("edit", ref);
+    } = useCardFormModal("edit", setLoader,ref);
 
     const isClearLang = localStorage.getItem("language") === "clear-language";
     const position = isClearLang ? { position: "relative;" } : { position: "absolute;" };
+
+
 
     if (showAdminButtons) {
         return (
@@ -195,7 +55,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     <AdminButton img={trash} classes={"delete-button"} handleClick={onDeleteClick} />
                 </Container>
 
-                {<AdminModal
+                {createPortal (<AdminModal
                     parentId={parentCardId}
                     id={cardId}
                     cardInFormType={cardInFormType}
@@ -204,7 +64,7 @@ const AdminButtonsComponent = forwardRef<HTMLDivElement, unknown>((_, ref) => {
                     handleClose={(e) => handleCloseModal(e)}
                     showCardTypeChange={false}
                     //handleSubmitModal={handleSubmitModal}
-                />}
+                />, document.body)}
             </>
 
         )

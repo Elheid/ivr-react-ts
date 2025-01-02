@@ -309,6 +309,7 @@ button.additional-info{
   width: 70%;
   height: 80vh;
   padding-top: 0;
+  z-index: 100;
 }
 
 
@@ -651,7 +652,7 @@ a.login-link{
 
 
 /*Admin modal*/
-div#card-form-container {
+/*div#card-form-container {
   background: white;
   height: 60vh;
   overflow-y: auto;
@@ -659,6 +660,15 @@ div#card-form-container {
 
   display: flex;
   flex-direction: column;
+}*/
+div#card-form-container{
+  background: white;
+  height: 60vh;
+  overflow-y: auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 /*Add card button*/
@@ -691,4 +701,27 @@ form#card-form {
   display: flex
 ;
   flex-direction: column;
+}
+
+
+.css-vl6bb4-MuiBackdrop-root-MuiModal-backdrop{
+  z-index: 10;
+}
+
+.MuiMenu-paper{
+  z-index: 50;
+}
+
+
+
+hr.horizontal-divider {
+  width: 100%;
+  height: auto;
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+hr.vertical-divider{
+  margin-left:10px;
+  margin-right:10px;
 }

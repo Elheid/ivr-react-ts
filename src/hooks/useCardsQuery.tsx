@@ -74,6 +74,7 @@ export const useInfoCardsQuery = (playload:{serviceId?:number, infoId?:number,},
                 const content:InfoCard[] = data.content;
                 return content;
             }
+            else return [];
         },
         ...options
     })

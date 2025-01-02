@@ -35,7 +35,11 @@ const SearchButton = ({ classes = "" }: { classes?: string }) => {
     const searchImg = searchSVG//`${process.env.PUBLIC_URL}img/search.svg`;
 
     const classNames = `${styles["search-button"]}  ${classes}`
-
+    window.addEventListener("keydown", (event)=> {
+        if (event.key === 'Enter' || event.keyCode === 13){
+            handleSearch(inputValue, navigate)
+        }
+    })
 
     return (
         <ImageButton className={classNames} type="submit" onClick={() => handleSearch(inputValue, navigate)}>

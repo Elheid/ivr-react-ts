@@ -8,8 +8,9 @@ const Scrollbar = ({
     children,
     height,
     addArrowsButtons,
+    alginRight,
     ...props
-}: React.ComponentPropsWithoutRef<'div'> & {height?:string, addArrowsButtons?:boolean}) => {
+}: React.ComponentPropsWithoutRef<'div'> & {height?:string, addArrowsButtons?:boolean, alginRight:boolean}) => {
     const contentRef = useRef<HTMLDivElement>(null);
     const scrollTrackRef = useRef<HTMLDivElement>(null);
     const scrollThumbRef = useRef<HTMLDivElement>(null);
@@ -144,11 +145,11 @@ const Scrollbar = ({
     }, [handleThumbMousemove, handleThumbMouseup]);
 
     return (
-        <div className={style["custom-scrollbars__container"]}>
+        <div className={!alginRight ? style["custom-scrollbars__container"] : style["custom-scrollbars__container_in_end"]}>
             <div style={{height: `${height}`}} className={style["custom-scrollbars__content"]} ref={contentRef} {...props}>
                 {children}
             </div>
-            <div className={addArrowsButtons ? style["custom-scrollbars__scrollbar"] : ""}>
+            <div className={addArrowsButtons ? style["custom-scrollbars__scrollbar"] : style["custom-scrollbars__scrollbar_without-buttons"]}>
                 {addArrowsButtons && <button
                     className={style["custom-scrollbars__button"]}
                     onClick={() => handleScrollButton('up')}
