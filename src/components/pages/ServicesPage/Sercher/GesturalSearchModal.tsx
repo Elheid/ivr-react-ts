@@ -37,6 +37,18 @@ const GesturalSearchModal = ({open, setOpen, handleSearch}: GesturalSearchModalP
 
 
     const handleClose = () => {
+        document.querySelectorAll('video').forEach(video => {
+            const stream = video.srcObject as MediaStream;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        });
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            stream.getVideoTracks().forEach(track => track.stop());
+            stream.getTracks().forEach(track => stream.removeTrack(track));
+        });
         setOpen(false);
         setRecord(false);
     }
@@ -69,12 +81,15 @@ const GesturalSearchModal = ({open, setOpen, handleSearch}: GesturalSearchModalP
                 </IconButton>
             </div>
             <div className="search-popup-main">
+                {open &&
                 <GesturalWebcamSearch
-                    record={record}
-                    setKeyWords={setKeyWords}
-                    onStartRecording={() => console.log('Recording started')}
-                    onStopRecording={() => console.log('Recording stopped')}
+                record={record}
+                setKeyWords={setKeyWords}
+                onStartRecording={() => console.log('Recording started')}
+                onStopRecording={() => console.log('Recording stopped')}
+                open={open}
                 />
+                }
                 {keyWords.length > 0 && 
                 <div className="tag-list">
                     {keyWords.map((keyWord, index) => (

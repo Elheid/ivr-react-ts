@@ -20,12 +20,18 @@ interface GesturalWebcamSearchProps {
     setKeyWords:React.Dispatch<React.SetStateAction<string[]>>
     onStartRecording: () => void;
     onStopRecording: () => void;
+    open:boolean;
 }
 
-const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, setKeyWords, onStartRecording, onStopRecording }) => {
+
+
+const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, setKeyWords, onStartRecording, onStopRecording, open }) => {
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+
+
+
 
     const [intervalId, setIntervalId] = useState<number | null>(null);
     const [isRecording, setIsRecording] = useState<boolean>(false); // Управляет отображением overlay
@@ -42,7 +48,6 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
                     videoRef.current.srcObject = stream;
                     videoRef.current.classList.add("stream");
                 }
-
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 if (context) {
@@ -57,8 +62,51 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
             });
     };
 
+    const stopAllActiveStreams = () => {
+        navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+    
+                if (videoDevices.length > 0) {
+                    videoDevices.forEach(() => {
+                        navigator.mediaDevices.getUserMedia({ video: true })
+                            .then(stream => {
+                                stream.getTracks().forEach(track => {
+                                    track.stop(); // Останавливаем каждый трек
+                                });
+                            })
+                            .catch(err => console.error('Error stopping streams:', err));
+                    });
+                }
+            })
+            .catch(err => console.error('Error enumerating devices:', err));
+    };
+    
+    const stopAllMediaTracks = () => {
+        document.querySelectorAll('video').forEach(video => {
+            const stream = video.srcObject as MediaStream;
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+            }
+        });
+        navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            stream.getVideoTracks().forEach(track => track.stop());
+            stream.getTracks().forEach(track => stream.removeTrack(track));
+        });
+    };
+    
+
     const stopWebcam = () => {
-        if (videoRef.current) {
+        canvasRef.current = null;
+        stopAllActiveStreams();
+        stopAllMediaTracks()
+       /* if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            setStream(null); // Удаляем поток из состояния
+        }
+        else if (videoRef.current) {
             const stream = videoRef.current.srcObject as MediaStream;
             if (stream) {
                 stream.getTracks().forEach(track => track.stop());
@@ -67,6 +115,10 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
             videoRef.current.srcObject = null;
             videoRef.current.classList.remove("stream");
         }
+        else{
+            stopAllActiveStreams();
+            stopAllMediaTracks()
+        }*/
     };
 
     const processMessage = (text: string) => {
@@ -145,14 +197,16 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
     };
 
     useEffect(() => {
-        startWebcam();
-        connectToSocket();
+        if (open){
+            startWebcam();
+            connectToSocket();
+        }
 
         return () => {
-            disconnectFromSocket();
             stopWebcam();
+            disconnectFromSocket();
         };
-    }, []);
+    }, [open]); 
 
     useEffect(() => {
         if (record) {
