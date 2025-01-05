@@ -233,7 +233,7 @@ const BreadCrumpsComponent = () => {
             return breadcrumbs.map((breadcrumb, index) => (
                 <div key={index} className="breadcrumb-item">
                     <Link to={breadcrumb.destination}>
-                        <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{breadcrumb.content}</span>
+                        <span style={{ fontSize: `${fontSize}vw` }}>{breadcrumb.content}</span>
                     </Link>
                 </div>
             ));
@@ -247,12 +247,12 @@ const BreadCrumpsComponent = () => {
         return [
             <div className="breadcrumb-item">
                 <Link to={first.destination}>
-                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{first.content}</span>
+                    <span style={{ fontSize: `${fontSize}vw` }}>{first.content}</span>
                 </Link>
             </div>,
             <div className="breadcrumb-item">
                 <Link to={second.destination}>
-                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{second.content}</span>
+                    <span style={{ fontSize: `${fontSize}vw` }}>{second.content}</span>
                 </Link>
             </div>,
             <div className="breadcrumb-item">
@@ -281,7 +281,7 @@ const BreadCrumpsComponent = () => {
 
             <div className="breadcrumb-item">
                 <Link to={last.destination}>
-                    <span style={{ fontSize: `${BASE_FONT_SIZE}vw` }}>{last.content}</span>
+                    <span style={{ fontSize: `${fontSize}vw` }}>{last.content}</span>
                 </Link>
             </div>,
 
