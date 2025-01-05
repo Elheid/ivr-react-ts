@@ -725,3 +725,9 @@ hr.vertical-divider{
   margin-left:10px;
   margin-right:10px;
 }
+
+.left-part, .right-part{
+  width: -moz-available;       /* WebKit игнор. */
+  width: -webkit-fill-available;  /* Mozilla игнор. */
+  width: fill-available;
+}
