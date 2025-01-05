@@ -726,7 +726,7 @@ hr.vertical-divider{
   margin-right:10px;
 }
 
-.left-part, .right-part{
+.fill-free-space{
   width: -moz-available;       /* WebKit игнор. */
   width: -webkit-fill-available;  /* Mozilla игнор. */
   width: fill-available;

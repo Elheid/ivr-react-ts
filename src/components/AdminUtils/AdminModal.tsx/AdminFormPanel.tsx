@@ -177,7 +177,9 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
 
                         }}
                     >
-                        <div className="left-part">
+                        <div className={`left-part ${!hideParts &&
+                            ! (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) 
+                            && "fill-free-space"}`}>
 
                             {showCardTypeChange && <RadioButtons
                                 onChange={handleChangeCardType}
@@ -193,7 +195,9 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
                                 (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) &&
                                 (formType !== FormType.TITLE && formType !== FormType.VIDEO) && 
                                 <hr className='vertical-divider' />}
-                        <div className="right-part">
+                        <div className={`right-part ${!hideParts && 
+                            (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) 
+                            && "fill-free-space"}`}>
                             {/* Рендеринг секции ResultParts только для additional-info и service */}
                             {!hideParts &&
                                 (cardType == CardType.ADDITIONAL_INFO || cardType == CardType.SERVICE) &&
