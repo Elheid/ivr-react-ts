@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { API_GESTURAL_URL } from '../assets/data/constants';
 import { io } from 'socket.io-client';
 
-const interval = 1000 / 50;
+const interval = 1000 / 30;
 const socketURL = API_GESTURAL_URL;
 const socket = io(socketURL, {
     path: '/rsl-filter/socket.io/',
@@ -39,7 +39,7 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
     const framesArr: string[] = [];
     const framesPac = 4;
     const [prevWords, setPrevWords]= useState<string[]>([]);
-    const prevResults: string[] = [];
+    const prevResults= useRef<string[]>([]);
 
     const startWebcam = () => {
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -122,10 +122,52 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
     };
 
     const processMessage = (text: string) => {
+        try {
+            const results: string[] = Object.values(JSON.parse(text));
+            console.log("Распознано ", results);
+            
+            /*const uniqueResults = new Set(prevResults.current);
+            results.forEach(result => uniqueResults.add(result));
+            prevResults.current = Array.from(uniqueResults);*/
+           // const newKeyWords = results.filter(result => !prevWords.includes(result));
+
+            /*const isResultsAlreadyAdded = results.some(result =>
+                prevResults.current.includes(result)
+            );
+    
+            if (!isResultsAlreadyAdded) {
+                // Если results ещё не добавлены, добавляем их
+                prevResults.current.push(...results);
+    
+                const newKeyWords = results.filter(result => !prevWords.includes(result));*/
+    
+            //const newKeyword = results.find(result => !prevResults.current.includes(result));
+            const newKeyword = results[0];
+            if (newKeyword) {
+            // Добавляем найденное слово в prevResults.current
+                prevResults.current.push(newKeyword);
+                const newKeyWords = [newKeyword]
+                if (newKeyWords.length > 0) {
+                    newKeyWords.forEach(keyword => {
+                        if (keyword !== 'нет жеста') {
+                            setKeyWords(prev => [...prev, keyword]);
+                            setPrevWords(prev => [...prev, keyword]);
+                            console.log("Выведено ", keyword);
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Ошибка при обработке сообщения: ", error);
+        }
+    };
+
+/*
+    const processMessage = (text: string) => {
         const results: string[] = Object.values(JSON.parse(text));
         console.log("Распознано ", results);
-        if (!prevResults.includes(text)) {
-            prevResults.push(text);
+        if (!prevResults.current.includes(text)) {
+            prevResults.current.push(text);
             const newKeyWords = results.filter(result => !prevWords.includes(result))[0];
             if (newKeyWords && newKeyWords !== 'нет жеста') {
                 setKeyWords(prev => [...prev, newKeyWords]);
@@ -133,7 +175,7 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
                 console.log("Выведено ", newKeyWords);
             }
         }
-    };
+    };*/
 
     const onReceiveText = (text: string) => {
         console.log(text);
@@ -192,7 +234,7 @@ const GesturalWebcamSearch: React.FC<GesturalWebcamSearchProps> = ({ record, set
         socket.off("disconnect");
         socket.off("message", onReceiveText);
         prevWords.length = 0;
-        prevResults.length = 0;
+        prevResults.current.length = 0;
         stopSendingData();
     };
 

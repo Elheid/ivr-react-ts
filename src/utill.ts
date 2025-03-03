@@ -27,7 +27,7 @@ const saveCategoriesTitles = (content: Service[] | Category[]) => {
     content.forEach((el: Category | Service) => {
         obj[el.id] = {
             title: el.title,
-            isSubCategory: 'parentCategoryId' in el ? el.parentCategoryId !== 0 || el.childrenCategoryIds.length !== 0  : false,
+            isSubCategory: 'parentCategoryId' in el ? el.parentCategoryId !== 0 || el.childrenCategoryIds.length !== 0 : false,
         }; // Используем id как ключ, добавляем флаг isSubCategory
     });
 
@@ -156,7 +156,7 @@ const assembleDescription = (textParts: string[]): string => {
     textParts.forEach((text) => {
         // Проверяем, есть ли тег <img> в тексте
         //if (pattern.test(text)) {
-        if (text.indexOf("\n\\icon") > 0){
+        if (text.indexOf("\n\\icon") > 0) {
             // Если тег <img> есть, заменяем его
             const updatedText = text//.replace(pattern, (_, alt) => `\n\\icon${alt}`);
             if (text.startsWith("\n- ")) {
@@ -184,7 +184,7 @@ const getDescriptionAndIcons = (parts: string[], iconLinks: string[]) => {
         //const s = iconLinks[id] !== "" ? part.includes(iconLinks[id]) : false;
         if (iconLinks && iconLinks[id] !== "") {
             const parting = part.split("<img")
-            if (parting.length > 1){
+            if (parting.length > 1) {
                 part = parting[0]
             }
             icon = `\n\\icon${count}`//`<img src=${iconLinks[id]} alt="${count}">`;
@@ -248,6 +248,22 @@ const changeDataInCardData = (cardInFormType: CardType, data: FormValues, parent
     if (cardInFormType === CardType.ADDITIONAL_INFO)
         return infoData;
 }
+
+const replaceWordsWithSpan = (input: string): string => {
+    // Определяем слова, которые нужно найти
+    const wordsToReplace = ['Примечание', 'удалить'];
+
+    // Создаем регулярное выражение для поиска этих слов
+    const regex = new RegExp(`(${wordsToReplace.join('|')})`, 'gi');
+
+    // Заменяем найденные слова на <span class="red-text">слово</span> или <span class="note-text">слово</span>
+    return input.replace(regex, (matched) => {
+        const className = matched.toLowerCase() === 'удалить' ? 'red-text' : 'note-text';
+        return `<span class="${className}">${matched}</span>`;
+    });
+};
+
+export default replaceWordsWithSpan;
 
 
 export {
