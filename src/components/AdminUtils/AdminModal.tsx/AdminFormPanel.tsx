@@ -152,6 +152,7 @@ const AdminFormPanel = ({ id, parentId, cardInFormType, formType, modalClose, /*
             showInstruction={showInstruction}
             setShowInstruction={setShowInstruction}
             formType={formType}
+            cardInFormType={cardInFormType}
         >
             <FormProvider {...methods}>
                 <FormHeader cardInFormType={cardInFormType} formType={formType} onInstructionClick={() => setShowInstruction(true)} />
