@@ -4,7 +4,7 @@ import InstructionSection from "./InstructionSection"
 import LoadingComponent from "../../LoadingComponent"
 import ModalStyle from "../../../styles/modalStyle"
 import { Category, InfoCard, Service } from "../../../interfaces/CardsInterfaces"
-import { FormType } from "../../../contextProviders/formTypeProvider"
+import { CardType, FormType } from "../../../contextProviders/formTypeProvider"
 import Scrollbar from "../../ScrollBar/ScrollBar"
 
 interface MandatoryFormProps extends PropsWithChildren {
@@ -13,9 +13,10 @@ interface MandatoryFormProps extends PropsWithChildren {
     showInstruction: boolean,
     setShowInstruction: (value: React.SetStateAction<boolean>) => void,
     formType: FormType,
+    cardInFormType: CardType;
 }
 
-export const MandatoryForm = ({ children, neededData, modalClose, showInstruction, setShowInstruction, formType }: MandatoryFormProps) => {
+export const MandatoryForm = ({ children, neededData, modalClose, showInstruction, setShowInstruction, formType, cardInFormType }: MandatoryFormProps) => {
     return (
         <Box id="card-form-container" sx={{ padding: 3, paddingRight:"5px", maxWidth: 800, margin: '0 auto', borderRadius: "40px", ...ModalStyle }}>
                 <Box display="flex" justifyContent="flex-end">
@@ -24,7 +25,7 @@ export const MandatoryForm = ({ children, neededData, modalClose, showInstructio
                     </IconButton>
                 </Box>
                 <Scrollbar  alginRight={true} height="60vh" addArrowsButtons={false}>
-                <InstructionSection showInstruction={showInstruction} onBackClick={() => setShowInstruction(false)} />
+                <InstructionSection cardInFormType={cardInFormType} showInstruction={showInstruction} onBackClick={() => setShowInstruction(false)} />
                 {
                     (neededData || formType === FormType.CREATE) && !showInstruction ?
                         <>

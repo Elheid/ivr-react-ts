@@ -735,3 +735,7 @@ hr.vertical-divider{
   width: -webkit-fill-available;  /* Mozilla игнор. */
   width: fill-available;
 }
+
+span.red-text{
+  color: red;
+}
